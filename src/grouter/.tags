@@ -1,0 +1,851 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ARPAddBuffer	arp.c	/^void ARPAddBuffer(gpacket_t *in_pkt)$/;"	f
+ARPAddEntry	arp.c	/^void ARPAddEntry(uchar *ip_addr, uchar *mac_addr)$/;"	f
+ARPDeleteEntry	arp.c	/^void ARPDeleteEntry(char *ip_addr)$/;"	f
+ARPFindEntry	arp.c	/^int ARPFindEntry(uchar *ip_addr, uchar *mac_addr)$/;"	f
+ARPFlushBuffer	arp.c	/^void ARPFlushBuffer(char *next_hop, char *mac_addr)$/;"	f
+ARPGetBuffer	arp.c	/^int ARPGetBuffer(gpacket_t **out_pkt, uchar *nexthop)$/;"	f
+ARPInit	arp.c	/^void ARPInit()$/;"	f
+ARPInitBuffer	arp.c	/^void ARPInitBuffer()$/;"	f
+ARPInitTable	arp.c	/^void ARPInitTable()$/;"	f
+ARPPrintTable	arp.c	/^void ARPPrintTable(void)$/;"	f
+ARPProcess	arp.c	/^void ARPProcess(gpacket_t *pkt)$/;"	f
+ARPReInitTable	arp.c	/^void ARPReInitTable()$/;"	f
+ARPResolve	arp.c	/^int ARPResolve(gpacket_t *in_pkt)$/;"	f
+ARPSend2Output	arp.c	/^int ARPSend2Output(gpacket_t *pkt)$/;"	f
+ARPSendRequest	arp.c	/^void ARPSendRequest(gpacket_t *pkt)$/;"	f
+ARPbuffer	arp.c	/^arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	\/\/ ARP buffer for unresolved packets$/;"	v
+ARPtable	arp.c	/^arp_entry_t ARPtable[MAX_ARP];		                \/\/ ARP table$/;"	v
+CLIDestroy	cli.c	/^void CLIDestroy()$/;"	f
+CLIInit	cli.c	/^int CLIInit(router_config *rarg)$/;"	f
+CLIPrintHelp	cli.c	/^void CLIPrintHelp()$/;"	f
+CLIPrintHelpPreamble	cli.c	/^void CLIPrintHelpPreamble()$/;"	f
+CLIProcessCmds	cli.c	/^void CLIProcessCmds(FILE *fp, int online)$/;"	f
+CLIProcessCmdsInteractive	cli.c	/^void *CLIProcessCmdsInteractive(void *arg)$/;"	f
+CheckPythonError	ip.c	/^void CheckPythonError(void)$/;"	f
+Colon2MAC	utils.c	/^int Colon2MAC(char *buf, uchar mac_addr[])$/;"	f
+Dot2IP	utils.c	/^int Dot2IP(char *buf, uchar ip_addr[])$/;"	f
+GCC_HASCLASSVISIBILITY	ip_wrap.c	83;"	d	file:
+GET_NEXT_PARAMETER	cli.c	334;"	d	file:
+GET_THIS_OR_THIS_PARAMETER	cli.c	339;"	d	file:
+GET_THIS_PARAMETER	cli.c	337;"	d	file:
+GNETHalt	gnet.c	/^void GNETHalt(int gnethandler)$/;"	f
+GNETHandler	gnet.c	/^void *GNETHandler(void *outq)$/;"	f
+GNETInit	gnet.c	/^int GNETInit(int *ghandler, char *config_dir, char *rname, simplequeue_t *sq)$/;"	f
+GNETInitARPCache	gnet.c	/^void GNETInitARPCache(void)$/;"	f
+GNETInitInterfaces	gnet.c	/^void GNETInitInterfaces()$/;"	f
+GNETInsertInterface	gnet.c	/^void GNETInsertInterface(interface_t *iface)$/;"	f
+GNETMakeEthInterface	gnet.c	/^interface_t *GNETMakeEthInterface(char *vsock_name, char *device,$/;"	f
+GNETMakeTapInterface	gnet.c	/^interface_t *GNETMakeTapInterface(char *device, uchar *mac_addr, uchar *nw_addr)$/;"	f
+HDR_SIZE_IN_BYTES	udp.py	/^HDR_SIZE_IN_BYTES = 8$/;"	v
+ICMPDoPing	icmp.c	/^void ICMPDoPing(uchar *ipaddr, int pkt_size, int retries)$/;"	f
+ICMPProcessEchoReply	icmp.c	/^void ICMPProcessEchoReply(gpacket_t *in_pkt)$/;"	f
+ICMPProcessEchoRequest	icmp.c	/^void ICMPProcessEchoRequest(gpacket_t *in_pkt)$/;"	f
+ICMPProcessFragNeeded	icmp.c	/^void ICMPProcessFragNeeded(gpacket_t *in_pkt, int interface_mtu)$/;"	f
+ICMPProcessPacket	icmp.c	/^void ICMPProcessPacket(gpacket_t *in_pkt)$/;"	f
+ICMPProcessRedirect	icmp.c	/^void ICMPProcessRedirect(gpacket_t *in_pkt, uchar *gw_addr)$/;"	f
+ICMPProcessTTLExpired	icmp.c	/^void ICMPProcessTTLExpired(gpacket_t *in_pkt)$/;"	f
+ICMPSendPingPacket	icmp.c	/^void ICMPSendPingPacket(uchar *dst_ip, int size, int seq)$/;"	f
+IP2Dot	utils.c	/^char *IP2Dot(char *buf, uchar ip_addr[])$/;"	f
+IPCheck4Errors	ip.c	/^int IPCheck4Errors(gpacket_t *in_pkt)$/;"	f
+IPCheck4Fragmentation	ip.c	/^int IPCheck4Fragmentation(gpacket_t *in_pkt)$/;"	f
+IPCheck4Redirection	ip.c	/^int IPCheck4Redirection(gpacket_t *in_pkt)$/;"	f
+IPCheckPacket4Me	ip.c	/^int IPCheckPacket4Me(gpacket_t *in_pkt)$/;"	f
+IPIncomingPacket	ip.c	/^void IPIncomingPacket(gpacket_t *in_pkt)$/;"	f
+IPInit	ip.c	/^void IPInit()$/;"	f
+IPOutgoingPacket	Cip.py	/^IPOutgoingPacket = _Cip.IPOutgoingPacket$/;"	v
+IPOutgoingPacket	Cip.py	/^def IPOutgoingPacket(*args):$/;"	f
+IPOutgoingPacket	ip.c	/^int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)$/;"	f
+IPProcessBcastPacket	ip.c	/^int IPProcessBcastPacket(gpacket_t *in_pkt)$/;"	f
+IPProcessForwardingPacket	ip.c	/^int IPProcessForwardingPacket(gpacket_t *in_pkt)$/;"	f
+IPProcessMyPacket	ip.c	/^int IPProcessMyPacket(gpacket_t *in_pkt)$/;"	f
+IPSend2Output	ip.c	/^int IPSend2Output(gpacket_t *pkt)$/;"	f
+IPVerifyPacket	ip.c	/^int IPVerifyPacket(ip_packet_t *ip_pkt)$/;"	f
+IP_DF	Cip.py	/^IP_DF = _Cip.IP_DF$/;"	v
+IP_MF	Cip.py	/^IP_MF = _Cip.IP_MF$/;"	v
+IP_OFFMASK	Cip.py	/^IP_OFFMASK = _Cip.IP_OFFMASK$/;"	v
+IP_RF	Cip.py	/^IP_RF = _Cip.IP_RF$/;"	v
+LLONG_MAX	ip_wrap.c	3036;"	d	file:
+LLONG_MIN	ip_wrap.c	3037;"	d	file:
+MAC2Colon	utils.c	/^char *MAC2Colon(char *buf, uchar mac_addr[])$/;"	f
+MAX_BUFFER_SIZE	udp.py	/^	MAX_BUFFER_SIZE = 1000$/;"	v	class:PCBCore
+MAX_IPREVLENGTH_ICMP	Cip.py	/^MAX_IPREVLENGTH_ICMP = _Cip.MAX_IPREVLENGTH_ICMP$/;"	v
+MAX_IPREVLENGTH_ICMP	ip_wrap.c	3020;"	d	file:
+MAX_MESSAGE_SIZE	ip_wrap.c	3021;"	d	file:
+MAX_PCB_NUMBER	udp.py	/^	MAX_PCB_NUMBER = 20$/;"	v	class:PCBCore
+MAX_PORT_NUMBER	udp.py	/^	MAX_PORT_NUMBER = 65536$/;"	v	class:PCBCore
+MTUTableInit	mtu.c	/^void MTUTableInit(mtu_entry_t mtable[])$/;"	f
+MTU_tbl	ip.c	/^mtu_entry_t MTU_tbl[MAX_MTU];		        \/\/ MTU table$/;"	v
+NAME	udp.py	/^	NAME = 'PCB CORE'$/;"	v	class:PCBCore
+Ncer	udp.py	/^class Ncer:$/;"	c
+PCBCore	udp.py	/^class PCBCore:$/;"	c
+PCB_dict	udp.py	/^	PCB_dict = {} #{port: (pkt1, pkt2, ...)}$/;"	v	class:PCBCore
+PY_SSIZE_T_MAX	ip_wrap.c	877;"	d	file:
+PY_SSIZE_T_MIN	ip_wrap.c	878;"	d	file:
+Packet	udp.py	/^class Packet:$/;"	c
+PktCoreSchedulerInit	packetcore.c	/^pthread_t PktCoreSchedulerInit(pktcore_t *pcore)$/;"	f
+PktCoreWorkerInit	packetcore.c	/^int PktCoreWorkerInit(pktcore_t *pcore)$/;"	f
+PyBool_FromLong	ip_wrap.c	/^PyObject *PyBool_FromLong(long ok)$/;"	f	file:
+PyClass_Check	ip_wrap.c	726;"	d	file:
+PyDescr_NAME	ip_wrap.c	939;"	d	file:
+PyDescr_TYPE	ip_wrap.c	938;"	d	file:
+PyExc_StopIteration	ip_wrap.c	833;"	d	file:
+PyHeapTypeObject	ip_wrap.c	/^} PyHeapTypeObject;$/;"	t	typeref:struct:__anon1	file:
+PyInt_AsLong	ip_wrap.c	728;"	d	file:
+PyInt_Check	ip_wrap.c	727;"	d	file:
+PyInt_FromLong	ip_wrap.c	729;"	d	file:
+PyInt_FromSize_t	ip_wrap.c	730;"	d	file:
+PyInt_FromSize_t	ip_wrap.c	901;"	d	file:
+PyModule_AddObject	ip_wrap.c	/^PyModule_AddObject(PyObject *m, char *name, PyObject *o)$/;"	f
+PyNumber_AsSsize_t	ip_wrap.c	/^static long PyNumber_AsSsize_t (PyObject *x, void *SWIGUNUSEDPARM(exc))$/;"	f	file:
+PyOS_snprintf	ip_wrap.c	797;"	d	file:
+PyOS_snprintf	ip_wrap.c	799;"	d	file:
+PyObject_DEL	ip_wrap.c	827;"	d	file:
+PyObject_Del	ip_wrap.c	824;"	d	file:
+PyObject_GenericGetAttr	ip_wrap.c	836;"	d	file:
+PySequence_Size	ip_wrap.c	857;"	d	file:
+PyString_AS_STRING	ip_wrap.c	738;"	d	file:
+PyString_AsString	ip_wrap.c	734;"	d	file:
+PyString_AsStringAndSize	ip_wrap.c	850;"	d	file:
+PyString_Check	ip_wrap.c	731;"	d	file:
+PyString_Format	ip_wrap.c	733;"	d	file:
+PyString_FromFormat	ip_wrap.c	/^PyString_FromFormat(const char *fmt, ...) {$/;"	f	file:
+PyString_FromString	ip_wrap.c	732;"	d	file:
+PyString_InternFromString	ip_wrap.c	736;"	d	file:
+PyString_Size	ip_wrap.c	735;"	d	file:
+Py_None	ip_wrap.c	1382;"	d	file:
+Py_None	ip_wrap.c	1383;"	d	file:
+Py_NotImplemented	ip_wrap.c	843;"	d	file:
+Py_TPFLAGS_HAVE_CLASS	ip_wrap.c	737;"	d	file:
+Py_TYPE	ip_wrap.c	744;"	d	file:
+Py_VISIT	ip_wrap.c	905;"	d	file:
+Py_ssize_t	ip_wrap.c	/^typedef int Py_ssize_t;$/;"	t	file:
+PythonError	Cip.py	/^PythonError = _Cip.PythonError$/;"	v
+PythonError	Cip.py	/^def PythonError(*args):$/;"	f
+PythonError	ip.c	/^int PythonError(PyObject *pObj)$/;"	f
+RESET_DF_BITS	ip_wrap.c	2977;"	d	file:
+RESET_MF_BITS	ip_wrap.c	2978;"	d	file:
+RouteTableInit	routetable.c	/^void RouteTableInit(route_entry_t route_tbl[])$/;"	f
+SET_DF_BITS	ip_wrap.c	2975;"	d	file:
+SET_MF_BITS	ip_wrap.c	2976;"	d	file:
+SWIGEXPORT	ip_wrap.c	90;"	d	file:
+SWIGEXPORT	ip_wrap.c	92;"	d	file:
+SWIGEXPORT	ip_wrap.c	96;"	d	file:
+SWIGEXPORT	ip_wrap.c	98;"	d	file:
+SWIGINLINE	ip_wrap.c	35;"	d	file:
+SWIGINLINE	ip_wrap.c	37;"	d	file:
+SWIGINTERN	ip_wrap.c	72;"	d	file:
+SWIGINTERNINLINE	ip_wrap.c	77;"	d	file:
+SWIGPYTHON	ip_wrap.c	11;"	d	file:
+SWIGPY_CAPSULE_NAME	ip_wrap.c	934;"	d	file:
+SWIGPY_USE_CAPSULE	ip_wrap.c	933;"	d	file:
+SWIGRUNTIME	ip_wrap.c	163;"	d	file:
+SWIGRUNTIMEINLINE	ip_wrap.c	167;"	d	file:
+SWIGSTDCALL	ip_wrap.c	106;"	d	file:
+SWIGSTDCALL	ip_wrap.c	108;"	d	file:
+SWIGTEMPLATEDISAMBIGUATOR	ip_wrap.c	22;"	d	file:
+SWIGTEMPLATEDISAMBIGUATOR	ip_wrap.c	26;"	d	file:
+SWIGTEMPLATEDISAMBIGUATOR	ip_wrap.c	28;"	d	file:
+SWIGTYPE_p__gpacket_t	ip_wrap.c	2913;"	d	file:
+SWIGTYPE_p__ip_packet_t	ip_wrap.c	2914;"	d	file:
+SWIGTYPE_p__pkt_data_t	ip_wrap.c	2915;"	d	file:
+SWIGTYPE_p__pkt_frame_t	ip_wrap.c	2916;"	d	file:
+SWIGTYPE_p_char	ip_wrap.c	2917;"	d	file:
+SWIGTYPE_p_pkt_data_t_header	ip_wrap.c	2918;"	d	file:
+SWIGTYPE_p_pktcore_t	ip_wrap.c	2919;"	d	file:
+SWIGTYPE_p_uint16_t	ip_wrap.c	2920;"	d	file:
+SWIGTYPE_p_uint8_t	ip_wrap.c	2921;"	d	file:
+SWIGTYPE_p_unsigned_char	ip_wrap.c	2922;"	d	file:
+SWIGTYPE_p_ushort	ip_wrap.c	2923;"	d	file:
+SWIGUNUSED	ip_wrap.c	45;"	d	file:
+SWIGUNUSED	ip_wrap.c	47;"	d	file:
+SWIGUNUSED	ip_wrap.c	50;"	d	file:
+SWIGUNUSED	ip_wrap.c	52;"	d	file:
+SWIGUNUSEDPARM	ip_wrap.c	/^  swig_varlink_repr(swig_varlinkobject *SWIGUNUSEDPARM(v)) {$/;"	f
+SWIGUNUSEDPARM	ip_wrap.c	/^SWIGRUNTIME PyObject* SWIG_PyInstanceMethod_New(PyObject *SWIGUNUSEDPARM(self), PyObject *SWIGUNUSEDPARM(func))$/;"	f
+SWIGUNUSEDPARM	ip_wrap.c	64;"	d	file:
+SWIGUNUSEDPARM	ip_wrap.c	66;"	d	file:
+SWIGVERSION	ip_wrap.c	2949;"	d	file:
+SWIG_AcquirePtr	ip_wrap.c	1153;"	d	file:
+SWIG_AddCast	ip_wrap.c	/^SWIGINTERNINLINE int SWIG_AddCast(int r) {$/;"	f
+SWIG_AddCast	ip_wrap.c	303;"	d	file:
+SWIG_AddNewMask	ip_wrap.c	279;"	d	file:
+SWIG_AddTmpMask	ip_wrap.c	282;"	d	file:
+SWIG_ArgError	ip_wrap.c	265;"	d	file:
+SWIG_AsVal_double	ip_wrap.c	/^SWIG_AsVal_double (PyObject *obj, double *val)$/;"	f
+SWIG_AsVal_int	ip_wrap.c	/^SWIG_AsVal_int (PyObject * obj, int *val)$/;"	f
+SWIG_AsVal_long	ip_wrap.c	/^SWIG_AsVal_long (PyObject *obj, long* val)$/;"	f
+SWIG_AttributeError	ip_wrap.c	717;"	d	file:
+SWIG_BADOBJ	ip_wrap.c	274;"	d	file:
+SWIG_BUFFER_SIZE	ip_wrap.c	172;"	d	file:
+SWIG_BUILTIN_INIT	ip_wrap.c	1365;"	d	file:
+SWIG_BUILTIN_TP_INIT	ip_wrap.c	1364;"	d	file:
+SWIG_CASTRANKLIMIT	ip_wrap.c	268;"	d	file:
+SWIG_CASTRANKMASK	ip_wrap.c	294;"	d	file:
+SWIG_CAST_NEW_MEMORY	ip_wrap.c	177;"	d	file:
+SWIG_CanCastAsInteger	ip_wrap.c	/^SWIG_CanCastAsInteger(double *d, double min, double max) {$/;"	f
+SWIG_CastRank	ip_wrap.c	295;"	d	file:
+SWIG_CheckImplicit	ip_wrap.c	1152;"	d	file:
+SWIG_CheckState	ip_wrap.c	/^SWIGINTERNINLINE int SWIG_CheckState(int r) {$/;"	f
+SWIG_CheckState	ip_wrap.c	304;"	d	file:
+SWIG_ConvertFunctionPtr	ip_wrap.c	1165;"	d	file:
+SWIG_ConvertInstance	ip_wrap.c	1161;"	d	file:
+SWIG_ConvertMember	ip_wrap.c	1169;"	d	file:
+SWIG_ConvertPacked	ip_wrap.c	1157;"	d	file:
+SWIG_ConvertPtr	ip_wrap.c	1141;"	d	file:
+SWIG_ConvertPtrAndOwn	ip_wrap.c	1142;"	d	file:
+SWIG_DelNewMask	ip_wrap.c	280;"	d	file:
+SWIG_DelTmpMask	ip_wrap.c	283;"	d	file:
+SWIG_DivisionByZero	ip_wrap.c	712;"	d	file:
+SWIG_ERROR	ip_wrap.c	263;"	d	file:
+SWIG_EXPAND_AND_QUOTE_STRING	ip_wrap.c	147;"	d	file:
+SWIG_Error	ip_wrap.c	1182;"	d	file:
+SWIG_ErrorType	ip_wrap.c	1181;"	d	file:
+SWIG_From_int	ip_wrap.c	/^  SWIG_From_int  (int value)$/;"	f
+SWIG_GetModule	ip_wrap.c	1175;"	d	file:
+SWIG_IOError	ip_wrap.c	708;"	d	file:
+SWIG_IndexError	ip_wrap.c	710;"	d	file:
+SWIG_InitializeModule	ip_wrap.c	/^SWIG_InitializeModule(void *clientdata) {$/;"	f
+SWIG_InstallConstants	ip_wrap.c	5297;"	d	file:
+SWIG_InternalNewPointerObj	ip_wrap.c	1150;"	d	file:
+SWIG_IsNewObj	ip_wrap.c	281;"	d	file:
+SWIG_IsOK	ip_wrap.c	264;"	d	file:
+SWIG_IsTmpObj	ip_wrap.c	284;"	d	file:
+SWIG_MAXCASTRANK	ip_wrap.c	292;"	d	file:
+SWIG_MangledTypeQuery	ip_wrap.c	2927;"	d	file:
+SWIG_MangledTypeQueryModule	ip_wrap.c	/^SWIG_MangledTypeQueryModule(swig_module_info *start,$/;"	f
+SWIG_MemoryError	ip_wrap.c	718;"	d	file:
+SWIG_MustGetPtr	ip_wrap.c	2741;"	d	file:
+SWIG_NEWOBJ	ip_wrap.c	276;"	d	file:
+SWIG_NEWOBJMASK	ip_wrap.c	270;"	d	file:
+SWIG_NewClientData	ip_wrap.c	1177;"	d	file:
+SWIG_NewFunctionPtrObj	ip_wrap.c	1166;"	d	file:
+SWIG_NewInstanceObj	ip_wrap.c	1162;"	d	file:
+SWIG_NewMemberObj	ip_wrap.c	1170;"	d	file:
+SWIG_NewPackedObj	ip_wrap.c	1158;"	d	file:
+SWIG_NewPointerObj	ip_wrap.c	1145;"	d	file:
+SWIG_NewPointerObj	ip_wrap.c	1147;"	d	file:
+SWIG_NullReferenceError	ip_wrap.c	719;"	d	file:
+SWIG_OK	ip_wrap.c	262;"	d	file:
+SWIG_OLDOBJ	ip_wrap.c	275;"	d	file:
+SWIG_OverflowError	ip_wrap.c	713;"	d	file:
+SWIG_POINTER_DISOWN	ip_wrap.c	176;"	d	file:
+SWIG_POINTER_EXCEPTION	ip_wrap.c	2739;"	d	file:
+SWIG_POINTER_IMPLICIT_CONV	ip_wrap.c	1362;"	d	file:
+SWIG_POINTER_NEW	ip_wrap.c	1360;"	d	file:
+SWIG_POINTER_NOSHADOW	ip_wrap.c	1359;"	d	file:
+SWIG_POINTER_OWN	ip_wrap.c	180;"	d	file:
+SWIG_PYBUFFER_SIZE	ip_wrap.c	807;"	d	file:
+SWIG_PYTHON_BUILD_NONE	ip_wrap.c	1375;"	d	file:
+SWIG_PYTHON_DIRECTOR_NO_VTABLE	ip_wrap.c	12;"	d	file:
+SWIG_PYTHON_INITIALIZE_THREADS	ip_wrap.c	1026;"	d	file:
+SWIG_PYTHON_INITIALIZE_THREADS	ip_wrap.c	1057;"	d	file:
+SWIG_PYTHON_INITIALIZE_THREADS	ip_wrap.c	1073;"	d	file:
+SWIG_PYTHON_SLOW_GETSET_THIS	ip_wrap.c	2170;"	d	file:
+SWIG_PYTHON_THREADS	ip_wrap.c	1015;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_ALLOW	ip_wrap.c	1047;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_ALLOW	ip_wrap.c	1052;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_ALLOW	ip_wrap.c	1066;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_ALLOW	ip_wrap.c	1076;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_BLOCK	ip_wrap.c	1045;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_BLOCK	ip_wrap.c	1050;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_BLOCK	ip_wrap.c	1060;"	d	file:
+SWIG_PYTHON_THREAD_BEGIN_BLOCK	ip_wrap.c	1074;"	d	file:
+SWIG_PYTHON_THREAD_END_ALLOW	ip_wrap.c	1048;"	d	file:
+SWIG_PYTHON_THREAD_END_ALLOW	ip_wrap.c	1053;"	d	file:
+SWIG_PYTHON_THREAD_END_ALLOW	ip_wrap.c	1069;"	d	file:
+SWIG_PYTHON_THREAD_END_ALLOW	ip_wrap.c	1077;"	d	file:
+SWIG_PYTHON_THREAD_END_BLOCK	ip_wrap.c	1046;"	d	file:
+SWIG_PYTHON_THREAD_END_BLOCK	ip_wrap.c	1051;"	d	file:
+SWIG_PYTHON_THREAD_END_BLOCK	ip_wrap.c	1063;"	d	file:
+SWIG_PYTHON_THREAD_END_BLOCK	ip_wrap.c	1075;"	d	file:
+SWIG_PYTHON_USE_GIL	ip_wrap.c	1021;"	d	file:
+SWIG_PY_BINARY	ip_wrap.c	1094;"	d	file:
+SWIG_PY_POINTER	ip_wrap.c	1093;"	d	file:
+SWIG_PackData	ip_wrap.c	/^SWIG_PackData(char *c, void *ptr, size_t sz) {$/;"	f
+SWIG_PackDataName	ip_wrap.c	/^SWIG_PackDataName(char *buff, void *ptr, size_t sz, const char *name, size_t bsz) {$/;"	f
+SWIG_PackVoidPtr	ip_wrap.c	/^SWIG_PackVoidPtr(char *buff, void *ptr, const char *name, size_t bsz) {$/;"	f
+SWIG_PropagateClientData	ip_wrap.c	/^SWIG_PropagateClientData(void) {$/;"	f
+SWIG_Py_None	ip_wrap.c	/^SWIG_Py_None(void)$/;"	f
+SWIG_Py_Void	ip_wrap.c	/^SWIG_Py_Void(void)$/;"	f
+SWIG_Python_AcquirePtr	ip_wrap.c	/^SWIG_Python_AcquirePtr(PyObject *obj, int own) {$/;"	f
+SWIG_Python_AddErrMesg	ip_wrap.c	/^SWIG_Python_AddErrMesg(const char* mesg, int infront)$/;"	f
+SWIG_Python_AddErrorMsg	ip_wrap.c	/^SWIG_Python_AddErrorMsg(const char* mesg)$/;"	f
+SWIG_Python_AppendOutput	ip_wrap.c	/^SWIG_Python_AppendOutput(PyObject* result, PyObject* obj) {$/;"	f
+SWIG_Python_ArgFail	ip_wrap.c	/^SWIG_Python_ArgFail(int argnum)$/;"	f
+SWIG_Python_CallFunctor	ip_wrap.c	1339;"	d	file:
+SWIG_Python_CallFunctor	ip_wrap.c	1341;"	d	file:
+SWIG_Python_CheckImplicit	ip_wrap.c	/^SWIG_Python_CheckImplicit(swig_type_info *ty)$/;"	f
+SWIG_Python_ConvertFunctionPtr	ip_wrap.c	/^SWIG_Python_ConvertFunctionPtr(PyObject *obj, void **ptr, swig_type_info *ty) {$/;"	f
+SWIG_Python_ConvertPacked	ip_wrap.c	/^SWIG_Python_ConvertPacked(PyObject *obj, void *ptr, size_t sz, swig_type_info *ty) {$/;"	f
+SWIG_Python_ConvertPtr	ip_wrap.c	1140;"	d	file:
+SWIG_Python_ConvertPtrAndOwn	ip_wrap.c	/^SWIG_Python_ConvertPtrAndOwn(PyObject *obj, void **ptr, swig_type_info *ty, int flags, int *own) {$/;"	f
+SWIG_Python_DestroyModule	ip_wrap.c	/^SWIG_Python_DestroyModule(PyObject *obj)$/;"	f
+SWIG_Python_ErrorType	ip_wrap.c	/^SWIG_Python_ErrorType(int code) {$/;"	f
+SWIG_Python_ExceptionType	ip_wrap.c	/^SWIG_Python_ExceptionType(swig_type_info *desc) {$/;"	f
+SWIG_Python_FixMethods	ip_wrap.c	/^  SWIG_Python_FixMethods(PyMethodDef *methods,$/;"	f
+SWIG_Python_GetModule	ip_wrap.c	/^SWIG_Python_GetModule(void *SWIGUNUSEDPARM(clientdata)) {$/;"	f
+SWIG_Python_GetSwigThis	ip_wrap.c	/^SWIG_Python_GetSwigThis(PyObject *pyobj) $/;"	f
+SWIG_Python_InitShadowInstance	ip_wrap.c	/^SWIG_Python_InitShadowInstance(PyObject *args) {$/;"	f
+SWIG_Python_InstallConstants	ip_wrap.c	/^  SWIG_Python_InstallConstants(PyObject *d, swig_const_info constants[]) {$/;"	f
+SWIG_Python_MustGetPtr	ip_wrap.c	/^SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int SWIGUNUSEDPARM(argnum), int flags) {$/;"	f
+SWIG_Python_NewPackedObj	ip_wrap.c	/^SWIG_Python_NewPackedObj(void *ptr, size_t sz, swig_type_info *type) {$/;"	f
+SWIG_Python_NewPointerObj	ip_wrap.c	/^SWIG_Python_NewPointerObj(PyObject *self, void *ptr, swig_type_info *type, int flags) {$/;"	f
+SWIG_Python_NewShadowInstance	ip_wrap.c	/^SWIG_Python_NewShadowInstance(SwigPyClientData *data, PyObject *swig_this)$/;"	f
+SWIG_Python_NonDynamicSetAttr	ip_wrap.c	/^SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {$/;"	f
+SWIG_Python_Raise	ip_wrap.c	1205;"	d	file:
+SWIG_Python_SetConstant	ip_wrap.c	/^SWIG_Python_SetConstant(PyObject *d, PyObject *public_interface, const char *name, PyObject *obj) {   $/;"	f
+SWIG_Python_SetConstant	ip_wrap.c	/^SWIG_Python_SetConstant(PyObject *d, const char *name, PyObject *obj) {   $/;"	f
+SWIG_Python_SetErrorMsg	ip_wrap.c	/^SWIG_Python_SetErrorMsg(PyObject *errtype, const char *msg) {$/;"	f
+SWIG_Python_SetErrorObj	ip_wrap.c	/^SWIG_Python_SetErrorObj(PyObject *errtype, PyObject *obj) {$/;"	f
+SWIG_Python_SetModule	ip_wrap.c	/^SWIG_Python_SetModule(swig_module_info *swig_module) {$/;"	f
+SWIG_Python_SetSwigThis	ip_wrap.c	/^SWIG_Python_SetSwigThis(PyObject *inst, PyObject *swig_this)$/;"	f
+SWIG_Python_TypeCache	ip_wrap.c	/^SWIG_Python_TypeCache(void) {$/;"	f
+SWIG_Python_TypeError	ip_wrap.c	/^SWIG_Python_TypeError(const char *type, PyObject *obj)$/;"	f
+SWIG_Python_TypeQuery	ip_wrap.c	/^SWIG_Python_TypeQuery(const char *type)$/;"	f
+SWIG_Python_UnpackTuple	ip_wrap.c	/^SWIG_Python_UnpackTuple(PyObject *args, const char *name, Py_ssize_t min, Py_ssize_t max, PyObject **objs)$/;"	f
+SWIG_Python_addvarlink	ip_wrap.c	/^  SWIG_Python_addvarlink(PyObject *p, char *name, PyObject *(*get_attr)(void), int (*set_attr)(PyObject *p)) {$/;"	f
+SWIG_Python_newvarlink	ip_wrap.c	/^  SWIG_Python_newvarlink(void) {$/;"	f
+SWIG_Python_str_AsChar	ip_wrap.c	/^SWIG_Python_str_AsChar(PyObject *str)$/;"	f
+SWIG_Python_str_DelForPy3	ip_wrap.c	778;"	d	file:
+SWIG_Python_str_DelForPy3	ip_wrap.c	780;"	d	file:
+SWIG_Python_str_FromChar	ip_wrap.c	/^SWIG_Python_str_FromChar(const char *c)$/;"	f
+SWIG_Python_str_FromFormat	ip_wrap.c	750;"	d	file:
+SWIG_Python_str_FromFormat	ip_wrap.c	752;"	d	file:
+SWIG_QUOTE_STRING	ip_wrap.c	146;"	d	file:
+SWIG_RUNTIME_VERSION	ip_wrap.c	142;"	d	file:
+SWIG_RuntimeError	ip_wrap.c	709;"	d	file:
+SWIG_STATIC_POINTER	ip_wrap.c	1349;"	d	file:
+SWIG_STATIC_POINTER	ip_wrap.c	1351;"	d	file:
+SWIG_SetErrorMsg	ip_wrap.c	1180;"	d	file:
+SWIG_SetErrorObj	ip_wrap.c	1179;"	d	file:
+SWIG_SetModule	ip_wrap.c	1176;"	d	file:
+SWIG_SyntaxError	ip_wrap.c	714;"	d	file:
+SWIG_SystemError	ip_wrap.c	716;"	d	file:
+SWIG_TMPOBJ	ip_wrap.c	277;"	d	file:
+SWIG_TMPOBJMASK	ip_wrap.c	272;"	d	file:
+SWIG_TYPE_TABLE_NAME	ip_wrap.c	148;"	d	file:
+SWIG_TYPE_TABLE_NAME	ip_wrap.c	150;"	d	file:
+SWIG_This	ip_wrap.c	/^SWIG_This(void)$/;"	f
+SWIG_TypeCast	ip_wrap.c	/^SWIG_TypeCast(swig_cast_info *ty, void *ptr, int *newmemory) {$/;"	f
+SWIG_TypeCheck	ip_wrap.c	/^SWIG_TypeCheck(const char *c, swig_type_info *ty) {$/;"	f
+SWIG_TypeCheckStruct	ip_wrap.c	/^SWIG_TypeCheckStruct(swig_type_info *from, swig_type_info *ty) {$/;"	f
+SWIG_TypeClientData	ip_wrap.c	/^SWIG_TypeClientData(swig_type_info *ti, void *clientdata) {$/;"	f
+SWIG_TypeCmp	ip_wrap.c	/^SWIG_TypeCmp(const char *nb, const char *tb) {$/;"	f
+SWIG_TypeDynamicCast	ip_wrap.c	/^SWIG_TypeDynamicCast(swig_type_info *ty, void **ptr) {$/;"	f
+SWIG_TypeEquiv	ip_wrap.c	/^SWIG_TypeEquiv(const char *nb, const char *tb) {$/;"	f
+SWIG_TypeError	ip_wrap.c	711;"	d	file:
+SWIG_TypeName	ip_wrap.c	/^SWIG_TypeName(const swig_type_info *ty) {$/;"	f
+SWIG_TypeNameComp	ip_wrap.c	/^SWIG_TypeNameComp(const char *f1, const char *l1,$/;"	f
+SWIG_TypeNewClientData	ip_wrap.c	/^SWIG_TypeNewClientData(swig_type_info *ti, void *clientdata) {$/;"	f
+SWIG_TypePrettyName	ip_wrap.c	/^SWIG_TypePrettyName(const swig_type_info *type) {$/;"	f
+SWIG_TypeQuery	ip_wrap.c	2926;"	d	file:
+SWIG_TypeQueryModule	ip_wrap.c	/^SWIG_TypeQueryModule(swig_module_info *start,$/;"	f
+SWIG_TypeRank	ip_wrap.c	289;"	d	file:
+SWIG_UnknownError	ip_wrap.c	707;"	d	file:
+SWIG_UnpackData	ip_wrap.c	/^SWIG_UnpackData(const char *c, void *ptr, size_t sz) {$/;"	f
+SWIG_UnpackDataName	ip_wrap.c	/^SWIG_UnpackDataName(const char *c, void *ptr, size_t sz, const char *name) {$/;"	f
+SWIG_UnpackVoidPtr	ip_wrap.c	/^SWIG_UnpackVoidPtr(const char *c, void **ptr, const char *name) {$/;"	f
+SWIG_VERSION	ip_wrap.c	2950;"	d	file:
+SWIG_ValueError	ip_wrap.c	715;"	d	file:
+SWIG_addvarlink	ip_wrap.c	5296;"	d	file:
+SWIG_arg_fail	ip_wrap.c	2740;"	d	file:
+SWIG_as_voidptr	ip_wrap.c	2953;"	d	file:
+SWIG_as_voidptrptr	ip_wrap.c	2954;"	d	file:
+SWIG_contract_assert	ip_wrap.c	2907;"	d	file:
+SWIG_exception_fail	ip_wrap.c	2905;"	d	file:
+SWIG_fail	ip_wrap.c	1183;"	d	file:
+SWIG_globals	ip_wrap.c	/^  SWIG_globals(void) {$/;"	f
+SWIG_init	ip_wrap.c	/^SWIG_init(void) {$/;"	f
+SWIG_init	ip_wrap.c	2941;"	d	file:
+SWIG_init	ip_wrap.c	2944;"	d	file:
+SWIG_name	ip_wrap.c	2947;"	d	file:
+SWIG_newvarlink	ip_wrap.c	5295;"	d	file:
+SwigMethods	ip_wrap.c	/^static PyMethodDef SwigMethods[] = {$/;"	v	file:
+SwigPyBuiltin_AddPublicSymbol	ip_wrap.c	/^SwigPyBuiltin_AddPublicSymbol(PyObject *seq, const char *key) {$/;"	f
+SwigPyClientData	ip_wrap.c	/^} SwigPyClientData;$/;"	t	typeref:struct:__anon2	file:
+SwigPyClientData_Del	ip_wrap.c	/^SwigPyClientData_Del(SwigPyClientData *data) {$/;"	f
+SwigPyClientData_New	ip_wrap.c	/^SwigPyClientData_New(PyObject* obj)$/;"	f
+SwigPyObject	ip_wrap.c	/^} SwigPyObject;$/;"	t	typeref:struct:__anon3	file:
+SwigPyObject_Check	ip_wrap.c	/^SwigPyObject_Check(PyObject *op) {$/;"	f
+SwigPyObject_GetDesc	ip_wrap.c	/^SwigPyObject_GetDesc(PyObject *self)$/;"	f
+SwigPyObject_New	ip_wrap.c	/^SwigPyObject_New(void *ptr, swig_type_info *ty, int own)$/;"	f
+SwigPyObject_TypeOnce	ip_wrap.c	/^SwigPyObject_TypeOnce(void) {$/;"	f
+SwigPyObject_acquire	ip_wrap.c	/^SwigPyObject_acquire(PyObject *v)$/;"	f
+SwigPyObject_append	ip_wrap.c	/^SwigPyObject_append(PyObject* v, PyObject* next)$/;"	f
+SwigPyObject_compare	ip_wrap.c	/^SwigPyObject_compare(SwigPyObject *v, SwigPyObject *w)$/;"	f
+SwigPyObject_dealloc	ip_wrap.c	/^SwigPyObject_dealloc(PyObject *v)$/;"	f
+SwigPyObject_disown	ip_wrap.c	/^SwigPyObject_disown(PyObject *v)$/;"	f
+SwigPyObject_format	ip_wrap.c	/^SwigPyObject_format(const char* fmt, SwigPyObject *v)$/;"	f
+SwigPyObject_getattr	ip_wrap.c	/^SwigPyObject_getattr(SwigPyObject *sobj,char *name)$/;"	f
+SwigPyObject_hex	ip_wrap.c	/^SwigPyObject_hex(SwigPyObject *v)$/;"	f
+SwigPyObject_long	ip_wrap.c	/^SwigPyObject_long(SwigPyObject *v)$/;"	f
+SwigPyObject_next	ip_wrap.c	/^SwigPyObject_next(PyObject* v)$/;"	f
+SwigPyObject_oct	ip_wrap.c	/^SwigPyObject_oct(SwigPyObject *v)$/;"	f
+SwigPyObject_own	ip_wrap.c	/^SwigPyObject_own(PyObject *v, PyObject *args)$/;"	f
+SwigPyObject_repr	ip_wrap.c	/^SwigPyObject_repr(SwigPyObject *v)$/;"	f
+SwigPyObject_richcompare	ip_wrap.c	/^SwigPyObject_richcompare(SwigPyObject *v, SwigPyObject *w, int op)$/;"	f
+SwigPyObject_stype	ip_wrap.c	/^static swig_type_info *SwigPyObject_stype = 0;$/;"	v	file:
+SwigPyObject_type	ip_wrap.c	/^SwigPyObject_type(void) {$/;"	f
+SwigPyPacked	ip_wrap.c	/^} SwigPyPacked;$/;"	t	typeref:struct:__anon4	file:
+SwigPyPacked_Check	ip_wrap.c	/^SwigPyPacked_Check(PyObject *op) {$/;"	f
+SwigPyPacked_New	ip_wrap.c	/^SwigPyPacked_New(void *ptr, size_t size, swig_type_info *ty)$/;"	f
+SwigPyPacked_TypeOnce	ip_wrap.c	/^SwigPyPacked_TypeOnce(void) {$/;"	f
+SwigPyPacked_UnpackData	ip_wrap.c	/^SwigPyPacked_UnpackData(PyObject *obj, void *ptr, size_t size)$/;"	f
+SwigPyPacked_compare	ip_wrap.c	/^SwigPyPacked_compare(SwigPyPacked *v, SwigPyPacked *w)$/;"	f
+SwigPyPacked_dealloc	ip_wrap.c	/^SwigPyPacked_dealloc(PyObject *v)$/;"	f
+SwigPyPacked_print	ip_wrap.c	/^SwigPyPacked_print(SwigPyPacked *v, FILE *fp, int SWIGUNUSEDPARM(flags))$/;"	f
+SwigPyPacked_repr	ip_wrap.c	/^SwigPyPacked_repr(SwigPyPacked *v)$/;"	f
+SwigPyPacked_str	ip_wrap.c	/^SwigPyPacked_str(SwigPyPacked *v)$/;"	f
+SwigPyPacked_type	ip_wrap.c	/^SwigPyPacked_type(void) {$/;"	f
+Swig_var_pcore_get	ip_wrap.c	/^SWIGINTERN PyObject *Swig_var_pcore_get(void) {$/;"	f
+Swig_var_pcore_set	ip_wrap.c	/^SWIGINTERN int Swig_var_pcore_set(PyObject *_val) {$/;"	f
+TEST_DF_BITS	ip_wrap.c	2973;"	d	file:
+TEST_MF_BITS	ip_wrap.c	2974;"	d	file:
+UDPPacketProcess	udp.py	/^def UDPPacketProcess(gpkt, pcore):$/;"	f
+UDPProcess	ip.c	/^int UDPProcess(gpacket_t *in_pkt)$/;"	f
+ULLONG_MAX	ip_wrap.c	3038;"	d	file:
+_CRT_SECURE_NO_DEPRECATE	ip_wrap.c	114;"	d	file:
+_Cip	Cip.py	/^    _Cip = swig_import_helper()$/;"	v
+_DEBUG	ip_wrap.c	126;"	d	file:
+_DEBUG	ip_wrap.c	128;"	d	file:
+_PyLong_FromSsize_t	ip_wrap.c	739;"	d	file:
+_SCL_SECURE_NO_DEPRECATE	ip_wrap.c	119;"	d	file:
+_SWIG_Py_None	ip_wrap.c	/^_SWIG_Py_None(void)$/;"	f
+_SWIG_This	ip_wrap.c	/^_SWIG_This(void)$/;"	f
+_UDPPacketProcess	udp.py	/^def _UDPPacketProcess(packet):$/;"	f
+_XOPEN_SOURCE	packetcore.c	16;"	d	file:
+__IP__HELPER__	ip_wrap.c	2987;"	d	file:
+__del__	Cip.py	/^    __del__ = lambda self : None;$/;"	v	class:gpacket_t
+__del__	Cip.py	/^    __del__ = lambda self : None;$/;"	v	class:ip_packet_t
+__del__	Cip.py	/^    __del__ = lambda self : None;$/;"	v	class:pkt_data_t
+__del__	Cip.py	/^    __del__ = lambda self : None;$/;"	v	class:pkt_data_t_header
+__del__	Cip.py	/^    __del__ = lambda self : None;$/;"	v	class:pkt_frame_t
+__eq__	udp.py	/^	def __eq__(self, other):$/;"	m	class:Packet	file:
+__find_dest_ip	udp.py	/^def __find_dest_ip(pkt):$/;"	f	file:
+__getattr__	Cip.py	/^    __getattr__ = lambda self, name: _swig_getattr(self, gpacket_t, name)$/;"	v	class:gpacket_t
+__getattr__	Cip.py	/^    __getattr__ = lambda self, name: _swig_getattr(self, ip_packet_t, name)$/;"	v	class:ip_packet_t
+__getattr__	Cip.py	/^    __getattr__ = lambda self, name: _swig_getattr(self, pkt_data_t, name)$/;"	v	class:pkt_data_t
+__getattr__	Cip.py	/^    __getattr__ = lambda self, name: _swig_getattr(self, pkt_data_t_header, name)$/;"	v	class:pkt_data_t_header
+__getattr__	Cip.py	/^    __getattr__ = lambda self, name: _swig_getattr(self, pkt_frame_t, name)$/;"	v	class:pkt_frame_t
+__htons	udp.py	/^def __htons(s):$/;"	f	file:
+__init__	Cip.py	/^    def __init__(self): $/;"	m	class:gpacket_t
+__init__	Cip.py	/^    def __init__(self): $/;"	m	class:ip_packet_t
+__init__	Cip.py	/^    def __init__(self): $/;"	m	class:pkt_data_t
+__init__	Cip.py	/^    def __init__(self): $/;"	m	class:pkt_data_t_header
+__init__	Cip.py	/^    def __init__(self): $/;"	m	class:pkt_frame_t
+__init__	udp.py	/^	def __init__(self):$/;"	m	class:Ncer
+__init__	udp.py	/^	def __init__(self,$/;"	m	class:Packet
+__ntohs	udp.py	/^def __ntohs(s):$/;"	f	file:
+__repr__	Cip.py	/^    __repr__ = _swig_repr$/;"	v	class:gpacket_t
+__repr__	Cip.py	/^    __repr__ = _swig_repr$/;"	v	class:ip_packet_t
+__repr__	Cip.py	/^    __repr__ = _swig_repr$/;"	v	class:pkt_data_t
+__repr__	Cip.py	/^    __repr__ = _swig_repr$/;"	v	class:pkt_data_t_header
+__repr__	Cip.py	/^    __repr__ = _swig_repr$/;"	v	class:pkt_frame_t
+__repr__	udp.py	/^	def __repr__(self):$/;"	m	class:Packet	file:
+__setattr__	Cip.py	/^    __setattr__ = lambda self, name, value: _swig_setattr(self, gpacket_t, name, value)$/;"	v	class:gpacket_t
+__setattr__	Cip.py	/^    __setattr__ = lambda self, name, value: _swig_setattr(self, ip_packet_t, name, value)$/;"	v	class:ip_packet_t
+__setattr__	Cip.py	/^    __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t, name, value)$/;"	v	class:pkt_data_t
+__setattr__	Cip.py	/^    __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t_header, name, value)$/;"	v	class:pkt_data_t_header
+__setattr__	Cip.py	/^    __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_frame_t, name, value)$/;"	v	class:pkt_frame_t
+__swig_destroy__	Cip.py	/^    __swig_destroy__ = _Cip.delete_gpacket_t$/;"	v	class:gpacket_t
+__swig_destroy__	Cip.py	/^    __swig_destroy__ = _Cip.delete_ip_packet_t$/;"	v	class:ip_packet_t
+__swig_destroy__	Cip.py	/^    __swig_destroy__ = _Cip.delete_pkt_data_t$/;"	v	class:pkt_data_t
+__swig_destroy__	Cip.py	/^    __swig_destroy__ = _Cip.delete_pkt_data_t_header$/;"	v	class:pkt_data_t_header
+__swig_destroy__	Cip.py	/^    __swig_destroy__ = _Cip.delete_pkt_frame_t$/;"	v	class:pkt_frame_t
+__swig_getmethods__	Cip.py	/^    __swig_getmethods__ = {}$/;"	v	class:gpacket_t
+__swig_getmethods__	Cip.py	/^    __swig_getmethods__ = {}$/;"	v	class:ip_packet_t
+__swig_getmethods__	Cip.py	/^    __swig_getmethods__ = {}$/;"	v	class:pkt_data_t
+__swig_getmethods__	Cip.py	/^    __swig_getmethods__ = {}$/;"	v	class:pkt_data_t_header
+__swig_getmethods__	Cip.py	/^    __swig_getmethods__ = {}$/;"	v	class:pkt_frame_t
+__swig_setmethods__	Cip.py	/^    __swig_setmethods__ = {}$/;"	v	class:gpacket_t
+__swig_setmethods__	Cip.py	/^    __swig_setmethods__ = {}$/;"	v	class:ip_packet_t
+__swig_setmethods__	Cip.py	/^    __swig_setmethods__ = {}$/;"	v	class:pkt_data_t
+__swig_setmethods__	Cip.py	/^    __swig_setmethods__ = {}$/;"	v	class:pkt_data_t_header
+__swig_setmethods__	Cip.py	/^    __swig_setmethods__ = {}$/;"	v	class:pkt_frame_t
+__vpl_sendto	vpl.c	/^int __vpl_sendto(int fd, void *buf, int len, void *to, int sock_len)$/;"	f
+_assemble	udp.py	/^	def _assemble(self, cksum=1):$/;"	m	class:Packet
+_disassemble	udp.py	/^	def _disassemble(self, raw_packet, cksum=1):$/;"	m	class:Packet
+_newclass	Cip.py	/^    _newclass = 0$/;"	v
+_object	Cip.py	/^    class _object : pass$/;"	c
+_recv_from	udp.py	/^	def _recv_from(self):$/;"	m	class:Ncer
+_swig_getattr	Cip.py	/^def _swig_getattr(self,class_type,name):$/;"	f
+_swig_property	Cip.py	/^    _swig_property = property$/;"	v
+_swig_repr	Cip.py	/^def _swig_repr(self):$/;"	f
+_swig_setattr	Cip.py	/^def _swig_setattr(self,class_type,name,value):$/;"	f
+_swig_setattr_nondynamic	Cip.py	/^def _swig_setattr_nondynamic(self,class_type,name,value,static=1):$/;"	f
+_swigc__p__gpacket_t	ip_wrap.c	/^static swig_cast_info _swigc__p__gpacket_t[] = {  {&_swigt__p__gpacket_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p__ip_packet_t	ip_wrap.c	/^static swig_cast_info _swigc__p__ip_packet_t[] = {  {&_swigt__p__ip_packet_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p__pkt_data_t	ip_wrap.c	/^static swig_cast_info _swigc__p__pkt_data_t[] = {  {&_swigt__p__pkt_data_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p__pkt_frame_t	ip_wrap.c	/^static swig_cast_info _swigc__p__pkt_frame_t[] = {  {&_swigt__p__pkt_frame_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_char	ip_wrap.c	/^static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_pkt_data_t_header	ip_wrap.c	/^static swig_cast_info _swigc__p_pkt_data_t_header[] = {  {&_swigt__p_pkt_data_t_header, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_pktcore_t	ip_wrap.c	/^static swig_cast_info _swigc__p_pktcore_t[] = {  {&_swigt__p_pktcore_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_uint16_t	ip_wrap.c	/^static swig_cast_info _swigc__p_uint16_t[] = {  {&_swigt__p_uint16_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_uint8_t	ip_wrap.c	/^static swig_cast_info _swigc__p_uint8_t[] = {  {&_swigt__p_uint8_t, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_unsigned_char	ip_wrap.c	/^static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigc__p_ushort	ip_wrap.c	/^static swig_cast_info _swigc__p_ushort[] = {  {&_swigt__p_ushort, 0, 0, 0},{0, 0, 0, 0}};$/;"	v	file:
+_swigt__p__gpacket_t	ip_wrap.c	/^static swig_type_info _swigt__p__gpacket_t = {"_p__gpacket_t", "struct _gpacket_t *|gpacket_t *|_gpacket_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p__ip_packet_t	ip_wrap.c	/^static swig_type_info _swigt__p__ip_packet_t = {"_p__ip_packet_t", "struct _ip_packet_t *|_ip_packet_t *|ip_packet_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p__pkt_data_t	ip_wrap.c	/^static swig_type_info _swigt__p__pkt_data_t = {"_p__pkt_data_t", "struct _pkt_data_t *|_pkt_data_t *|pkt_data_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p__pkt_frame_t	ip_wrap.c	/^static swig_type_info _swigt__p__pkt_frame_t = {"_p__pkt_frame_t", "struct _pkt_frame_t *|_pkt_frame_t *|pkt_frame_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_char	ip_wrap.c	/^static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_pkt_data_t_header	ip_wrap.c	/^static swig_type_info _swigt__p_pkt_data_t_header = {"_p_pkt_data_t_header", "pkt_data_t_header *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_pktcore_t	ip_wrap.c	/^static swig_type_info _swigt__p_pktcore_t = {"_p_pktcore_t", "pktcore_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_uint16_t	ip_wrap.c	/^static swig_type_info _swigt__p_uint16_t = {"_p_uint16_t", "uint16_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_uint8_t	ip_wrap.c	/^static swig_type_info _swigt__p_uint8_t = {"_p_uint8_t", "uint8_t *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_unsigned_char	ip_wrap.c	/^static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *", 0, 0, (void*)0, 0};$/;"	v	file:
+_swigt__p_ushort	ip_wrap.c	/^static swig_type_info _swigt__p_ushort = {"_p_ushort", "ushort *", 0, 0, (void*)0, 0};$/;"	v	file:
+_udp_echo_reply	udp.py	/^def _udp_echo_reply(packet):$/;"	f
+activeTarget	info.c	/^void activeTarget(char *name)$/;"	f
+addClassDef	classifier.c	/^int addClassDef(classlist_t *clas, char *cname)$/;"	f
+addEntry	flowtable.c	/^ int addEntry()$/;"	f
+addFilterRule	filter.c	/^int addFilterRule(filtertab_t *ft, int type, char *cname)$/;"	f
+addMTUEntry	mtu.c	/^void addMTUEntry(mtu_entry_t mtable[], int index, $/;"	f
+addPktCoreQueue	packetcore.c	/^int addPktCoreQueue(pktcore_t *pcore, char *qname, char *qdisc, double qweight, double delay_us, int nslots)$/;"	f
+addProtocol	flowtable.c	/^int addProtocol(flowtable_t *flowtable, char *protname)$/;"	f
+addRED	qdisc.c	/^void addRED(qdisctable_t *qdiscs, double minl, double maxl, double pmax)$/;"	f
+addRouteEntry	routetable.c	/^void addRouteEntry(route_entry_t route_tbl[], uchar* nwork, uchar* nmask, uchar* nhop, int interface)$/;"	f
+addSimplePolicy	qdisc.c	/^void addSimplePolicy(qdisctable_t *qdiscs, char *name)$/;"	f
+addTarget	info.c	/^void addTarget(char *name, simplequeue_t *tgrt)$/;"	f
+addprotCmd	cli.c	/^void addprotCmd()$/;"	f
+arpCmd	cli.c	/^void arpCmd()$/;"	f
+arp_cache	gnet.c	/^arp_entry_t arp_cache[ARP_CACHE_SIZE];$/;"	v
+as_buffer	ip_wrap.c	/^  PyBufferProcs as_buffer;$/;"	m	struct:__anon1	file:
+as_mapping	ip_wrap.c	/^  PyMappingMethods as_mapping;$/;"	m	struct:__anon1	file:
+as_number	ip_wrap.c	/^  PyNumberMethods as_number;$/;"	m	struct:__anon1	file:
+as_sequence	ip_wrap.c	/^  PySequenceMethods as_sequence;$/;"	m	struct:__anon1	file:
+assemble	udp.py	/^def assemble(packet, cksum=1):$/;"	f
+buf_replace_indx	arp.c	/^int buf_replace_indx;            \/\/ overwrite this element if no free space in ARP buffer$/;"	v
+cast	ip_wrap.c	/^  struct swig_cast_info  *cast;			\/* linked list of types that can cast into this type *\/$/;"	m	struct:swig_type_info	typeref:struct:swig_type_info::swig_cast_info	file:
+cast_initial	ip_wrap.c	/^  swig_cast_info         **cast_initial;	\/* Array of initially generated casting structures *\/$/;"	m	struct:swig_module_info	file:
+changeInterfaceMTU	gnet.c	/^int changeInterfaceMTU(int index, int new_mtu)$/;"	f
+charbufferproc	ip_wrap.c	/^typedef getcharbufferproc charbufferproc;$/;"	t	file:
+checkFlowTable	flowtable.c	/^int checkFlowTable(flowtable_t *flowtable, pcorepktframe_t pktframe, char *action)$/;"	f
+checksum	utils.c	/^ushort checksum(uchar *buf, int iwords)$/;"	f
+classCmd	cli.c	/^void classCmd()$/;"	f
+classifier	grouter.c	/^classlist_t *classifier;$/;"	v
+cli_map	cli.c	/^Map *cli_map;$/;"	v
+cli_mapper	cli.c	/^Mapper *cli_mapper;$/;"	v
+clientdata	ip_wrap.c	/^  void                    *clientdata;		\/* Language specific module data *\/$/;"	m	struct:swig_module_info	file:
+clientdata	ip_wrap.c	/^  void                   *clientdata;		\/* language specific type data *\/$/;"	m	struct:swig_type_info	file:
+compareIP2Spec	classifier.c	/^int compareIP2Spec(uchar ip[], ip_spec_t *ips)$/;"	f
+compareIPUsingMask	utils.c	/^int compareIPUsingMask(uchar *ip_addr, uchar *network, uchar *netmask)$/;"	f
+compareProt2Spec	classifier.c	/^int compareProt2Spec(int prot, int pspec)$/;"	f
+compareTos2Spec	classifier.c	/^int compareTos2Spec(int tos, int tspec)$/;"	f
+computeAvgByteRate	simplequeue.c	/^void computeAvgByteRate(simplequeue_t *sq, int size)$/;"	f
+consoleCmd	cli.c	/^void consoleCmd()$/;"	f
+consoleGetState	console.c	/^void consoleGetState()$/;"	f
+consoleHandler	console.c	/^void consoleHandler(void *ptr)$/;"	f
+consoleInit	console.c	/^void consoleInit(char *rpath, char *rname)$/;"	f
+consoleRestart	console.c	/^void consoleRestart(char *rpath, char *rname)$/;"	f
+console_threadid	console.c	/^pthread_t console_threadid;$/;"	v
+console_threadid	vpl.c	/^pthread_t console_threadid;$/;"	v
+consoleid	console.c	/^int consoleid;                        \/\/ FIFO id $/;"	v
+consoleid	vpl.c	/^int consoleid;                        \/\/ FIFO id$/;"	v
+consolepath	console.c	/^char consolepath[MAX_NAME_LEN];$/;"	v
+consolepath	vpl.c	/^char consolepath[MAX_NAME_LEN];$/;"	v
+consoleq	console.c	/^simplequeue_t *consoleq;$/;"	v
+consoleq	vpl.c	/^simplequeue_t *consoleq;$/;"	v
+converter	ip_wrap.c	/^  swig_converter_func     converter;		\/* function to cast the void pointers *\/$/;"	m	struct:swig_cast_info	file:
+copy2Queue	simplequeue.c	/^int copy2Queue(simplequeue_t *msgqueue, void *data, int size)$/;"	f
+createAllDevices	gnet.c	/^int createAllDevices(devicearray_t *dev)$/;"	f
+createClassifier	classifier.c	/^classlist_t *createClassifier()$/;"	f
+createFilter	filter.c	/^filtertab_t *createFilter(classlist_t *cl, int state)$/;"	f
+createPacketCore	packetcore.c	/^pktcore_t *createPacketCore(char *rname, simplequeue_t *outQ, simplequeue_t *workQ)$/;"	f
+createPktCoreCnameCache	packetcore.c	/^pktcorecnamecache_t *createPktCoreCnameCache()$/;"	f
+createSimpleQueue	simplequeue.c	/^simplequeue_t *createSimpleQueue(char *name, int maxsize, int blockonwrite,$/;"	f
+cur_line	cli.c	/^static char *cur_line = (char *)NULL;       \/\/ static variable for holding the line$/;"	v	file:
+cvar	Cip.py	/^cvar = _Cip.cvar$/;"	v
+dcast	ip_wrap.c	/^  swig_dycast_func        dcast;		\/* dynamic cast function down a hierarchy *\/$/;"	m	struct:swig_type_info	file:
+deactiveTarget	info.c	/^void deactiveTarget(char *name)$/;"	f
+deallocateFragments	fragment.c	/^void deallocateFragments(gpacket_t **pkt_frags, int num_frags)$/;"	f
+delClassDef	classifier.c	/^int delClassDef(classlist_t *clas, char *cname)$/;"	f
+delFilterRule	filter.c	/^void delFilterRule(filtertab_t *ft, int rulenum)$/;"	f
+delPktCoreQueue	packetcore.c	/^int delPktCoreQueue(pktcore_t *pcore, char *qname)$/;"	f
+delargs	ip_wrap.c	/^  int delargs;$/;"	m	struct:__anon2	file:
+delayedServerCall	gnet.c	/^void *delayedServerCall(void *arg)$/;"	f
+deleteCnameCache	packetcore.c	/^int deleteCnameCache(pktcorecnamecache_t *pcache, char *cname)$/;"	f
+deleteEntry	flowtable.c	/^int deleteEntry()$/;"	f
+deleteInterface	gnet.c	/^int deleteInterface(int indx)$/;"	f
+deleteMTUEntry	mtu.c	/^void deleteMTUEntry(mtu_entry_t mtable[], int index)$/;"	f
+deleteRouteEntryByIndex	routetable.c	/^void deleteRouteEntryByIndex(route_entry_t route_tbl[], int i)$/;"	f
+deleteRouteEntryByInterface	routetable.c	/^void deleteRouteEntryByInterface(route_entry_t route_tbl[], int interface)$/;"	f
+destroy	ip_wrap.c	/^  PyObject *destroy;$/;"	m	struct:__anon2	file:
+destroyInterface	gnet.c	/^int destroyInterface(interface_t *iface)$/;"	f
+destroyInterfaceByIndex	gnet.c	/^int destroyInterfaceByIndex(int indx)$/;"	f
+destroySimpleQueue	simplequeue.c	/^int destroySimpleQueue(simplequeue_t *msgqueue)$/;"	f
+devarray	gnet.c	/^devicearray_t devarray;$/;"	v
+dict	ip_wrap.c	/^  PyObject *dict;$/;"	m	struct:__anon3	file:
+disassemble	udp.py	/^def disassemble(buffer, cksum=1):$/;"	f
+downInterface	gnet.c	/^int downInterface(int index)$/;"	f
+downThisInterface	gnet.c	/^int downThisInterface(interface_t *iface)$/;"	f
+dst	ip_wrap.c	/^  unsigned char dst[6];                                                                  $/;"	m	struct:__anon5	file:
+dummyFunction	cli.c	/^void dummyFunction(int sign)$/;"	f
+dup_addr	vpl.c	/^struct sockaddr_un *dup_addr(struct sockaddr_un *sock)$/;"	f
+duplicatePacket	message.c	/^gpacket_t *duplicatePacket(gpacket_t *inpkt)$/;"	f
+dvalue	ip_wrap.c	/^  double dvalue;$/;"	m	struct:swig_const_info	file:
+filter	grouter.c	/^filtertab_t *filter;$/;"	v
+filterCmd	cli.c	/^void filterCmd()$/;"	f
+filteredPacket	filter.c	/^int filteredPacket(filtertab_t *ft, gpacket_t *in_pkt)$/;"	f
+findAllInterfaceIPs	mtu.c	/^int findAllInterfaceIPs(mtu_entry_t mtable[], uchar buf[][4])$/;"	f
+findDeviceDriver	gnet.c	/^device_t *findDeviceDriver(char *dev_type)$/;"	f
+findInterface	gnet.c	/^interface_t *findInterface(int indx)$/;"	f
+findInterfaceIP	mtu.c	/^int findInterfaceIP(mtu_entry_t mtable[], int index, $/;"	f
+findMTU	mtu.c	/^int findMTU(mtu_entry_t mtable[], int index)$/;"	f
+findPacketSize	ethernet.c	/^int findPacketSize(pkt_data_t *pkt)$/;"	f
+findRouteEntry	routetable.c	/^int findRouteEntry(route_entry_t route_tbl[], uchar *ip_addr, uchar *nhop, int *ixface)$/;"	f
+flushFilter	filter.c	/^void flushFilter(filtertab_t *ft)$/;"	f
+fragmentIPPacket	fragment.c	/^int fragmentIPPacket(gpacket_t *pkt, gpacket_t **frags)$/;"	f
+freefunc	ip_wrap.c	/^typedef destructor freefunc;$/;"	t	file:
+fromEthernetDev	ethernet.c	/^void* fromEthernetDev(void *arg)$/;"	f
+fromTapDev	tap.c	/^void* fromTapDev(void *arg)$/;"	f
+gAtoi	utils.c	/^int gAtoi(char *str)$/;"	f
+gHtonl	utils.c	/^unsigned char *gHtonl(unsigned char tbuf[], unsigned char val[])$/;"	f
+gNtohl	utils.c	/^unsigned char *gNtohl(unsigned char tbuf[], unsigned char val[])$/;"	f
+getARPCacheKey	gnet.c	/^int getARPCacheKey(uchar *ip)$/;"	f
+getAvgByteRate	simplequeue.c	/^double getAvgByteRate(simplequeue_t *sq)$/;"	f
+getClassDef	classifier.c	/^classdef_t *getClassDef(classlist_t *clas, char *cname)$/;"	f
+getCmd	cli.c	/^void getCmd()$/;"	f
+getCoreQueue	packetcore.c	/^simplequeue_t *getCoreQueue(pktcore_t *pcore, char *qname)$/;"	f
+getDevType	cli.c	/^int getDevType(char *str)$/;"	f
+getGPacketString	Cip.py	/^def getGPacketString(*args):$/;"	f
+getGPacketString	Cip.py	/^getGPacketString = _Cip.getGPacketString$/;"	v
+getGPacketString	ip_wrap.c	/^	PyObject* getGPacketString(gpacket_t *gpacket){$/;"	f
+getNextInterfaceID	gnet.c	/^int getNextInterfaceID(void)$/;"	f
+getTimeMode	info.c	/^int getTimeMode()$/;"	f
+getUDPPacketString	Cip.py	/^def getUDPPacketString(*args):$/;"	f
+getUDPPacketString	Cip.py	/^getUDPPacketString = _Cip.getUDPPacketString$/;"	v
+getUDPPacketString	ip_wrap.c	/^	PyObject* getUDPPacketString(gpacket_t *gpacket){$/;"	f
+getUpdateInterval	info.c	/^int getUpdateInterval()$/;"	f
+get_attr	ip_wrap.c	/^    PyObject *(*get_attr)(void);       \/* Return the current value *\/$/;"	m	struct:swig_globalvar	file:
+get_name	udp.py	/^	def get_name():$/;"	m	class:PCBCore
+getqdiscEntry	qdisc.c	/^qentrytype_t *getqdiscEntry(qdisctable_t *qdiscs, char *name)$/;"	f
+gpacket_t	Cip.py	/^class gpacket_t(_object):$/;"	c
+gpacket_t_swigregister	Cip.py	/^gpacket_t_swigregister = _Cip.gpacket_t_swigregister$/;"	v
+grouter_optab	grouter.c	/^Option grouter_optab[] =$/;"	v
+haltCmd	cli.c	/^void haltCmd()$/;"	f
+haltInterfaces	gnet.c	/^void haltInterfaces()$/;"	f
+helpCmd	cli.c	/^void helpCmd()$/;"	f
+iconf	info.c	/^info_config_t  iconf;$/;"	v
+ifconfigCmd	cli.c	/^void ifconfigCmd()$/;"	f
+implicitconv	ip_wrap.c	/^  int implicitconv;$/;"	m	struct:__anon2	file:
+infoGetState	info.c	/^void infoGetState()$/;"	f
+infoHandler	info.c	/^void infoHandler()$/;"	f
+infoInit	info.c	/^void infoInit(char *rpath, char *rname)$/;"	f
+infoList	info.c	/^void infoList()$/;"	f
+info_threadid	vpl.c	/^pthread_t info_threadid;$/;"	v
+infoid	vpl.c	/^int infoid;$/;"	v
+infopath	vpl.c	/^char infopath[MAX_NAME_LEN];$/;"	v
+infoq	vpl.c	/^simplequeue_t *infoq;$/;"	v
+initFlowTable	flowtable.c	/^int initFlowTable(flowtable_t *flowtable)$/;"	f
+initPhysicalLayer	gnet.c	/^void initPhysicalLayer(char *config_dir, char *rname)$/;"	f
+initQDiscTable	qdisc.c	/^qdisctable_t *initQDiscTable()$/;"	f
+insertCnameCache	packetcore.c	/^void insertCnameCache(pktcorecnamecache_t *pcache, char *cname)$/;"	f
+insertIPSpec	classifier.c	/^int insertIPSpec(classlist_t *clas, char *cname, int srcside, ip_spec_t *ipspec)$/;"	f
+insertPortRangeSpec	classifier.c	/^int insertPortRangeSpec(classlist_t *clas, char *cname, int srcside, port_range_t *prspec)$/;"	f
+insertProtSpec	classifier.c	/^int insertProtSpec(classlist_t *clas, char *cname, int prot)$/;"	f
+insertTOSSpec	classifier.c	/^int insertTOSSpec(classlist_t *clas, char *cname, int tos)$/;"	f
+ip_ltostr	udp.py	/^def ip_ltostr(iplist):$/;"	f
+ip_packet_t	Cip.py	/^class ip_packet_t(_object):$/;"	c
+ip_packet_t_swigregister	Cip.py	/^ip_packet_t_swigregister = _Cip.ip_packet_t_swigregister$/;"	v
+isInSameNetwork	ip.c	/^int isInSameNetwork(uchar *ip_addr1, uchar *ip_addr2)$/;"	f
+isPIDAlive	grouter.c	/^int isPIDAlive(int pid)$/;"	f
+isRuleMatching	classifier.c	/^int isRuleMatching(classdef_t *cdef, gpacket_t *in_pkt)$/;"	f
+klass	ip_wrap.c	/^  PyObject *klass;$/;"	m	struct:__anon2	file:
+lenfunc	ip_wrap.c	/^typedef inquiry lenfunc;$/;"	t	file:
+lookupARPCache	gnet.c	/^int lookupARPCache(uchar *ip_addr, uchar *mac_addr)$/;"	f
+lookupQDisc	qdisc.c	/^int lookupQDisc(qdisctable_t *qdiscs, char *name)$/;"	f
+lvalue	ip_wrap.c	/^  long lvalue;$/;"	m	struct:swig_const_info	file:
+main	grouter.c	/^int main(int ac, char *av[])$/;"	f
+makePIDFile	grouter.c	/^int makePIDFile(char *rname, char rpath[])$/;"	f
+modifyQueueDiscipline	packetcore.c	/^void modifyQueueDiscipline(pktcore_t *pcore, char *qname, char *qdisc)$/;"	f
+modifyQueueWeight	packetcore.c	/^void modifyQueueWeight(pktcore_t *pcore, char *qname, double weight)$/;"	f
+moveRule	filter.c	/^void moveRule(filtertab_t *ft, int rulenum, char *dir)$/;"	f
+moveRuleBottom	filter.c	/^void moveRuleBottom(filtertab_t *ft, int rulenum)$/;"	f
+moveRuleDown	filter.c	/^void moveRuleDown(filtertab_t *ft, int rulenum)$/;"	f
+moveRuleTop	filter.c	/^void moveRuleTop(filtertab_t *ft, int rulenum)$/;"	f
+moveRuleUp	filter.c	/^void moveRuleUp(filtertab_t *ft, int rulenum)$/;"	f
+name	ip_wrap.c	/^    char       *name;                  \/* Name of global variable *\/$/;"	m	struct:swig_globalvar	file:
+name	ip_wrap.c	/^  PyObject *name, *slots;$/;"	m	struct:__anon1	file:
+name	ip_wrap.c	/^  char *name;$/;"	m	struct:swig_const_info	file:
+name	ip_wrap.c	/^  const char             *name;			\/* mangled name of this type *\/$/;"	m	struct:swig_type_info	file:
+ncCmdPy	udp.py	/^	def ncCmdPy():	$/;"	m	class:Ncer
+ncCmdPy	udp.py	/^def ncCmdPy():$/;"	f
+needFragmentation	fragment.c	/^int needFragmentation(gpacket_t *pkt)$/;"	f
+net2updh	udp.py	/^def net2updh(s):$/;"	f
+netarray	gnet.c	/^interface_array_t netarray;$/;"	v
+newInterfaceStructure	gnet.c	/^interface_t *newInterfaceStructure(char *vsock_name, char *device,$/;"	f
+new_addr	vpl.c	/^struct sockaddr_un *new_addr(void *name, int len)$/;"	f
+newargs	ip_wrap.c	/^  PyObject *newargs;$/;"	m	struct:__anon2	file:
+newraw	ip_wrap.c	/^  PyObject *newraw;$/;"	m	struct:__anon2	file:
+next	ip_wrap.c	/^    struct swig_globalvar *next;$/;"	m	struct:swig_globalvar	typeref:struct:swig_globalvar::swig_globalvar	file:
+next	ip_wrap.c	/^  PyObject *next;$/;"	m	struct:__anon3	file:
+next	ip_wrap.c	/^  struct swig_cast_info  *next;			\/* pointer to next cast in linked list *\/$/;"	m	struct:swig_cast_info	typeref:struct:swig_cast_info::swig_cast_info	file:
+next	ip_wrap.c	/^  struct swig_module_info *next;		\/* Pointer to next element in circularly linked list *\/$/;"	m	struct:swig_module_info	typeref:struct:swig_module_info::swig_module_info	file:
+options	grouter.c	/^Options options[1] = {{ prog_options_table, grouter_optab }};$/;"	v
+own	ip_wrap.c	/^  int own;$/;"	m	struct:__anon3	file:
+owndata	ip_wrap.c	/^  int                    owndata;		\/* flag if the structure owns the clientdata *\/$/;"	m	struct:swig_type_info	file:
+pArg	ip.c	/^PyObject *pFunc, *pResult, *pArg, *pPcore;$/;"	v
+pFunc	ip.c	/^PyObject *pFunc, *pResult, *pArg, *pPcore;$/;"	v
+pPcore	ip.c	/^PyObject *pFunc, *pResult, *pArg, *pPcore;$/;"	v
+pResult	ip.c	/^PyObject *pFunc, *pResult, *pArg, *pPcore;$/;"	v
+pUDPGlobalDict	grouter.c	/^PyObject *pUDPMod, *pUDPGlobalDict;$/;"	v
+pUDPMod	grouter.c	/^PyObject *pUDPMod, *pUDPGlobalDict;$/;"	v
+pack	ip_wrap.c	/^  void *pack;$/;"	m	struct:__anon4	file:
+packetProcessor	packetcore.c	/^void *packetProcessor(void *pc)$/;"	f
+parseACLICmd	cli.c	/^void parseACLICmd(char *str)$/;"	f
+parseIPSpec	cli.c	/^ip_spec_t *parseIPSpec(char *instr)$/;"	f
+parsePortRangeSpec	cli.c	/^port_range_t *parsePortRangeSpec(char *instr)$/;"	f
+pcb_bind_socket	udp.py	/^	def pcb_bind_socket(port):$/;"	m	class:PCBCore
+pcb_close_socket	udp.py	/^	def pcb_close_socket(port):$/;"	m	class:PCBCore
+pcb_get_packet	udp.py	/^	def pcb_get_packet(port):$/;"	m	class:PCBCore
+pcore	grouter.c	/^pktcore_t *pcore;$/;"	v
+peekQueue	simplequeue.c	/^int peekQueue(simplequeue_t *msgqueue, void **data, int *size)$/;"	f
+pingCmd	cli.c	/^void pingCmd()$/;"	f
+pkt_data_t	Cip.py	/^class pkt_data_t(_object):$/;"	c
+pkt_data_t_header	Cip.py	/^class pkt_data_t_header(_object):$/;"	c
+pkt_data_t_header	ip_wrap.c	/^} pkt_data_t_header;$/;"	t	typeref:struct:__anon5	file:
+pkt_data_t_header_swigregister	Cip.py	/^pkt_data_t_header_swigregister = _Cip.pkt_data_t_header_swigregister$/;"	v
+pkt_data_t_swigregister	Cip.py	/^pkt_data_t_swigregister = _Cip.pkt_data_t_swigregister$/;"	v
+pkt_frame_t	Cip.py	/^class pkt_frame_t(_object):$/;"	c
+pkt_frame_t_swigregister	Cip.py	/^pkt_frame_t_swigregister = _Cip.pkt_frame_t_swigregister$/;"	v
+prev	ip_wrap.c	/^  struct swig_cast_info  *prev;			\/* pointer to the previous cast *\/$/;"	m	struct:swig_cast_info	typeref:struct:swig_cast_info::swig_cast_info	file:
+printARPCache	gnet.c	/^void printARPCache(void)$/;"	f
+printARPPacket	message.c	/^void printARPPacket(gpacket_t *msg)$/;"	f
+printAllQueues	packetcore.c	/^void printAllQueues(pktcore_t *pcore)$/;"	f
+printClassDef	classifier.c	/^void printClassDef(classdef_t *cr)$/;"	f
+printClassifier	classifier.c	/^void printClassifier(classlist_t *cl)$/;"	f
+printEthernetHeader	message.c	/^int printEthernetHeader(gpacket_t *msg)$/;"	f
+printFilter	filter.c	/^void printFilter(filtertab_t *ft)$/;"	f
+printFilterStats	filter.c	/^void printFilterStats(filtertab_t *ft)$/;"	f
+printGPacket	message.c	/^void printGPacket(gpacket_t *msg, int level, char *routine)$/;"	f
+printGPktFrame	message.c	/^void printGPktFrame(gpacket_t *msg, char *routine)$/;"	f
+printGPktPayload	message.c	/^void printGPktPayload(gpacket_t *msg, int level)$/;"	f
+printHorLine	gnet.c	/^void printHorLine(int mode)$/;"	f
+printICMPPacket	message.c	/^void printICMPPacket(gpacket_t *msg)$/;"	f
+printIPPacket	message.c	/^int printIPPacket(gpacket_t *msg)$/;"	f
+printInterfaces	gnet.c	/^void printInterfaces(int mode)$/;"	f
+printMTUTable	mtu.c	/^void printMTUTable(mtu_entry_t mtable[])$/;"	f
+printOneQueue	packetcore.c	/^void printOneQueue(pktcore_t *pcore, char *qname)$/;"	f
+printQdiscs	qdisc.c	/^void printQdiscs(qdisctable_t *qdiscs)$/;"	f
+printQueueStats	packetcore.c	/^void printQueueStats(pktcore_t *pcore)$/;"	f
+printRouteTable	routetable.c	/^void printRouteTable(route_entry_t route_tbl[])$/;"	f
+printSepLine	message.c	/^void printSepLine(char *start, char *end, int count, char sep)$/;"	f
+printSimpleQueue	simplequeue.c	/^void printSimpleQueue(simplequeue_t *msgqueue)$/;"	f
+printTCPPacket	message.c	/^void printTCPPacket(gpacket_t *msg)$/;"	f
+printTimeMode	info.c	/^void printTimeMode()$/;"	f
+printTimeVal	utils.c	/^void printTimeVal(struct timeval *v)$/;"	f
+printUDPPacket	message.c	/^void printUDPPacket(gpacket_t *msg)$/;"	f
+prot	ip_wrap.c	/^  ushort prot;                                 $/;"	m	struct:__anon5	file:
+pstat	icmp.c	/^pingstat_t pstat;$/;"	v
+ptr	ip_wrap.c	/^  void *ptr;$/;"	m	struct:__anon3	file:
+ptype	ip_wrap.c	/^  swig_type_info **ptype;$/;"	m	struct:swig_const_info	file:
+putARPCache	gnet.c	/^void putARPCache(uchar *ip_addr, uchar *mac_addr)$/;"	f
+pvalue	ip_wrap.c	/^  void   *pvalue;$/;"	m	struct:swig_const_info	file:
+pytype	ip_wrap.c	/^  PyTypeObject *pytype;$/;"	m	struct:__anon2	file:
+qdiscCmd	cli.c	/^void qdiscCmd()$/;"	f
+queueCmd	cli.c	/^void queueCmd()$/;"	f
+rconfig	grouter.c	/^router_config rconfig = {.router_name=NULL, .gini_home=NULL, .cli_flag=0, .config_file=NULL, .config_dir=NULL, .ghandler=0, .clihandler= 0, .scheduler=0, .worker=0, .schedcycle=10000};$/;"	v
+readQueue	simplequeue.c	/^int readQueue(simplequeue_t *msgqueue, void **data, int *size)$/;"	f
+readbufferproc	ip_wrap.c	/^typedef getreadbufferproc readbufferproc;$/;"	t	file:
+recv_packet	udp.py	/^	def recv_packet(pkt):$/;"	m	class:PCBCore
+redefineSignalHandler	utils.c	/^void redefineSignalHandler(int sigid, void (*my_func)(int signum))$/;"	f
+registerCLI	cli.c	/^void registerCLI(char *key, void (*handler)(),$/;"	f
+removePIDFile	grouter.c	/^void removePIDFile()$/;"	f
+rlGets	cli.c	/^char *rlGets(int online)$/;"	f
+roundRobinScheduler	roundrobin.c	/^void *roundRobinScheduler(void *pc)$/;"	f
+routeCmd	cli.c	/^void routeCmd()$/;"	f
+route_tbl	ip.c	/^route_entry_t route_tbl[MAX_ROUTES];       	\/\/ routing table$/;"	v
+rtbl_replace_indx	routetable.c	/^int rtbl_replace_indx;         \/\/ indicate which entry in routing table should be replaced$/;"	v
+segcountproc	ip_wrap.c	/^typedef getsegcountproc segcountproc;$/;"	t	file:
+setCmd	cli.c	/^void setCmd()$/;"	f
+setTimeMode	info.c	/^void setTimeMode(int rawmode)$/;"	f
+setUpdateInterval	info.c	/^void setUpdateInterval(int interval)$/;"	f
+set_attr	ip_wrap.c	/^    int       (*set_attr)(PyObject *); \/* Set the value *\/$/;"	m	struct:swig_globalvar	file:
+setupProgram	grouter.c	/^void setupProgram(int ac, char *av[])$/;"	f
+shutdownRouter	grouter.c	/^void shutdownRouter()$/;"	f
+size	ip_wrap.c	/^  size_t                 size;		        \/* Number of types in this module *\/$/;"	m	struct:swig_module_info	file:
+size	ip_wrap.c	/^  size_t size;$/;"	m	struct:__anon4	file:
+slots	ip_wrap.c	/^  PyObject *name, *slots;$/;"	m	struct:__anon1	file:
+socket_count	udp.py	/^	socket_count = 0$/;"	v	class:PCBCore
+sourceCmd	cli.c	/^void sourceCmd()$/;"	f
+spolicyCmd	cli.c	/^void spolicyCmd()$/;"	f
+src	ip_wrap.c	/^  unsigned char src[6];                                                             $/;"	m	struct:__anon5	file:
+ssizeargfunc	ip_wrap.c	/^typedef intargfunc ssizeargfunc;$/;"	t	file:
+ssizeobjargproc	ip_wrap.c	/^typedef intobjargproc ssizeobjargproc;$/;"	t	file:
+ssizessizeargfunc	ip_wrap.c	/^typedef intintargfunc ssizessizeargfunc;$/;"	t	file:
+ssizessizeobjargproc	ip_wrap.c	/^typedef intintobjargproc ssizessizeobjargproc;$/;"	t	file:
+str	ip_wrap.c	/^  const char             *str;			\/* human readable name of this type *\/$/;"	m	struct:swig_type_info	file:
+subTimeVal	utils.c	/^double subTimeVal(struct timeval *v2, struct timeval *v1)$/;"	f
+swig_cast_info	ip_wrap.c	/^typedef struct swig_cast_info {$/;"	s	file:
+swig_cast_info	ip_wrap.c	/^} swig_cast_info;$/;"	t	typeref:struct:swig_cast_info	file:
+swig_cast_initial	ip_wrap.c	/^static swig_cast_info *swig_cast_initial[] = {$/;"	v	file:
+swig_const_info	ip_wrap.c	/^typedef struct swig_const_info {$/;"	s	file:
+swig_const_info	ip_wrap.c	/^} swig_const_info;$/;"	t	typeref:struct:swig_const_info	file:
+swig_const_table	ip_wrap.c	/^static swig_const_info swig_const_table[] = {$/;"	v	file:
+swig_converter_func	ip_wrap.c	/^typedef void *(*swig_converter_func)(void *, int *);$/;"	t	file:
+swig_dycast_func	ip_wrap.c	/^typedef struct swig_type_info *(*swig_dycast_func)(void **);$/;"	t	typeref:struct:swig_dycast_func	file:
+swig_globalvar	ip_wrap.c	/^  typedef struct swig_globalvar {$/;"	s	file:
+swig_globalvar	ip_wrap.c	/^  } swig_globalvar;$/;"	t	typeref:struct:swig_globalvar	file:
+swig_import_helper	Cip.py	/^    def swig_import_helper():$/;"	f
+swig_module	ip_wrap.c	/^static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};$/;"	v	file:
+swig_module_info	ip_wrap.c	/^typedef struct swig_module_info {$/;"	s	file:
+swig_module_info	ip_wrap.c	/^} swig_module_info;$/;"	t	typeref:struct:swig_module_info	file:
+swig_owntype	ip_wrap.c	1154;"	d	file:
+swig_this	ip_wrap.c	/^static PyObject *swig_this = NULL;$/;"	v	file:
+swig_type_info	ip_wrap.c	/^typedef struct swig_type_info {$/;"	s	file:
+swig_type_info	ip_wrap.c	/^} swig_type_info;$/;"	t	typeref:struct:swig_type_info	file:
+swig_type_initial	ip_wrap.c	/^static swig_type_info *swig_type_initial[] = {$/;"	v	file:
+swig_types	ip_wrap.c	/^static swig_type_info *swig_types[12];$/;"	v	file:
+swig_varlink_dealloc	ip_wrap.c	/^  swig_varlink_dealloc(swig_varlinkobject *v) {$/;"	f
+swig_varlink_getattr	ip_wrap.c	/^  swig_varlink_getattr(swig_varlinkobject *v, char *n) {$/;"	f
+swig_varlink_print	ip_wrap.c	/^  swig_varlink_print(swig_varlinkobject *v, FILE *fp, int SWIGUNUSEDPARM(flags)) {$/;"	f
+swig_varlink_setattr	ip_wrap.c	/^  swig_varlink_setattr(swig_varlinkobject *v, char *n, PyObject *p) {$/;"	f
+swig_varlink_str	ip_wrap.c	/^  swig_varlink_str(swig_varlinkobject *v) {$/;"	f
+swig_varlink_type	ip_wrap.c	/^  swig_varlink_type(void) {$/;"	f
+swig_varlinkobject	ip_wrap.c	/^  typedef struct swig_varlinkobject {$/;"	s	file:
+swig_varlinkobject	ip_wrap.c	/^  } swig_varlinkobject;$/;"	t	typeref:struct:swig_varlinkobject	file:
+swigobject_methods	ip_wrap.c	/^swigobject_methods[] = {$/;"	v	file:
+tap_connect	tapio.c	/^vpl_data_t *tap_connect(char *sock_name)$/;"	f
+tap_recvfrom	tapio.c	/^int tap_recvfrom(vpl_data_t *vpl, void *buf, int len)$/;"	f
+tap_sendto	tapio.c	/^int tap_sendto(vpl_data_t *vpl, void *buf, int len)$/;"	f
+tbl_replace_indx	arp.c	/^int tbl_replace_indx;            \/\/ overwrite this element if no free space in ARP table$/;"	v
+testSimpleQueue	simplequeue.c	/^void testSimpleQueue()$/;"	f
+thread_recv_from	udp.py	/^	def thread_recv_from(self):$/;"	m	class:Ncer
+toEthernetDev	ethernet.c	/^void *toEthernetDev(void *arg)$/;"	f
+toTapDev	tap.c	/^void *toTapDev(void *arg)$/;"	f
+ty	ip_wrap.c	/^  swig_type_info *ty;$/;"	m	struct:__anon3	file:
+ty	ip_wrap.c	/^  swig_type_info *ty;$/;"	m	struct:__anon4	file:
+type	ip_wrap.c	/^  PyTypeObject type;$/;"	m	struct:__anon1	file:
+type	ip_wrap.c	/^  int type;$/;"	m	struct:swig_const_info	file:
+type	ip_wrap.c	/^  swig_type_info         *type;			\/* pointer to type that is equivalent to this type *\/$/;"	m	struct:swig_cast_info	file:
+type_initial	ip_wrap.c	/^  swig_type_info         **type_initial;	\/* Array of initially generated type structures *\/$/;"	m	struct:swig_module_info	file:
+types	ip_wrap.c	/^  swig_type_info         **types;		\/* Array of pointers to swig_type_info structures that are in this module *\/$/;"	m	struct:swig_module_info	file:
+uchar	ip_wrap.c	3022;"	d	file:
+udpcksum	udp.py	/^def udpcksum(s):$/;"	f
+udph2net	udp.py	/^def udph2net(s):$/;"	f
+upInterface	gnet.c	/^int upInterface(int index)$/;"	f
+upThisInterface	gnet.c	/^int upThisInterface(interface_t *iface)$/;"	f
+ushort	ip_wrap.c	3023;"	d	file:
+vars	ip_wrap.c	/^    swig_globalvar *vars;$/;"	m	struct:swig_varlinkobject	file:
+versionCmd	cli.c	/^void versionCmd()$/;"	f
+vpl_accept_connect	vpl.c	/^int vpl_accept_connect(vpl_data_t *v)$/;"	f
+vpl_connect	vpl.c	/^vpl_data_t *vpl_connect(char *vsock_name)$/;"	f
+vpl_create_server	vpl.c	/^vpl_data_t *vpl_create_server(char *name)$/;"	f
+vpl_init	vpl.c	/^void vpl_init(char *rpath, char *rname)$/;"	f
+vpl_recvfrom	vpl.c	/^int vpl_recvfrom(vpl_data_t *vpl, void *buf, int len)$/;"	f
+vpl_sendto	vpl.c	/^int vpl_sendto(vpl_data_t *vpl, void *buf, int len)$/;"	f
+wait4thread	grouter.c	/^void wait4thread(pthread_t threadid)$/;"	f
+weightedFairQueuer	wfq.c	/^int weightedFairQueuer(pktcore_t *pcore, gpacket_t *in_pkt, int pktsize, char *qkey)$/;"	f
+weightedFairScheduler	wfq.c	/^void *weightedFairScheduler(void *pc)$/;"	f
+writeQueue	simplequeue.c	/^int writeQueue(simplequeue_t *msgqueue, void *data, int size)$/;"	f
+write_pcapheader	console.c	/^int write_pcapheader(int fid)$/;"	f
+write_pcappacket	console.c	/^int write_pcappacket(int fid, void *buf, int len)$/;"	f
+write_to_fifo	info.c	/^int write_to_fifo(int fid, char *buf, int len)$/;"	f
+writebufferproc	ip_wrap.c	/^typedef getwritebufferproc writebufferproc;$/;"	t	file:

@@ -1,0 +1,1250 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACK_Time	wgini/gwcenter.h	/^	double ACK_Time;		\/\/sec$/;"	v
+AMATEUR_RADIO_DEVICE	devicedefs.h	18;"	d
+AP	wgini/gwcenter.h	/^    AP,$/;"	e	enum:__anon51
+ARP_CACHE_SIZE	arp.h	26;"	d
+ARP_MODULE	moduledefs.h	14;"	d
+ARP_PROTOCOL	protocols.h	13;"	d
+ARP_REPLY	arp.h	32;"	d
+ARP_REQUEST	arp.h	31;"	d
+AckDropForCollision	wgini/gwcenter.h	/^	unsigned long int AckDropForCollision;$/;"	m	struct:__anon11
+AckRxed	wgini/gwcenter.h	/^	unsigned long int AckRxed;$/;"	m	struct:__anon11
+AckTxed	wgini/gwcenter.h	/^	unsigned long int AckTxed;$/;"	m	struct:__anon11
+AdaptiveArrayAnt	wgini/gwcenter.h	/^    AdaptiveArrayAnt$/;"	e	enum:__anon27
+AddrToIDEntry	wgini/gwcenter.h	/^	}  AddrToIDEntry;$/;"	t	typeref:struct:__anon21
+AddrToIDMap	wgini/gwcenter.h	/^  AddrToIDEntry *AddrToIDMap;$/;"	v
+AntHeightArray	wgini/gwcenter.h	/^double AntHeightArray[MaxNodeNo];                             \/\/  store the height of the node's antenna$/;"	v
+AntSysLosArray	wgini/gwcenter.h	/^double AntSysLosArray[MaxNodeNo];                           \/\/  store the system loss the antenna of the node$/;"	v
+AntType	wgini/gwcenter.h	/^	Antenna_type AntType;$/;"	m	struct:__anon28
+AntTypeArray	wgini/gwcenter.h	/^Antenna_type AntTypeArray[MaxNodeNo];                     \/\/ store the antenna type of the node$/;"	v
+Antenna_type	wgini/gwcenter.h	/^  } Antenna_type;$/;"	t	typeref:enum:__anon27
+AptCaptureNo	wgini/gwcenter.h	/^  	unsigned long int AptCaptureNo;                         \/\/accept for the capture$/;"	m	struct:__anon11
+AwgnSign	wgini/gwcenter.h	/^Switch AwgnSign;$/;"	v
+Awgn_Mode	wgini/gwcenter.h	/^  } Awgn_Mode;$/;"	t	typeref:enum:__anon47
+BFTimeOut	wgini/gwcenter.h	/^	BFTimeOut,      $/;"	e	enum:__anon10
+BF_TIMER	wgini/gwcenter.h	/^    BF_TIMER,$/;"	e	enum:__anon4
+BIG_PACKET_LEN	grouter.h	39;"	d
+BIT	wgini/gwcenter.h	/^    BIT,$/;"	e	enum:__anon16
+BRIEF_LISTING	grouter.h	73;"	d
+BROADCASTID	wgini/gwcenter.h	17;"	d
+BSSID	wgini/gwcenter.h	/^	char BSSID[MAC_ADDR_LEN];                            $/;"	m	struct:__anon26
+BSSID	wgini/gwcenter.h	/^	unsigned char BSSID[6];$/;"	m	struct:__anon17
+BYTE	wgini/gwcenter.h	/^    BYTE                                                                                                                 $/;"	e	enum:__anon16
+BackoffTimer	wgini/gwcenter.h	/^}   BackoffTimer;$/;"	t	typeref:struct:__anon5
+BroadcastTx	wgini/gwcenter.h	/^	unsigned long int BroadcastTx;$/;"	m	struct:__anon11
+CARRIAGE_RETURN	cli.h	29;"	d
+CARRIAGE_RETURN	wgini/cli.h	477;"	d
+CCATime	wgini/gwcenter.h	/^		double CCATime;	                                     \/\/seconds$/;"	m	struct:__anon41
+CH_REP_PREFIX	wgini/channel.h	39;"	d
+CLEANUP_DO	uswitch/cleanup.h	9;"	d
+CLI_MODULE	moduledefs.h	17;"	d
+COMMENT	cli.h	26;"	d
+COMMENT	wgini/cli.h	474;"	d
+COMMENT_CHAR	cli.h	27;"	d
+COMMENT_CHAR	wgini/cli.h	475;"	d
+COMPARE_IP	grouter.h	65;"	d
+COMPARE_MAC	grouter.h	64;"	d
+CONSOLE_PACKET	vpl.h	30;"	d
+CONTINUE_CHAR	cli.h	28;"	d
+CONTINUE_CHAR	wgini/cli.h	476;"	d
+COPY_IP	grouter.h	63;"	d
+COPY_MAC	grouter.h	62;"	d
+CPThresh	wgini/gwcenter.h	/^       double CPThresh;	                     \/\/db$/;"	m	struct:__anon40
+CSMA	wgini/gwcenter.h	/^       CSMA,$/;"	e	enum:__anon22
+CSThresh	wgini/gwcenter.h	/^       double CSThresh;						 \/\/(W)$/;"	m	struct:__anon40
+CTS_Time	wgini/gwcenter.h	/^	double CTS_Time;		\/\/sec$/;"	v
+CWMax	wgini/gwcenter.h	/^		int    CWMax;$/;"	m	struct:__anon41
+CWMin	wgini/gwcenter.h	/^		int    CWMin;$/;"	m	struct:__anon41
+CapSignArray	wgini/gwcenter.h	/^Switch CapSignArray[MaxNodeNo]; $/;"	v
+Ch_TimeUnit	wgini/gwcenter.h	/^double Ch_TimeUnit;                                   \/\/time space to update channel status		  (sec)$/;"	v
+Ch_timeunit	wgini/gwcenter.h	/^	double Ch_timeunit;$/;"	m	struct:__anon8
+Ch_update_remain	wgini/gwcenter.h	/^   unsigned int Ch_update_remain;               \/\/nanosecond$/;"	v
+Channel	wgini/gwcenter.h	/^   ChannelMib *Channel;$/;"	v
+ChannelAwgn	wgini/gwcenter.h	/^  }  ChannelAwgn;$/;"	t	typeref:struct:__anon48
+ChannelFad	wgini/gwcenter.h	/^  }  ChannelFad;$/;"	t	typeref:struct:__anon49
+ChannelMib	wgini/gwcenter.h	/^   } ChannelMib;$/;"	t	typeref:struct:__anon50
+ChannelProp	wgini/gwcenter.h	/^  }  ChannelProp;$/;"	t	typeref:struct:__anon46
+CtsDropForCollision	wgini/gwcenter.h	/^    unsigned long int CtsDropForCollision;$/;"	m	struct:__anon11
+CtsRxed	wgini/gwcenter.h	/^	unsigned long int CtsRxed;$/;"	m	struct:__anon11
+CtsTxed	wgini/gwcenter.h	/^	unsigned long int CtsTxed;$/;"	m	struct:__anon11
+DA	wgini/gwcenter.h	/^	unsigned char DA[6];$/;"	m	struct:__anon17
+DCF_802_11	wgini/gwcenter.h	/^       DCF_802_11,$/;"	e	enum:__anon22
+DEFAULT_MTU	grouter.h	55;"	d
+DEFAULT_MTU	mtu.h	16;"	d
+DEFAULT_MTU	wgini/gwcenter.h	20;"	d
+DFTimeOut	wgini/gwcenter.h	/^	DFTimeOut,$/;"	e	enum:__anon10
+DF_TIMER	wgini/gwcenter.h	/^    DF_TIMER,$/;"	e	enum:__anon4
+DIFSTime	wgini/gwcenter.h	/^		double DIFSTime;                                    \/\/seconds$/;"	m	struct:__anon41
+DIVERT	layer.h	23;"	d
+DOT_3_HDR_LEN	wgini/gwcenter.h	24;"	d
+DPRINTF	uswitch/error.h	10;"	d
+DSSS	wgini/gwcenter.h	/^       DSSS,$/;"	e	enum:__anon38
+DSSS_CCATime	wgini/gwcenter.h	61;"	d
+DSSS_CWMax	wgini/gwcenter.h	59;"	d
+DSSS_CWMin	wgini/gwcenter.h	58;"	d
+DSSS_PLCPHeaderLength	wgini/gwcenter.h	65;"	d
+DSSS_PreambleLength	wgini/gwcenter.h	64;"	d
+DSSS_RxTxTurnaroundTime	wgini/gwcenter.h	62;"	d
+DSSS_SIFSTime	wgini/gwcenter.h	63;"	d
+DSSS_SlotTime	wgini/gwcenter.h	60;"	d
+DataDropForCollision	wgini/gwcenter.h	/^    unsigned long int DataDropForCollision;$/;"	m	struct:__anon11
+DataReTranRate	wgini/gwcenter.h	/^	double DataReTranRate;$/;"	m	struct:__anon11
+DataRxed	wgini/gwcenter.h	/^	unsigned long int DataRxed;$/;"	m	struct:__anon11
+DataTxed	wgini/gwcenter.h	/^	unsigned long int DataTxed;$/;"	m	struct:__anon11
+DemoTS	wgini/gwcenter.h	/^       DemoTS,$/;"	e	enum:__anon39
+DemoTT	wgini/gwcenter.h	/^	   DemoTT,$/;"	e	enum:__anon39
+DemoTU	wgini/gwcenter.h	/^	   DemoTU,$/;"	e	enum:__anon39
+DropForCollision	wgini/gwcenter.h	/^	unsigned long int DropForCollision;		  $/;"	m	struct:__anon11
+DropForExMaxPktRetryNo	wgini/gwcenter.h	/^	unsigned long int DropForExMaxPktRetryNo;		\/\/data pkts$/;"	m	struct:__anon11
+DropForExMaxRetryNo	wgini/gwcenter.h	/^	unsigned long int DropForExMaxRetryNo;$/;"	m	struct:__anon11
+DropForExMaxRtsRetryNo	wgini/gwcenter.h	/^	unsigned long int DropForExMaxRtsRetryNo;		\/\/rts pkts$/;"	m	struct:__anon11
+DropForInTx	wgini/gwcenter.h	/^	unsigned long int DropForInTx;                            \/\/recv packet when the node is sending$/;"	m	struct:__anon11
+DropForLowRxPwr	wgini/gwcenter.h	/^	unsigned long int DropForLowRxPwr;$/;"	m	struct:__anon11
+DropForNoiseErr	wgini/gwcenter.h	/^	unsigned long int DropForNoiseErr;$/;"	m	struct:__anon11
+EIFSTime	wgini/gwcenter.h	/^		double EIFSTime;                                    \/\/seconds$/;"	m	struct:__anon41
+ERR_ACCEPT	uswitch/error.h	19;"	d
+ERR_CREAT	uswitch/error.h	20;"	d
+ERR_FCNTL	uswitch/error.h	21;"	d
+ERR_FREOPEN	uswitch/error.h	22;"	d
+ERR_GETSOCKNAME	uswitch/error.h	23;"	d
+ERR_MALLOC	uswitch/error.h	24;"	d
+ERR_READ	uswitch/error.h	25;"	d
+ERR_RECVFROM	uswitch/error.h	26;"	d
+ERR_SIGACTION	uswitch/error.h	27;"	d
+ERR_SOCKET	uswitch/error.h	28;"	d
+ERR_UNLINK	uswitch/error.h	29;"	d
+ERR_WRITE	uswitch/error.h	30;"	d
+ETHERNET_DEVICE	devicedefs.h	13;"	d
+ETHERNET_PROTOCOL	protocols.h	15;"	d
+ETH_ALEN	uswitch/uswitch.h	12;"	d
+ETH_DEV	gnet.h	27;"	d
+EVE_REP_PREFIX	wgini/event.h	38;"	d
+EnPSMArray	wgini/gwcenter.h	/^Switch EnPSMArray[MaxNodeNo];                                          \/\/  store the PSM status for the node$/;"	v
+EnPowSwitchArray	wgini/gwcenter.h	/^Switch EnPowSwitchArray[MaxNodeNo];                       \/\/  store the power switch status for the node$/;"	v
+EndSign	wgini/gwcenter.h	/^    WGNflag EndSign;            \/\/ the sign to show whether to end the TB moving mode$/;"	m	struct:__anon35
+EndSign	wgini/gwcenter.h	/^    WGNflag EndSign;           \/\/ the sign to show whether to end the MAN moving mode$/;"	m	struct:__anon36
+EndSign	wgini/gwcenter.h	/^    WGNflag EndSign;           \/\/ the sign to show whether to end the RWP moving mode$/;"	m	struct:__anon34
+EnergyUpdate_type	wgini/gwcenter.h	/^    }  EnergyUpdate_type;$/;"	t	typeref:enum:__anon29
+Event_type	wgini/gwcenter.h	/^  } Event_type;$/;"	t	typeref:enum:__anon10
+FALSE	grouter.h	51;"	d
+FALSE	wgini/gwcenter.h	/^    FALSE,$/;"	e	enum:__anon1
+FHSS	wgini/gwcenter.h	/^       FHSS$/;"	e	enum:__anon38
+FRAGS_ERROR	mtu.h	19;"	d
+FRAGS_NONE	mtu.h	18;"	d
+Factory_LOS	wgini/gwcenter.h	/^	Factory_LOS,$/;"	e	enum:__anon45
+Factory_Obstructed	wgini/gwcenter.h	/^    Factory_Obstructed$/;"	e	enum:__anon45
+FileSeqArray	wgini/gwcenter.h	/^  int FileSeqArray[MaxNodeNo];$/;"	v
+FreeSpace	wgini/gwcenter.h	/^     FreeSpace,$/;"	e	enum:__anon43
+GENERAL_ERROR	mtu.h	21;"	d
+GNET_ADAPTER	moduledefs.h	13;"	d
+Gain_dBi	wgini/gwcenter.h	/^    double Gain_dBi;$/;"	m	struct:__anon28
+HASH_CALC	uswitch/hash.h	15;"	d
+HASH_SIZE	uswitch/hash.h	12;"	d
+HASH_VAL	uswitch/hash.h	13;"	d
+HELP_PREAMPLE	helpdefs.h	48;"	d
+HELP_PREAMPLE	wgini/cli.h	70;"	d
+HasPkt	wgini/gwcenter.h	/^	WGNflag HasPkt;$/;"	m	struct:__anon26
+Height	wgini/gwcenter.h	/^    double Height;$/;"	m	struct:__anon28
+ICMP_DEST_UNREACH	icmp.h	19;"	d
+ICMP_ECHO_REPLY	icmp.h	17;"	d
+ICMP_ECHO_REQUEST	icmp.h	18;"	d
+ICMP_EXC_FRAGTIME	icmp.h	49;"	d
+ICMP_EXC_TTL	icmp.h	48;"	d
+ICMP_FRAG_NEEDED	icmp.h	35;"	d
+ICMP_HOST_UNKNOWN	icmp.h	38;"	d
+ICMP_HOST_UNREACH	icmp.h	32;"	d
+ICMP_INFO_REPLY	icmp.h	27;"	d
+ICMP_INFO_REQUEST	icmp.h	26;"	d
+ICMP_MODULE	moduledefs.h	16;"	d
+ICMP_NET_UNKNOWN	icmp.h	37;"	d
+ICMP_NET_UNREACH	icmp.h	31;"	d
+ICMP_PARAMETERPROB	icmp.h	23;"	d
+ICMP_PORT_UNREACH	icmp.h	34;"	d
+ICMP_PROTOCOL	protocols.h	18;"	d
+ICMP_PROT_UNREACH	icmp.h	33;"	d
+ICMP_REDIRECT	icmp.h	21;"	d
+ICMP_REDIR_HOST	icmp.h	43;"	d
+ICMP_REDIR_HOSTTOS	icmp.h	45;"	d
+ICMP_REDIR_NET	icmp.h	42;"	d
+ICMP_REDIR_NETTOS	icmp.h	44;"	d
+ICMP_SOURCE_QUENCH	icmp.h	20;"	d
+ICMP_SR_FAILED	icmp.h	36;"	d
+ICMP_TIMESTAMP	icmp.h	24;"	d
+ICMP_TIMESTAMPREPLY	icmp.h	25;"	d
+ICMP_TTL_EXPIRED	icmp.h	22;"	d
+IDLE	wgini/gwcenter.h	/^       IDLE,$/;"	e	enum:__anon29
+IFACE_CLIENT_MODE	gnet.h	24;"	d
+IFACE_SERVER_MODE	gnet.h	25;"	d
+IFACTOR	wgini/gwcenter.h	19;"	d
+IFTimeOut	wgini/gwcenter.h	/^	IFTimeOut,$/;"	e	enum:__anon10
+IF_TIMER	wgini/gwcenter.h	/^	IF_TIMER,$/;"	e	enum:__anon4
+INFINITE_Q_SIZE	grouter.h	48;"	d
+INIT_ALL_PORTS	classspec.h	33;"	d
+INIT_ALL_PROT	classspec.h	34;"	d
+INIT_ANY_NET	classspec.h	32;"	d
+INTERFACE_DOWN	gnet.h	22;"	d
+INTERFACE_UP	gnet.h	23;"	d
+INTTimeOut	wgini/gwcenter.h	/^	INTTimeOut,$/;"	e	enum:__anon10
+IP_BCAST_ADDR	grouter.h	67;"	d
+IP_DF	ip.h	42;"	d
+IP_MF	ip.h	43;"	d
+IP_MODULE	moduledefs.h	15;"	d
+IP_OFFMASK	ip.h	44;"	d
+IP_PROTOCOL	protocols.h	14;"	d
+IP_RF	ip.h	41;"	d
+IS_ANY_NET	classspec.h	36;"	d
+IS_ANY_PORT	classspec.h	37;"	d
+IS_ANY_PROT	classspec.h	38;"	d
+IS_BRIDGE_GROUP_ADDR	uswitch/multiswitch.h	18;"	d
+IS_EVEN	grouter.h	60;"	d
+IS_ODD	grouter.h	59;"	d
+Id	wgini/gwcenter.h	/^    NodeId Id; $/;"	m	struct:__anon53
+Inbuilding_LOS	wgini/gwcenter.h	/^    Inbuilding_LOS,$/;"	e	enum:__anon44
+Inbuilding_Obstructed	wgini/gwcenter.h	/^	Inbuilding_Obstructed$/;"	e	enum:__anon44
+JOIN	cli.h	25;"	d
+JOIN	wgini/cli.h	473;"	d
+LARGE_REAL_NUMBER	grouter.h	46;"	d
+LHELP_ABOUT	wgini/cli.h	470;"	d
+LHELP_ADDPROT	helpdefs.h	79;"	d
+LHELP_ANT	wgini/cli.h	241;"	d
+LHELP_ARP	helpdefs.h	68;"	d
+LHELP_CH	wgini/cli.h	143;"	d
+LHELP_CLASS	helpdefs.h	77;"	d
+LHELP_CONSOLE	helpdefs.h	70;"	d
+LHELP_ENERGY	wgini/cli.h	384;"	d
+LHELP_EXIT	helpdefs.h	72;"	d
+LHELP_EXIT	wgini/cli.h	465;"	d
+LHELP_FILTER	helpdefs.h	78;"	d
+LHELP_GET	helpdefs.h	63;"	d
+LHELP_HALT	helpdefs.h	71;"	d
+LHELP_HALT	wgini/cli.h	468;"	d
+LHELP_HELP	helpdefs.h	58;"	d
+LHELP_HELP	wgini/cli.h	76;"	d
+LHELP_IFCONFIG	helpdefs.h	66;"	d
+LHELP_MAC	wgini/cli.h	198;"	d
+LHELP_MOV	wgini/cli.h	351;"	d
+LHELP_PING	helpdefs.h	69;"	d
+LHELP_QDISC	helpdefs.h	75;"	d
+LHELP_QUEUE	helpdefs.h	74;"	d
+LHELP_ROUTE	helpdefs.h	67;"	d
+LHELP_SET	helpdefs.h	62;"	d
+LHELP_SOURCE	helpdefs.h	64;"	d
+LHELP_SPOLICY	helpdefs.h	76;"	d
+LHELP_STATS	wgini/cli.h	80;"	d
+LHELP_SYS	wgini/cli.h	411;"	d
+LHELP_VERSION	helpdefs.h	61;"	d
+LHELP_WCARD	wgini/cli.h	276;"	d
+LINE_FEED	cli.h	30;"	d
+LINE_FEED	wgini/cli.h	478;"	d
+LIST_OF_DEVICES	devicedefs.h	23;"	d
+LIST_OF_MODULES	moduledefs.h	30;"	d
+LLC_TO_MAC_BUF_SIZE	wgini/gwcenter.h	47;"	d
+LLC_TO_UML_BUF_SIZE	wgini/gwcenter.h	48;"	d
+LToMArray	wgini/gwcenter.h	/^    WGN_802_3_Mac_Frame* LToMArray[LLC_TO_MAC_BUF_SIZE];	$/;"	m	struct:__anon20
+LToMBufDrop	wgini/gwcenter.h	/^	unsigned long int LToMBufDrop;$/;"	m	struct:__anon11
+LToUArray	wgini/gwcenter.h	/^	WGN_802_11_Mac_Frame* LToUArray[LLC_TO_UML_BUF_SIZE];$/;"	m	struct:__anon20
+LToUBufDrop	wgini/gwcenter.h	/^	unsigned long int LToUBufDrop;$/;"	m	struct:__anon11
+MAC_802_11_ACK_FRAME_HEADER_LENGHT	wgini/gwcenter.h	29;"	d
+MAC_802_11_CTS_FRAME_HEADER_LENGHT	wgini/gwcenter.h	28;"	d
+MAC_802_11_DATA_FRAME_HEADER_LENGHT	wgini/gwcenter.h	26;"	d
+MAC_802_11_FRAME_TAILER_LENGHT	wgini/gwcenter.h	30;"	d
+MAC_802_11_RTS_FRAME_HEADER_LENGHT	wgini/gwcenter.h	27;"	d
+MAC_ACK	wgini/gwcenter.h	/^      MAC_ACK                                                                                                                       $/;"	e	enum:__anon25
+MAC_ACK_FRAME	wgini/gwcenter.h	/^    MAC_ACK_FRAME                                                                                                                       $/;"	e	enum:__anon19
+MAC_ACK_Frame_Header_Length	wgini/gwcenter.h	/^	   int MAC_ACK_Frame_Header_Length;$/;"	m	struct:__anon24
+MAC_ACK_LEN	wgini/gwcenter.h	/^	int MAC_ACK_LEN;$/;"	v
+MAC_ADDR_LEN	wgini/gwcenter.h	55;"	d
+MAC_BCAST_ADDR	grouter.h	66;"	d
+MAC_BROADCAST_ADDR	wgini/gwcenter.h	/^  unsigned char MAC_BROADCAST_ADDR[MAC_ADDR_LEN];$/;"	v
+MAC_COLL	wgini/gwcenter.h	/^	  MAC_COLL,$/;"	e	enum:__anon25
+MAC_CTS	wgini/gwcenter.h	/^      MAC_CTS,$/;"	e	enum:__anon25
+MAC_CTS_FRAME	wgini/gwcenter.h	/^    MAC_CTS_FRAME,$/;"	e	enum:__anon19
+MAC_CTS_Frame_Header_Length	wgini/gwcenter.h	/^	   int MAC_CTS_Frame_Header_Length;$/;"	m	struct:__anon24
+MAC_CTS_LEN	wgini/gwcenter.h	/^	int MAC_CTS_LEN;$/;"	v
+MAC_DATA_FRAME	wgini/gwcenter.h	/^    MAC_DATA_FRAME,                                      $/;"	e	enum:__anon19
+MAC_DATA_HDR_LEN	wgini/gwcenter.h	/^	int MAC_DATA_HDR_LEN;$/;"	v
+MAC_DUP_CHK_BUF_SIZE	wgini/gwcenter.h	54;"	d
+MAC_Data_Frame_Header_Length	wgini/gwcenter.h	/^	   int MAC_Data_Frame_Header_Length;$/;"	m	struct:__anon24
+MAC_Frame_Tailer_Length	wgini/gwcenter.h	/^	   int MAC_Frame_Tailer_Length;$/;"	m	struct:__anon24
+MAC_IDLE	wgini/gwcenter.h	/^      MAC_IDLE,$/;"	e	enum:__anon25
+MAC_LongRetryLimit	wgini/gwcenter.h	/^	   int MAC_LongRetryLimit;$/;"	m	struct:__anon24
+MAC_PROTOCOL_VERSION	wgini/gwcenter.h	32;"	d
+MAC_RECV	wgini/gwcenter.h	/^      MAC_RECV,                                          $/;"	e	enum:__anon25
+MAC_RTS	wgini/gwcenter.h	/^      MAC_RTS,                                          $/;"	e	enum:__anon25
+MAC_RTSThreshold	wgini/gwcenter.h	/^       int MAC_RTSThreshold;$/;"	m	struct:__anon24
+MAC_RTS_FRAME	wgini/gwcenter.h	/^    MAC_RTS_FRAME,                                          $/;"	e	enum:__anon19
+MAC_RTS_Frame_Header_Length	wgini/gwcenter.h	/^	   int MAC_RTS_Frame_Header_Length;$/;"	m	struct:__anon24
+MAC_RTS_LEN	wgini/gwcenter.h	/^	int MAC_RTS_LEN;$/;"	v
+MAC_SEND	wgini/gwcenter.h	/^      MAC_SEND,                                         $/;"	e	enum:__anon25
+MAC_SUBTYPE_ACK	wgini/gwcenter.h	43;"	d
+MAC_SUBTYPE_ATIM	wgini/gwcenter.h	39;"	d
+MAC_SUBTYPE_BEACON	wgini/gwcenter.h	40;"	d
+MAC_SUBTYPE_CTS	wgini/gwcenter.h	42;"	d
+MAC_SUBTYPE_DATA	wgini/gwcenter.h	44;"	d
+MAC_SUBTYPE_RTS	wgini/gwcenter.h	41;"	d
+MAC_ShortRetryLimit	wgini/gwcenter.h	/^       int MAC_ShortRetryLimit;$/;"	m	struct:__anon24
+MAC_TYPE_CONTROL	wgini/gwcenter.h	35;"	d
+MAC_TYPE_DATA	wgini/gwcenter.h	36;"	d
+MAC_TYPE_MANAGEMENT	wgini/gwcenter.h	34;"	d
+MAC_TYPE_RESERVED	wgini/gwcenter.h	37;"	d
+MAC_type	wgini/gwcenter.h	/^    }  MAC_type;$/;"	t	typeref:enum:__anon22
+MAN_StrPtr	wgini/gwcenter.h	/^  } MAN_StrPtr; $/;"	t	typeref:struct:__anon36
+MAX_ARP	arp.h	24;"	d
+MAX_ARP_BUFFERS	arp.h	25;"	d
+MAX_BUF_LEN	cli.h	32;"	d
+MAX_BUF_LEN	wgini/cli.h	480;"	d
+MAX_DNAME_LEN	grouter.h	32;"	d
+MAX_DOUBLE	grouter.h	53;"	d
+MAX_ENTRY_NUMBER	flowtable.h	10;"	d
+MAX_FILTER_RULES	filter.h	18;"	d
+MAX_FRAGMENTS	grouter.h	37;"	d
+MAX_INTERFACES	gnet.h	19;"	d
+MAX_IPREVLENGTH_ICMP	message.h	16;"	d
+MAX_KEY_LEN	cli.h	34;"	d
+MAX_KEY_LEN	wgini/cli.h	482;"	d
+MAX_LAYERS	layer.h	25;"	d
+MAX_LINE_LEN	cli.h	33;"	d
+MAX_LINE_LEN	wgini/cli.h	481;"	d
+MAX_MESSAGE_SIZE	message.h	19;"	d
+MAX_MTU	mtu.h	15;"	d
+MAX_NAME_LEN	grouter.h	31;"	d
+MAX_PORT_TRIES	grouter.h	44;"	d
+MAX_QDISC_TYPES	grouter.h	34;"	d
+MAX_QUEUE_NUM	grouter.h	42;"	d
+MAX_QUEUE_SIZE	grouter.h	41;"	d
+MAX_REMOTE	uswitch/uswitch.h	14;"	d
+MAX_REPORT_NAME_LEN	wgini/gwcenter.h	68;"	d
+MAX_REPORT_PATH_LEN	wgini/gwcenter.h	69;"	d
+MAX_ROUTES	routetable.h	19;"	d
+MAX_SEQ_NO	wgini/gwcenter.h	21;"	d
+MAX_SPOLICIES	grouter.h	35;"	d
+MAX_TMPBUF_LEN	grouter.h	36;"	d
+MAX_TMPBUF_LEN	wgini/cli.h	483;"	d
+MAX_TYPES_PER_MODULE	grouter.h	33;"	d
+MIG	wgini/gwcenter.h	10;"	d
+MOB_FNPREFIX	wgini/mobility.h	39;"	d
+MORE_FRAGS	mtu.h	20;"	d
+MSG_TYPE_MAX	grouter.h	54;"	d
+MacAddr	wgini/gwcenter.h	/^    }  MacAddr;$/;"	t	typeref:struct:__anon23
+MacMib	wgini/gwcenter.h	/^   } MacMib;$/;"	t	typeref:struct:__anon24
+MacStatus	wgini/gwcenter.h	/^  }   MacStatus;$/;"	t	typeref:enum:__anon25
+Manual	wgini/gwcenter.h	/^	Manual$/;"	e	enum:__anon31
+MapMib	wgini/gwcenter.h	/^  }   MapMib;$/;"	t	typeref:struct:__anon9
+MaxAPNo	wgini/gwcenter.h	16;"	d
+MaxNodeNo	wgini/gwcenter.h	15;"	d
+MaxSpd	wgini/gwcenter.h	/^	double MaxSpd;                              \/\/ the max speed of the node$/;"	m	struct:__anon37
+MaxSpdArray	wgini/gwcenter.h	/^double MaxSpdArray[MaxNodeNo];$/;"	v
+MinSpd	wgini/gwcenter.h	/^	double MinSpd;                               \/\/ the min speed of the node$/;"	m	struct:__anon37
+MinSpdArray	wgini/gwcenter.h	/^double MinSpdArray[MaxNodeNo];$/;"	v
+MobNodPtrAarry	wgini/gwcenter.h	/^MobileNode *MobNodPtrAarry;$/;"	v
+MobSeqArray	wgini/gwcenter.h	/^  int MobSeqArray[MaxNodeNo];$/;"	v
+Mob_TimeUnit	wgini/gwcenter.h	/^double Mob_TimeUnit;                                \/\/time space to update the mobility status   (sec)$/;"	v
+Mob_timeunit	wgini/gwcenter.h	/^    double Mob_timeunit;$/;"	m	struct:__anon8
+Mob_update_remain	wgini/gwcenter.h	/^  unsigned int Mob_update_remain;                      \/\/nanosecond $/;"	v
+MobileNode	wgini/gwcenter.h	/^} MobileNode;$/;"	t	typeref:struct:__anon53
+MobilityTypeArray	wgini/gwcenter.h	/^Mobility_type MobilityTypeArray[MaxNodeNo];              \/\/ store the mobility type for nodes$/;"	v
+Mobility_type	wgini/gwcenter.h	/^  } Mobility_type;$/;"	t	typeref:enum:__anon31
+ModType	wgini/gwcenter.h	/^       Modulation_type ModType;$/;"	m	struct:__anon40
+Modulation_type	wgini/gwcenter.h	/^    }  Modulation_type;$/;"	t	typeref:enum:__anon38
+MovChSign	wgini/gwcenter.h	/^    WGNflag MovChSign;      \/\/ the sign to show if it is the time to change the movement$/;"	m	struct:__anon34
+N	wgini/gwcenter.h	/^	 int N;       \/\/the total number of the simulated multiple paths $/;"	m	struct:__anon49
+N0	wgini/gwcenter.h	/^	 int N0;     \/\/the total number of oscillators in the Jakes model$/;"	m	struct:__anon49
+NAVTimeOut	wgini/gwcenter.h	/^	NAVTimeOut,$/;"	e	enum:__anon10
+NAV_TIMER	wgini/gwcenter.h	/^    NAV_TIMER,$/;"	e	enum:__anon4
+NFACTOR	wgini/gwcenter.h	18;"	d
+NONE	wgini/gwcenter.h	/^	   NONE,$/;"	e	enum:__anon22
+NORMAL	layer.h	21;"	d
+NORMAL	wgini/gwcenter.h	/^    NORMAL$/;"	e	enum:__anon51
+NORMAL_LISTING	grouter.h	71;"	d
+NULL_PROTOCOL	protocols.h	21;"	d
+NodeAntenna	wgini/gwcenter.h	/^  } NodeAntenna;$/;"	t	typeref:struct:__anon28
+NodeEnergy	wgini/gwcenter.h	/^    } NodeEnergy;$/;"	t	typeref:struct:__anon30
+NodeId	wgini/gwcenter.h	/^  typedef int NodeId;$/;"	t
+NodeLlc	wgini/gwcenter.h	/^}   NodeLlc;$/;"	t	typeref:struct:__anon20
+NodeMac	wgini/gwcenter.h	/^  } NodeMac;$/;"	t	typeref:struct:__anon26
+NodeMobility	wgini/gwcenter.h	/^  } NodeMobility;$/;"	t	typeref:struct:__anon37
+NodePhy	wgini/gwcenter.h	/^	}	NodePhy;$/;"	t	typeref:struct:__anon42
+NodePosition	wgini/gwcenter.h	/^  } NodePosition;$/;"	t	typeref:struct:__anon32
+NodeSpd	wgini/gwcenter.h	/^  } NodeSpd;$/;"	t	typeref:struct:__anon33
+NodeStats	wgini/gwcenter.h	/^  } NodeStats;$/;"	t	typeref:struct:__anon11
+NodeTimer	wgini/gwcenter.h	/^}   NodeTimer;$/;"	t	typeref:struct:__anon7
+NodeType	wgini/gwcenter.h	/^  } NodeType;$/;"	t	typeref:enum:__anon51
+NodeWCard	wgini/gwcenter.h	/^    }  NodeWCard;$/;"	t	typeref:struct:__anon40
+NormalTimer	wgini/gwcenter.h	/^}   NormalTimer;$/;"	t	typeref:struct:__anon6
+NotForMeRxed	wgini/gwcenter.h	/^	unsigned long int NotForMeRxed;$/;"	m	struct:__anon11
+OFF	wgini/gwcenter.h	/^    OFF$/;"	e	enum:__anon2
+ON	wgini/gwcenter.h	/^    ON,$/;"	e	enum:__anon2
+Office_HardPartition	wgini/gwcenter.h	/^	Office_HardPartition,$/;"	e	enum:__anon45
+Office_SoftPartition	wgini/gwcenter.h	/^	Office_SoftPartition,$/;"	e	enum:__anon45
+OmniDirectionalAnt	wgini/gwcenter.h	/^    OmniDirectionalAnt,$/;"	e	enum:__anon27
+OutDoor	wgini/gwcenter.h	/^    OutDoor,$/;"	e	enum:__anon45
+OutDoor_FreeSpace	wgini/gwcenter.h	/^    OutDoor_FreeSpace,$/;"	e	enum:__anon44
+OutDoor_ShadowedUrbanArea	wgini/gwcenter.h	/^	OutDoor_ShadowedUrbanArea,$/;"	e	enum:__anon44
+PARALLEL_LINE_DEVICE	devicedefs.h	20;"	d
+PHY_ACK_LEN	wgini/gwcenter.h	/^    int PHY_ACK_LEN;$/;"	v
+PHY_CTS_LEN	wgini/gwcenter.h	/^    int PHY_CTS_LEN;$/;"	v
+PHY_DATA_HDR_LEN	wgini/gwcenter.h	/^    int PHY_DATA_HDR_LEN;$/;"	v
+PHY_RTS_LEN	wgini/gwcenter.h	/^    int PHY_RTS_LEN;$/;"	v
+PI	wgini/gwcenter.h	11;"	d
+PIFSTime	wgini/gwcenter.h	/^		double PIFSTime;                                    \/\/seconds$/;"	m	struct:__anon41
+PLCPHeaderLength	wgini/gwcenter.h	/^		int    PLCPHeaderLength;	$/;"	m	struct:__anon41
+PPP_DEVICE	devicedefs.h	16;"	d
+PROGRAM	cli.h	24;"	d
+PROGRAM	wgini/cli.h	472;"	d
+PSM	wgini/gwcenter.h	/^		Switch PSM;$/;"	m	struct:__anon30
+PWR	wgini/gwcenter.h	/^    PWR,$/;"	e	enum:__anon47
+P_idle	wgini/gwcenter.h	/^		double P_idle;$/;"	m	struct:__anon30
+P_idle	wgini/gwcenter.h	/^       double P_idle;$/;"	m	struct:__anon40
+P_off	wgini/gwcenter.h	/^		double P_off;$/;"	m	struct:__anon30
+P_off	wgini/gwcenter.h	/^       double P_off;$/;"	m	struct:__anon40
+P_sleep	wgini/gwcenter.h	/^		double P_sleep;$/;"	m	struct:__anon30
+P_sleep	wgini/gwcenter.h	/^       double P_sleep;$/;"	m	struct:__anon40
+PathLossEx_type	wgini/gwcenter.h	/^  }   PathLossEx_type;$/;"	t	typeref:enum:__anon44
+PhyMib	wgini/gwcenter.h	/^	}  PhyMib;$/;"	t	typeref:struct:__anon41
+PktSucRxed	wgini/gwcenter.h	/^	unsigned long int PktSucRxed;							   \/\/the packets received correctly$/;"	m	struct:__anon11
+Pkt_Unit	wgini/gwcenter.h	/^}   Pkt_Unit;$/;"	t	typeref:enum:__anon16
+PowSwitch	wgini/gwcenter.h	/^		Switch PowSwitch;$/;"	m	struct:__anon30
+Pr_consume	wgini/gwcenter.h	/^		double Pr_consume;$/;"	m	struct:__anon30
+Pr_consume	wgini/gwcenter.h	/^       double Pr_consume;$/;"	m	struct:__anon40
+PreambleLength	wgini/gwcenter.h	/^		int    PreambleLength;	  $/;"	m	struct:__anon41
+PrintChFadSign	wgini/gwcenter.h	/^  WGNflag PrintChFadSign;$/;"	v
+PrintEventSign	wgini/gwcenter.h	/^  WGNflag PrintEventSign;$/;"	v
+PrintMovArray	wgini/gwcenter.h	/^  WGNflag PrintMovArray[MaxNodeNo];$/;"	v
+Prop_type	wgini/gwcenter.h	/^   } Prop_type;$/;"	t	typeref:enum:__anon43
+Pt	wgini/gwcenter.h	/^		double Pt;    $/;"	m	struct:__anon30
+Pt	wgini/gwcenter.h	/^       double Pt;    $/;"	m	struct:__anon40
+Pt_consume	wgini/gwcenter.h	/^		double Pt_consume;$/;"	m	struct:__anon30
+Pt_consume	wgini/gwcenter.h	/^       double Pt_consume;$/;"	m	struct:__anon40
+QDISC_H_	qdisc.h	9;"	d
+RA	wgini/gwcenter.h	/^	unsigned char RA[6];$/;"	m	struct:__anon17
+RCVBUFSIZE	wgini/gwcenter.h	49;"	d
+REPORT_PATH_PREFIX	wgini/gwcenter.h	/^  char REPORT_PATH_PREFIX[MAX_REPORT_PATH_LEN];$/;"	v
+REQ_NEW_CONTROL	uswitch/uswitch.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	e	enum:request_type
+REQ_NEW_CONTROL	vpl.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	e	enum:request_type
+REQ_NEW_CONTROL	wgini/vpl.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	e	enum:request_type
+RESET_DF_BITS	ip.h	55;"	d
+RESET_MF_BITS	ip.h	56;"	d
+RETX_MAX_NUM	wgini/gwcenter.h	52;"	d
+RTS_Time	wgini/gwcenter.h	/^	double RTS_Time;       \/\/sec$/;"	v
+RWP_StrPtr	wgini/gwcenter.h	/^  } RWP_StrPtr;$/;"	t	typeref:struct:__anon34
+RX	wgini/gwcenter.h	/^	   RX,$/;"	e	enum:__anon29
+RXThresh	wgini/gwcenter.h	/^       double RXThresh;						 \/\/(W)$/;"	m	struct:__anon40
+RXTimeOut	wgini/gwcenter.h	/^    RXTimeOut,$/;"	e	enum:__anon10
+RX_TIMER	wgini/gwcenter.h	/^	RX_TIMER$/;"	e	enum:__anon4
+RandomWayPoint	wgini/gwcenter.h	/^    RandomWayPoint,$/;"	e	enum:__anon31
+RayleighSign	wgini/gwcenter.h	/^Switch RayleighSign;$/;"	v
+ReTranRate	wgini/gwcenter.h	/^    double ReTranRate;$/;"	m	struct:__anon11
+ReTxNum	wgini/gwcenter.h	/^	unsigned long int ReTxNum;$/;"	m	struct:__anon11
+ReTxPktNum	wgini/gwcenter.h	/^	unsigned long int ReTxPktNum;	   $/;"	m	struct:__anon11
+ReTxRtsNum	wgini/gwcenter.h	/^	unsigned long int ReTxRtsNum;$/;"	m	struct:__anon11
+RecvColErrorDropRate	wgini/gwcenter.h	/^	double RecvColErrorDropRate;$/;"	m	struct:__anon11
+RecvColRate	wgini/gwcenter.h	/^	double RecvColRate;$/;"	m	struct:__anon11
+RecvDropRate	wgini/gwcenter.h	/^	double RecvDropRate;     \/\/including the packets which are not for me$/;"	m	struct:__anon11
+RecvErrorDropRate	wgini/gwcenter.h	/^	double RecvErrorDropRate;$/;"	m	struct:__anon11
+RecvLowPwrErrorDropRate	wgini/gwcenter.h	/^	double RecvLowPwrErrorDropRate;$/;"	m	struct:__anon11
+RecvNoiseErrorDropRate	wgini/gwcenter.h	/^	double RecvNoiseErrorDropRate;$/;"	m	struct:__anon11
+RecvWhileTxErrorDropRate	wgini/gwcenter.h	/^	double RecvWhileTxErrorDropRate;$/;"	m	struct:__anon11
+RtsDropForCollision	wgini/gwcenter.h	/^	unsigned long int RtsDropForCollision;$/;"	m	struct:__anon11
+RtsReTranRate	wgini/gwcenter.h	/^	double RtsReTranRate;$/;"	m	struct:__anon11
+RtsRxed	wgini/gwcenter.h	/^	unsigned long int RtsRxed; $/;"	m	struct:__anon11
+RtsTxed	wgini/gwcenter.h	/^	unsigned long int RtsTxed;$/;"	m	struct:__anon11
+RxTxTurnaroundTime	wgini/gwcenter.h	/^		double RxTxTurnaroundTime;	                 \/\/seconds$/;"	m	struct:__anon41
+SA	wgini/gwcenter.h	/^	unsigned char SA[6];$/;"	m	struct:__anon17
+SET_BRIDGE_GROUP_ADDR	uswitch/multiswitch.h	27;"	d
+SET_DF_BITS	ip.h	53;"	d
+SET_MF_BITS	ip.h	54;"	d
+SHELP_ABOUT	wgini/cli.h	67;"	d
+SHELP_ADDPROT	helpdefs.h	42;"	d
+SHELP_ANT	wgini/cli.h	60;"	d
+SHELP_ARP	helpdefs.h	32;"	d
+SHELP_CH	wgini/cli.h	58;"	d
+SHELP_CLASS	helpdefs.h	40;"	d
+SHELP_CONSOLE	helpdefs.h	34;"	d
+SHELP_ENERGY	wgini/cli.h	63;"	d
+SHELP_EXIT	helpdefs.h	36;"	d
+SHELP_EXIT	wgini/cli.h	65;"	d
+SHELP_FILTER	helpdefs.h	41;"	d
+SHELP_GET	helpdefs.h	28;"	d
+SHELP_HALT	helpdefs.h	35;"	d
+SHELP_HALT	wgini/cli.h	66;"	d
+SHELP_HELP	helpdefs.h	25;"	d
+SHELP_HELP	wgini/cli.h	56;"	d
+SHELP_IFCONFIG	helpdefs.h	30;"	d
+SHELP_MAC	wgini/cli.h	59;"	d
+SHELP_MOV	wgini/cli.h	62;"	d
+SHELP_PING	helpdefs.h	33;"	d
+SHELP_QDISC	helpdefs.h	38;"	d
+SHELP_QUEUE	helpdefs.h	37;"	d
+SHELP_ROUTE	helpdefs.h	31;"	d
+SHELP_SET	helpdefs.h	27;"	d
+SHELP_SOURCE	helpdefs.h	29;"	d
+SHELP_SPOLICY	helpdefs.h	39;"	d
+SHELP_STATS	wgini/cli.h	57;"	d
+SHELP_SYS	wgini/cli.h	64;"	d
+SHELP_VERSION	helpdefs.h	26;"	d
+SHELP_WCARD	wgini/cli.h	61;"	d
+SIFSTime	wgini/gwcenter.h	/^		double SIFSTime;                                    \/\/seconds$/;"	m	struct:__anon41
+SLEEP	wgini/gwcenter.h	/^	   SLEEP$/;"	e	enum:__anon29
+SLIP_DEVICE	devicedefs.h	19;"	d
+SMALL_REAL_NUMBER	grouter.h	47;"	d
+SNOOP	layer.h	22;"	d
+SNR	wgini/gwcenter.h	/^	SNR$/;"	e	enum:__anon47
+START_RX	wgini/gwcenter.h	/^	START_RX       $/;"	e	enum:__anon10
+STATS_REPORT_DIRECTORY	wgini/gwcenter.h	70;"	d
+SWITCH_MAGIC	uswitch/uswitch.h	15;"	d
+SWITCH_MAGIC	vpl.h	46;"	d
+SWITCH_MAGIC	wgini/vpl.h	42;"	d
+SWITCH_VERSION	vpl.h	29;"	d
+SWITCH_VERSION	wgini/vpl.h	28;"	d
+SYSTEM_TIME	wgini/gwcenter.h	/^WGNTime SYSTEM_TIME;$/;"	v
+SYS_INFO	wgini/gwcenter.h	/^Sys_Info *SYS_INFO;$/;"	v
+SampleCard	wgini/gwcenter.h	/^       SampleCard,$/;"	e	enum:__anon39
+SelfDefine	wgini/gwcenter.h	/^       SelfDefine$/;"	e	enum:__anon39
+ShadDev_type	wgini/gwcenter.h	/^  } ShadDev_type;$/;"	t	typeref:enum:__anon45
+Shadowing	wgini/gwcenter.h	/^     Shadowing$/;"	e	enum:__anon43
+SlotTime	wgini/gwcenter.h	/^		double SlotTime;                                      \/\/seconds$/;"	m	struct:__anon41
+Switch	wgini/gwcenter.h	/^  } Switch;$/;"	t	typeref:enum:__anon2
+SwitchedBeamAnt	wgini/gwcenter.h	/^    SwitchedBeamAnt,$/;"	e	enum:__anon27
+SysLoss	wgini/gwcenter.h	/^    double SysLoss; $/;"	m	struct:__anon28
+Sys_Info	wgini/gwcenter.h	/^}   Sys_Info;$/;"	t	typeref:struct:__anon52
+TA	wgini/gwcenter.h	/^	unsigned char TA[6];	$/;"	m	struct:__anon17
+TAP_DEV	gnet.h	28;"	d
+TAP_DEVICE	devicedefs.h	14;"	d
+TB_StrPtr	wgini/gwcenter.h	/^  } TB_StrPtr;$/;"	t	typeref:struct:__anon35
+TCP_PROTOCOL	protocols.h	19;"	d
+TEST_DF_BITS	ip.h	51;"	d
+TEST_MF_BITS	ip.h	52;"	d
+TIMEOUT_TIME	wgini/gwcenter.h	53;"	d
+TOKEN_RING_DEVICE	devicedefs.h	17;"	d
+TRUE	grouter.h	50;"	d
+TRUE	wgini/gwcenter.h	/^    TRUE$/;"	e	enum:__anon1
+TX	wgini/gwcenter.h	/^       TX,$/;"	e	enum:__anon29
+TXTimeOut	wgini/gwcenter.h	/^	TXTimeOut,$/;"	e	enum:__anon10
+TX_TIMER	wgini/gwcenter.h	/^	TX_TIMER,$/;"	e	enum:__anon4
+ThCompStartTime	wgini/gwcenter.h	/^	WGNTime ThCompStartTime;$/;"	m	struct:__anon11
+ThroutputComSign	wgini/gwcenter.h	/^  WGNflag ThroutputComSign;$/;"	v
+TimeMib	wgini/gwcenter.h	/^} TimeMib;$/;"	t	typeref:struct:__anon8
+TimerType	wgini/gwcenter.h	/^}   TimerType;$/;"	t	typeref:enum:__anon4
+TotNodeNo	wgini/gwcenter.h	/^int TotNodeNo;$/;"	v
+TotPktErrorDrop	wgini/gwcenter.h	/^	unsigned long int TotPktErrorDrop;$/;"	m	struct:__anon11
+TotPktRxed	wgini/gwcenter.h	/^	unsigned long int TotPktRxed;		                              \/\/including the correct ones and not             $/;"	m	struct:__anon11
+TotPktTxed	wgini/gwcenter.h	/^	unsigned long int TotPktTxed;$/;"	m	struct:__anon11
+TotTxByteNo	wgini/gwcenter.h	/^	double TotTxByteNo;$/;"	m	struct:__anon11
+TotalEnergy	wgini/gwcenter.h	/^		double TotalEnergy ;$/;"	m	struct:__anon30
+TotalEnergyArray	wgini/gwcenter.h	/^double TotalEnergyArray[MaxNodeNo];                         \/\/  store the source power preservation for the node$/;"	v
+TrajectoryBased	wgini/gwcenter.h	/^    TrajectoryBased,$/;"	e	enum:__anon31
+TwoRayGround	wgini/gwcenter.h	/^	 TwoRayGround,$/;"	e	enum:__anon43
+TxActiveSign	wgini/gwcenter.h	/^	WGNflag TxActiveSign;$/;"	m	struct:__anon26
+TxProbArray	wgini/gwcenter.h	/^double TxProbArray[MaxNodeNo];$/;"	v
+UDP_PROTOCOL	protocols.h	20;"	d
+USAGE_ABOUT	wgini/cli.h	54;"	d
+USAGE_ADDPROT	helpdefs.h	23;"	d
+USAGE_ANT	wgini/cli.h	47;"	d
+USAGE_ARP	helpdefs.h	13;"	d
+USAGE_CH	wgini/cli.h	45;"	d
+USAGE_CLASS	helpdefs.h	21;"	d
+USAGE_CONSOLE	helpdefs.h	15;"	d
+USAGE_ENERGY	wgini/cli.h	50;"	d
+USAGE_EXIT	helpdefs.h	17;"	d
+USAGE_EXIT	wgini/cli.h	52;"	d
+USAGE_FILTER	helpdefs.h	22;"	d
+USAGE_GET	helpdefs.h	9;"	d
+USAGE_HALT	helpdefs.h	16;"	d
+USAGE_HALT	wgini/cli.h	53;"	d
+USAGE_HELP	helpdefs.h	6;"	d
+USAGE_HELP	wgini/cli.h	43;"	d
+USAGE_IFCONFIG	helpdefs.h	11;"	d
+USAGE_MAC	wgini/cli.h	46;"	d
+USAGE_MOV	wgini/cli.h	49;"	d
+USAGE_PING	helpdefs.h	14;"	d
+USAGE_QDISC	helpdefs.h	19;"	d
+USAGE_QUEUE	helpdefs.h	18;"	d
+USAGE_ROUTE	helpdefs.h	12;"	d
+USAGE_SET	helpdefs.h	8;"	d
+USAGE_SOURCE	helpdefs.h	10;"	d
+USAGE_SPOLICY	helpdefs.h	20;"	d
+USAGE_STATS	wgini/cli.h	44;"	d
+USAGE_SYS	wgini/cli.h	51;"	d
+USAGE_VERSION	helpdefs.h	7;"	d
+USAGE_WCARD	wgini/cli.h	48;"	d
+UnicastTx	wgini/gwcenter.h	/^	unsigned long int UnicastTx;$/;"	m	struct:__anon11
+UpdateTimeUnit	wgini/gwcenter.h	/^	double UpdateTimeUnit;  \/\/ the time interval that update parameters related to the node's movement $/;"	m	struct:__anon34
+UpdateTimeUnit	wgini/gwcenter.h	/^	double UpdateTimeUnit;  \/\/ the time interval that update parameters related to the node's movement $/;"	m	struct:__anon36
+UpdateTimeUnit	wgini/gwcenter.h	/^    double UpdateTimeUnit;  \/\/ the time interval that update parameters related to the node's movement $/;"	m	struct:__anon35
+VERBOSE_LISTING	grouter.h	72;"	d
+WAVESPD	wgini/gwcenter.h	12;"	d
+WCardTypeArray	wgini/gwcenter.h	/^WCard_type WCardTypeArray[MaxNodeNo];               \/\/ store the wireless card type$/;"	v
+WCard_type	wgini/gwcenter.h	/^    }  WCard_type;$/;"	t	typeref:enum:__anon39
+WGNAP	wgini/gwcenter.h	14;"	d
+WGNEveQPtr	wgini/gwcenter.h	/^  WGNEvent* WGNEveQPtr;$/;"	v
+WGNEvent	wgini/gwcenter.h	/^  typedef struct WGNEvent {$/;"	s
+WGNEvent	wgini/gwcenter.h	/^  }  WGNEvent;$/;"	t	typeref:struct:WGNEvent
+WGNTime	wgini/gwcenter.h	/^  }  WGNTime;$/;"	t	typeref:struct:__anon3
+WGN_802_11_Mac_Frame	wgini/gwcenter.h	/^} WGN_802_11_Mac_Frame;$/;"	t	typeref:struct:__anon18
+WGN_802_11_Mac_Frame_Type	wgini/gwcenter.h	/^}   WGN_802_11_Mac_Frame_Type;$/;"	t	typeref:enum:__anon19
+WGN_802_11_Mac_Pseudo_Frame_Control	wgini/gwcenter.h	/^}	WGN_802_11_Mac_Pseudo_Frame_Control;$/;"	t	typeref:struct:__anon14
+WGN_802_11_Mac_Pseudo_Header	wgini/gwcenter.h	/^}	WGN_802_11_Mac_Pseudo_Header;$/;"	t	typeref:struct:__anon17
+WGN_802_11_Mac_Pseudo_Sequence_Control	wgini/gwcenter.h	/^}	WGN_802_11_Mac_Pseudo_Sequence_Control;$/;"	t	typeref:struct:__anon15
+WGN_802_3_Mac_Frame	wgini/gwcenter.h	/^} WGN_802_3_Mac_Frame;$/;"	t	typeref:struct:__anon13
+WGN_802_3_Mac_Hdr	wgini/gwcenter.h	/^}  WGN_802_3_Mac_Hdr;$/;"	t	typeref:struct:__anon12
+WGNflag	wgini/gwcenter.h	/^  } WGNflag;$/;"	t	typeref:enum:__anon1
+WGNnode	wgini/gwcenter.h	13;"	d
+WIRELESS_LAN_DEVICE	devicedefs.h	15;"	d
+Wait_CTS_Timeout	wgini/gwcenter.h	/^	double Wait_CTS_Timeout;    \/\/sec$/;"	v
+X_Width	wgini/gwcenter.h	/^int X_Width;$/;"	v
+Y_Width	wgini/gwcenter.h	/^int Y_Width;$/;"	v
+Z_Width	wgini/gwcenter.h	/^int Z_Width;$/;"	v
+_MTU_H_	mtu.h	10;"	d
+__802_11_FRAME_H_	wgini/802_11_frame.h	5;"	d
+__802_11_H_	wgini/802_11.h	5;"	d
+__ANTENNA_H_	wgini/antenna.h	5;"	d
+__ARP_H_	arp.h	12;"	d
+__AWGN_H_	wgini/awgn.h	5;"	d
+__CHANNEL_H_	wgini/channel.h	5;"	d
+__CLASSIFIER_H__	classifier.h	8;"	d
+__CLASS_SPEC_H__	classspec.h	13;"	d
+__CLEANUP_H__	uswitch/cleanup.h	2;"	d
+__CLI_H__	cli.h	14;"	d
+__CSMA_H_	wgini/csma.h	5;"	d
+__DEVICEDEFS_H__	devicedefs.h	9;"	d
+__DEVICE_H__	device.h	14;"	d
+__ENERGY_H_	wgini/energy.h	5;"	d
+__ERRMODEL_H_	wgini/errmodel.h	5;"	d
+__ERROR_H__	uswitch/error.h	5;"	d
+__EVENT_H_	wgini/event.h	5;"	d
+__FADING_H_	wgini/fading.h	5;"	d
+__FILTER_H__	filter.h	10;"	d
+__FLOW_TABLE_H__	flowtable.h	9;"	d
+__FRAGMENT_H__	fragment.h	3;"	d
+__GNET_H__	gnet.h	7;"	d
+__GROUTER_H__	grouter.h	16;"	d
+__GWCENTER_H_	wgini/gwcenter.h	5;"	d
+__HASH_H__	uswitch/hash.h	5;"	d
+__HELPDEFINITIONS_H__	helpdefs.h	3;"	d
+__ICMP_H_	icmp.h	9;"	d
+__INFO_H__	info.h	10;"	d
+__IP_H_	ip.h	11;"	d
+__LAYER_H__	layer.h	9;"	d
+__LLC_H_	wgini/llc.h	5;"	d
+__MAC_H_	wgini/mac.h	5;"	d
+__MESSAGE_H__	message.h	10;"	d
+__MOBILITY_H_	wgini/mobility.h	5;"	d
+__MODULEDEFINITIONS_H__	moduledefs.h	9;"	d
+__MSG_QUEUE_H__	msgqueue.h	9;"	d
+__MULTISWITCH_H	uswitch/multiswitch.h	2;"	d
+__NOMAC_H_	wgini/nomac.h	5;"	d
+__PACKET_CORE_H__	packetcore.h	9;"	d
+__PORT_H__	uswitch/port.h	2;"	d
+__PROPAGATION_H_	wgini/propagation.h	5;"	d
+__PROTOCOLS_H__	protocols.h	10;"	d
+__ROUTE_TABLE_H__	routetable.h	10;"	d
+__SIMPLE_QUEUE_H__	simplequeue.h	9;"	d
+__STATS_H_	wgini/stats.h	5;"	d
+__TIMER_H_	wgini/timer.h	5;"	d
+__USWITCH_H__	uswitch/uswitch.h	6;"	d
+__VPL_H__	vpl.h	17;"	d
+__VPL_H__	wgini/vpl.h	17;"	d
+__WCARD_H_	wgini/wcard.h	5;"	d
+__WGINI_CLI_H_	wgini/cli.h	5;"	d
+__WIRELESSPHY_H_	wgini/wirelessphy.h	2;"	d
+__unused	icmp.h	/^			ushort __unused;$/;"	m	struct:_icmphdr_t::_un::__anon58
+_arp_buffer_entry_t	arp.h	/^typedef struct _arp_buffer_entry_t$/;"	s
+_arp_entry_t	arp.h	/^typedef struct _arp_entry_t$/;"	s
+_arp_packet_t	arp.h	/^typedef struct _arp_packet_t$/;"	s
+_bpdu_t	uswitch/multiswitch.h	/^typedef struct _bpdu_t {$/;"	s
+_classdef_t	classifier.h	/^typedef struct _classdef_t$/;"	s
+_classlist_t	classifier.h	/^typedef struct _classlist_t$/;"	s
+_cli_entry_t	cli.h	/^typedef struct _cli_entry_t$/;"	s
+_cli_entry_t	wgini/cli.h	/^typedef struct _cli_entry_t$/;"	s
+_device_t	device.h	/^typedef struct _device_t $/;"	s
+_devicearray_t	device.h	/^typedef struct _devicearray_t$/;"	s
+_devicedirectory_t	device.h	/^typedef struct _devicedirectory_t$/;"	s
+_filterrule_t	filter.h	/^typedef struct _filterrule_t$/;"	s
+_filtertab_t	filter.h	/^typedef struct _filtertab_t$/;"	s
+_flowtable_t	flowtable.h	/^typedef struct _flowtable_t$/;"	s
+_ftentry_t	flowtable.h	/^typedef struct _ftentry_t$/;"	s
+_gpacket_t	message.h	/^typedef struct _gpacket_t $/;"	s
+_icmphdr_t	icmp.h	/^typedef struct _icmphdr_t$/;"	s
+_info_config_t	info.h	/^typedef struct _info_config_t$/;"	s
+_interface_array_t	gnet.h	/^typedef struct _interface_array_t$/;"	s
+_interface_t	gnet.h	/^typedef struct _interface_t$/;"	s
+_ip_packet_t	ip.h	/^typedef struct _ip_packet_t$/;"	s
+_ip_spec_t	classspec.h	/^typedef struct _ip_spec_t$/;"	s
+_label_t	message.h	/^typedef struct _label_t$/;"	s
+_layer_t	layer.h	/^typedef struct _layer_t$/;"	s
+_messageclass_t	msgqueue.h	/^typedef struct _messageclass_t$/;"	s
+_messagequeue_t	msgqueue.h	/^typedef struct _messagequeue_t$/;"	s
+_messagewrapper_t	msgqueue.h	/^typedef struct _messagewrapper_t$/;"	s
+_modulemapentry_t	layer.h	/^typedef struct _modulemapentry_t$/;"	s
+_mtu_entry_t	mtu.h	/^typedef struct _mtu_entry_t $/;"	s
+_pingstat_t	icmp.h	/^typedef struct _pingstat_t$/;"	s
+_pkt_data_t	message.h	/^typedef struct _pkt_data_t$/;"	s
+_pkt_frame_t	message.h	/^typedef struct _pkt_frame_t$/;"	s
+_pktcore_t	packetcore.h	/^typedef struct _pktcore_t$/;"	s
+_pktcorecnamecache_t	packetcore.h	/^typedef struct _pktcorecnamecache_t$/;"	s
+_port_range_t	classspec.h	/^typedef struct _port_range_t$/;"	s
+_qdisctable_t	qdisc.h	/^typedef struct _qdisctable_t$/;"	s
+_qentrytype_t	qdisc.h	/^typedef struct _qentrytype_t$/;"	s
+_queue_target_t	info.h	/^typedef struct _queue_target_t$/;"	s
+_route_entry_t	routetable.h	/^typedef struct _route_entry_t $/;"	s
+_router_config	grouter.h	/^typedef struct _router_config$/;"	s
+_simplequeue_t	simplequeue.h	/^typedef struct _simplequeue_t$/;"	s
+_simplewrapper_t	simplequeue.h	/^typedef struct _simplewrapper_t$/;"	s
+_typemapentry_t	layer.h	/^typedef struct _typemapentry_t $/;"	s
+_un	icmp.h	/^	union _un$/;"	u	struct:_icmphdr_t
+_vpl_data_t	vpl.h	/^typedef struct _vpl_data_t {$/;"	s
+_vplinfo_t	gnet.h	/^typedef struct _vplinfo_t$/;"	s
+_wgn_config	wgini/gwcenter.h	/^  typedef struct _wgn_config {$/;"	s
+action	flowtable.h	/^    char *action;$/;"	m	struct:_ftentry_t
+active	info.h	/^	int active;$/;"	m	struct:_queue_target_t
+addr	wgini/gwcenter.h	/^       unsigned char addr[MAC_ADDR_LEN];$/;"	m	struct:__anon23
+arp_bcast	message.h	/^	int arp_bcast;$/;"	m	struct:_pkt_frame_t
+arp_buffer_entry_t	arp.h	/^} arp_buffer_entry_t;$/;"	t	typeref:struct:_arp_buffer_entry_t
+arp_entry_t	arp.h	/^} arp_entry_t;$/;"	t	typeref:struct:_arp_entry_t
+arp_opcode	arp.h	/^	uint16_t arp_opcode;                     \/\/ ARP opcode (command)$/;"	m	struct:_arp_packet_t
+arp_packet_t	arp.h	/^} arp_packet_t;$/;"	t	typeref:struct:_arp_packet_t
+arp_prot	arp.h	/^	uint16_t arp_prot;                       \/\/ Format of protocol address$/;"	m	struct:_arp_packet_t
+arp_prot_len	arp.h	/^	uint8_t arp_prot_len;                    \/\/ Length of protocol address$/;"	m	struct:_arp_packet_t
+arp_valid	message.h	/^	int arp_valid;$/;"	m	struct:_pkt_frame_t
+avgbyterate	simplequeue.h	/^	double avgbyterate;$/;"	m	struct:_simplequeue_t
+avgqsize	simplequeue.h	/^	double avgqsize, idlestart;$/;"	m	struct:_simplequeue_t
+awgn_mode	wgini/gwcenter.h	/^Awgn_Mode awgn_mode;                            \/\/ mode 1: set SNR directly    mode 2: add noise  $/;"	v
+bandwidth	wgini/gwcenter.h	/^       double bandwidth;$/;"	m	struct:__anon40
+bf_timer	wgini/gwcenter.h	/^    BackoffTimer *bf_timer;$/;"	m	struct:__anon7
+blockonread	msgqueue.h	/^	int blockonread;$/;"	m	struct:_messagequeue_t
+blockonread	simplequeue.h	/^	int blockonread;$/;"	m	struct:_simplequeue_t
+blockonwrite	msgqueue.h	/^	int blockonwrite;$/;"	m	struct:_messagequeue_t
+blockonwrite	simplequeue.h	/^	int blockonwrite;$/;"	m	struct:_simplequeue_t
+bool	grouter.h	/^typedef unsigned char bool;$/;"	t
+bpdu_t	uswitch/multiswitch.h	/^} bpdu_t;$/;"	t	typeref:struct:_bpdu_t
+bridge	uswitch/multiswitch.h	/^    union bridge_id bridge;	\/\/ bridge ID of sender$/;"	m	struct:_bpdu_t	typeref:union:_bpdu_t::bridge_id
+bridge_id	uswitch/multiswitch.h	/^union bridge_id {$/;"	u
+buf_thread_id	wgini/gwcenter.h	/^    pthread_t buf_thread_id;$/;"	m	struct:__anon20
+bytesleft	simplequeue.h	/^	int maxsize, cursize, bytesleft;$/;"	m	struct:_simplequeue_t
+capsign	wgini/gwcenter.h	/^	   Switch capsign;$/;"	m	struct:__anon40
+cdefid	classifier.h	/^	int cdefid;$/;"	m	struct:_classdef_t
+ch_rep_name	wgini/channel.h	/^   char ch_rep_name[MAX_REPORT_NAME_LEN];$/;"	v
+channelAwgn	wgini/gwcenter.h	/^      ChannelAwgn *channelAwgn;$/;"	m	struct:__anon50
+channelFad	wgini/gwcenter.h	/^	  ChannelFad *channelFad;$/;"	m	struct:__anon50
+channelFadPrintSign	wgini/gwcenter.h	/^      WGNflag channelFadPrintSign;$/;"	m	struct:__anon50
+channelProp	wgini/gwcenter.h	/^      ChannelProp *channelProp;$/;"	m	struct:__anon50
+channelbandwidth	wgini/gwcenter.h	/^      double channelbandwidth;$/;"	m	struct:__anon50
+checksum	icmp.h	/^	ushort checksum;$/;"	m	struct:_icmphdr_t
+classdef_t	classifier.h	/^} classdef_t;$/;"	t	typeref:struct:_classdef_t
+classlist_t	classifier.h	/^} classlist_t;$/;"	t	typeref:struct:_classlist_t
+cleanup	uswitch/cleanup.h	/^struct cleanup {$/;"	s
+cli_entry_t	cli.h	/^} cli_entry_t;$/;"	t	typeref:struct:_cli_entry_t
+cli_entry_t	wgini/cli.h	/^} cli_entry_t;$/;"	t	typeref:struct:_cli_entry_t
+cli_flag	grouter.h	/^	int cli_flag;$/;"	m	struct:_router_config
+cli_flag	wgini/gwcenter.h	/^	int cli_flag;$/;"	m	struct:_wgn_config
+clihandler	grouter.h	/^	pthread_t clihandler;$/;"	m	struct:_router_config
+clist	filter.h	/^	classlist_t *clist;$/;"	m	struct:_filtertab_t
+cname	classifier.h	/^	char cname[MAX_NAME_LEN];$/;"	m	struct:_classdef_t
+cname	filter.h	/^	char cname[MAX_NAME_LEN];$/;"	m	struct:_filterrule_t
+cname	packetcore.h	/^    char *cname[MAX_QUEUE_SIZE];$/;"	m	struct:_pktcorecnamecache_t
+code	icmp.h	/^	uchar code;                  \/* type sub-code *\/$/;"	m	struct:_icmphdr_t
+coef	wgini/gwcenter.h	/^     double **coef;$/;"	m	struct:__anon49
+colErrorSign	wgini/gwcenter.h	/^	WGNflag colErrorSign;		                     \/\/collision with the transmitted pkt, not collision between two recv packets$/;"	m	struct:__anon17
+condvar	msgqueue.h	/^	pthread_cond_t condvar;$/;"	m	struct:_messageclass_t
+config_dir	grouter.h	/^	char *config_dir;$/;"	m	struct:_router_config
+config_file	grouter.h	/^	char *config_file;$/;"	m	struct:_router_config
+config_file	wgini/gwcenter.h	/^	char *config_file;$/;"	m	struct:_wgn_config
+control	vpl.h	/^	int control;$/;"	m	struct:_vpl_data_t
+control	wgini/vpl.h	/^	int control;$/;"	m	struct:vpl_data
+cost	uswitch/multiswitch.h	/^    uint32_t	cost;		\/\/ cost of path to root$/;"	m	struct:_bpdu_t
+count	device.h	/^	int count;$/;"	m	struct:_devicearray_t
+count	gnet.h	/^	int count;$/;"	m	struct:_interface_array_t
+count	layer.h	/^	int count;$/;"	m	struct:_modulemapentry_t
+count	layer.h	/^	uint  count;$/;"	m	struct:_typemapentry_t
+count	simplequeue.h	/^	int count;$/;"	m	struct:_simplequeue_t
+ctl_addr	vpl.h	/^	void *ctl_addr;$/;"	m	struct:_vpl_data_t
+ctl_addr	wgini/vpl.h	/^	void *ctl_addr;$/;"	m	struct:vpl_data
+ctl_sock	vpl.h	/^	char *ctl_sock;$/;"	m	struct:_vpl_data_t
+ctl_sock	wgini/vpl.h	/^	char *ctl_sock;$/;"	m	struct:vpl_data
+curPosition	wgini/gwcenter.h	/^    NodePosition *curPosition;            \/\/ the current location for each piece of movement $/;"	m	struct:__anon37
+cursize	msgqueue.h	/^	int maxsize, cursize;$/;"	m	struct:_messagequeue_t
+cursize	simplequeue.h	/^	int maxsize, cursize, bytesleft;$/;"	m	struct:_simplequeue_t
+cw	wgini/gwcenter.h	/^	int cw;$/;"	m	struct:__anon26
+data	message.h	/^	pkt_data_t data;$/;"	m	struct:_gpacket_t
+data	message.h	/^	uchar data[DEFAULT_MTU];             \/\/ payload (limited to maximum MTU)$/;"	m	struct:_pkt_data_t
+data	msgqueue.h	/^	void *data;$/;"	m	struct:_messagewrapper_t
+data	simplequeue.h	/^	void *data;$/;"	m	struct:_simplewrapper_t
+data	uswitch/port.h	/^	unsigned char data[1500];$/;"	m	struct:packet
+data	vpl.h	/^	int data;$/;"	m	struct:_vpl_data_t
+data	wgini/gwcenter.h	/^  unsigned char *data;				$/;"	m	struct:__anon13
+data_addr	vpl.h	/^	void *data_addr;$/;"	m	struct:_vpl_data_t
+data_addr	wgini/vpl.h	/^	void *data_addr;$/;"	m	struct:vpl_data
+dbglevel	device.h	/^	int dbglevel;$/;"	m	struct:_device_t
+defcnt	classifier.h	/^	int defcnt;$/;"	m	struct:_classlist_t
+deftab	classifier.h	/^	List *deftab;$/;"	m	struct:_classlist_t
+delay_us	simplequeue.h	/^	double delay_us;$/;"	m	struct:_simplequeue_t
+dev_db	wgini/gwcenter.h	/^     double dev_db;$/;"	m	struct:__anon46
+dev_db	wgini/gwcenter.h	/^double dev_db;$/;"	v
+devdesc	device.h	/^	char devdesc[MAX_NAME_LEN];					\/\/ device description$/;"	m	struct:_device_t
+devdesc	device.h	/^	char devdesc[MAX_NAME_LEN];					\/\/ device description$/;"	m	struct:_devicedirectory_t
+devdriver	gnet.h	/^	device_t *devdriver;				\/\/ the device driver that include toXDev and fromXDev functions$/;"	m	struct:_interface_t
+device_mtu	gnet.h	/^	int device_mtu;						\/\/ maximum transfer unit for the device$/;"	m	struct:_interface_t
+device_name	gnet.h	/^	char device_name[MAX_DNAME_LEN];	\/\/ full device name (e.g., eth0, wlan1)$/;"	m	struct:_interface_t
+device_t	device.h	/^} device_t;$/;"	t	typeref:struct:_device_t
+device_type	gnet.h	/^	char device_type[MAX_DNAME_LEN];	\/\/ device type specification$/;"	m	struct:_interface_t
+devicearray_t	device.h	/^} devicearray_t;$/;"	t	typeref:struct:_devicearray_t
+devicedirectory_t	device.h	/^} devicedirectory_t;$/;"	t	typeref:struct:_devicedirectory_t
+devname	device.h	/^	char devname[MAX_DNAME_LEN];				\/\/ device name$/;"	m	struct:_device_t
+devname	device.h	/^	char devname[MAX_DNAME_LEN];				\/\/ device name$/;"	m	struct:_devicedirectory_t
+df_timer	wgini/gwcenter.h	/^    NormalTimer *df_timer;$/;"	m	struct:__anon7
+dist0	wgini/gwcenter.h	/^     double dist0;$/;"	m	struct:__anon46
+dist0	wgini/gwcenter.h	/^double dist0;$/;"	v
+dst	message.h	/^		uchar dst[6];                \/\/ destination host's MAC address (filled by gnet)$/;"	m	struct:_pkt_data_t::__anon56
+dst	uswitch/port.h	/^		unsigned char dst[ETH_ALEN];$/;"	m	struct:packet::__anon54
+dst	wgini/gwcenter.h	/^   unsigned char dst[6];		$/;"	m	struct:__anon12
+dstPosition	wgini/gwcenter.h	/^	NodePosition *dstPosition;            \/\/ the destination location for each piece of movement $/;"	m	struct:__anon37
+dst_hw_addr	arp.h	/^	uchar dst_hw_addr[6];                    \/\/ Target hardware address$/;"	m	struct:_arp_packet_t
+dst_interface	message.h	/^	int dst_interface;               \/\/ outgoing interface, required by gnet; filled in by IP, ARP$/;"	m	struct:_pkt_frame_t
+dst_ip_addr	arp.h	/^	uchar dst_ip_addr[4];                    \/\/ Target IP address$/;"	m	struct:_arp_packet_t
+dstid	wgini/gwcenter.h	/^	unsigned int dstid;$/;"	m	struct:__anon17
+dstports	classifier.h	/^	port_range_t *dstports;$/;"	m	struct:_classdef_t
+dstspec	classifier.h	/^	ip_spec_t *dstspec;$/;"	m	struct:_classdef_t
+dummy	layer.h	/^	uint dummy;$/;"	m	struct:_typemapentry_t
+duration	wgini/gwcenter.h	/^	unsigned int duration;$/;"	m	struct:__anon17
+echo	icmp.h	/^		} echo;                     \/* echo datagram *\/$/;"	m	union:_icmphdr_t::_un	typeref:struct:_icmphdr_t::_un::__anon57
+elem	device.h	/^	device_t *elem;$/;"	m	struct:_devicearray_t
+elem	gnet.h	/^	interface_t *elem[MAX_INTERFACES];$/;"	m	struct:_interface_array_t
+end_time	wgini/gwcenter.h	/^	WGNTime end_time;                                      $/;"	m	struct:__anon6
+entry	flowtable.h	/^    ftentry_t entry[MAX_ENTRY_NUMBER];$/;"	m	struct:_flowtable_t
+eveObject	wgini/gwcenter.h	/^	 void* eveObject; 	$/;"	m	struct:WGNEvent
+eveTime	wgini/gwcenter.h	/^	 WGNTime eveTime;    $/;"	m	struct:WGNEvent
+eveType	wgini/gwcenter.h	/^	 Event_type eveType;$/;"	m	struct:WGNEvent
+eve_rep_name	wgini/event.h	/^	char eve_rep_name[MAX_REPORT_NAME_LEN];$/;"	v
+event_queue_mutex	wgini/gwcenter.h	/^  pthread_mutex_t event_queue_mutex;			\/* for several nodes write the event queue at the same time*\/$/;"	v
+fad	wgini/gwcenter.h	/^	 double **fad;$/;"	m	struct:__anon49
+fadErrorSign	wgini/gwcenter.h	/^	WGNflag fadErrorSign;$/;"	m	struct:__anon17
+failures	filter.h	/^	int failures;$/;"	m	struct:_filterrule_t
+fc	wgini/gwcenter.h	/^	WGN_802_11_Mac_Pseudo_Frame_Control fc;$/;"	m	struct:__anon17
+fc_from_ds	wgini/gwcenter.h	/^	int     fc_from_ds;	$/;"	m	struct:__anon14
+fc_more_data	wgini/gwcenter.h	/^	int     fc_more_data;  $/;"	m	struct:__anon14
+fc_more_frag	wgini/gwcenter.h	/^	int     fc_more_frag; 	 $/;"	m	struct:__anon14
+fc_order	wgini/gwcenter.h	/^	int     fc_order;                  	                         	               $/;"	m	struct:__anon14
+fc_protocol_version	wgini/gwcenter.h	/^	int     fc_protocol_version;      $/;"	m	struct:__anon14
+fc_pwr_mgt	wgini/gwcenter.h	/^	int     fc_pwr_mgt;		$/;"	m	struct:__anon14
+fc_retry	wgini/gwcenter.h	/^	int     fc_retry; 	 $/;"	m	struct:__anon14
+fc_subtype	wgini/gwcenter.h	/^	int     fc_subtype;                $/;"	m	struct:__anon14
+fc_to_ds	wgini/gwcenter.h	/^	int     fc_to_ds;  $/;"	m	struct:__anon14
+fc_type	wgini/gwcenter.h	/^	int     fc_type;                  $/;"	m	struct:__anon14
+fc_wep	wgini/gwcenter.h	/^	int     fc_wep;  $/;"	m	struct:__anon14
+fcs	wgini/gwcenter.h	/^	unsigned int fcs;$/;"	m	struct:__anon17
+fd	uswitch/uswitch.h	/^struct fd {$/;"	s
+fd	wgini/vpl.h	/^	int fd;$/;"	m	struct:vpl_data
+fh	uswitch/port.h	/^	int fh;			\/* internal file handler for port *\/$/;"	m	struct:port
+fh	uswitch/uswitch.h	/^	int fh;			\/* file handler *\/$/;"	m	struct:fd
+filteron	filter.h	/^	int filteron;$/;"	m	struct:_filtertab_t
+filterrule_t	filter.h	/^} filterrule_t;$/;"	t	typeref:struct:_filterrule_t
+filtertab_t	filter.h	/^} filtertab_t;$/;"	t	typeref:struct:_filtertab_t
+flags	uswitch/multiswitch.h	/^    uint8_t	flags;		\/\/ set to 0 unless dealing with topology change$/;"	m	struct:_bpdu_t
+flowtable	packetcore.h	/^    flowtable_t flowtable;$/;"	m	struct:_pktcore_t
+flowtable_t	flowtable.h	/^} flowtable_t;$/;"	t	typeref:struct:_flowtable_t
+frag	icmp.h	/^		} frag;                     \/* path mtu discovery *\/$/;"	m	union:_icmphdr_t::_un	typeref:struct:_icmphdr_t::_un::__anon58
+frag_no	wgini/gwcenter.h	/^	int frag_no;                       \/\/not used now$/;"	m	struct:__anon26
+frame	message.h	/^	pkt_frame_t frame;$/;"	m	struct:_gpacket_t
+frame_body	wgini/gwcenter.h	/^  WGN_802_3_Mac_Frame *frame_body;			 		                      \/\/the packet uml wants$/;"	m	struct:__anon18
+freq	wgini/gwcenter.h	/^	   double freq;$/;"	m	struct:__anon40
+fromdev	device.h	/^	void * (*fromdev)(void *arg);$/;"	m	struct:_device_t
+fromdev	device.h	/^	void * (*fromdev)(void *arg);$/;"	m	struct:_devicedirectory_t
+ftentry_t	flowtable.h	/^} ftentry_t;$/;"	t	typeref:struct:_ftentry_t
+ftime	simplequeue.h	/^	double stime, ftime;$/;"	m	struct:_simplequeue_t
+gateway	icmp.h	/^		uint   gateway;        \/* gateway address *\/$/;"	m	union:_icmphdr_t::_un
+gateway	uswitch/multiswitch.h	/^    union bridge_id gateway;	\/\/ bridge ID of root port, i.e. next hop towards the root$/;"	m	struct:_bpdu_t	typeref:union:_bpdu_t::bridge_id
+ghandler	grouter.h	/^	pthread_t ghandler;$/;"	m	struct:_router_config
+gini_home	grouter.h	/^	char *gini_home;$/;"	m	struct:_router_config
+gpacket_t	message.h	/^} gpacket_t;$/;"	t	typeref:struct:_gpacket_t
+handle	uswitch/uswitch.h	/^	void (*handle)(int);	\/* handler function *\/$/;"	m	struct:fd
+handler	cli.h	/^	void (*handler)();$/;"	m	struct:_cli_entry_t
+handler	wgini/cli.h	/^	void (*handler)();$/;"	m	struct:_cli_entry_t
+hash_entry	uswitch/hash.h	/^struct hash_entry {$/;"	s
+header	message.h	/^	} header;$/;"	m	struct:_pkt_data_t	typeref:struct:_pkt_data_t::__anon56
+header	uswitch/port.h	/^	} header;$/;"	m	struct:packet	typeref:struct:packet::__anon54
+header	wgini/gwcenter.h	/^  WGN_802_3_Mac_Hdr header;$/;"	m	struct:__anon13
+hw_addr_len	arp.h	/^	uint8_t hw_addr_len;                     \/\/ Length of hardware address$/;"	m	struct:_arp_packet_t
+hw_addr_type	arp.h	/^	uint16_t hw_addr_type;                   \/\/ Format of hardware address$/;"	m	struct:_arp_packet_t
+iDescriptor	wgini/gwcenter.h	/^	int iDescriptor;				\/* file descriptor*\/$/;"	m	struct:interface
+iarray	gnet.h	/^	void *iarray;                       \/\/ pointer to interface array type$/;"	m	struct:_interface_t
+icmphdr_t	icmp.h	/^} icmphdr_t;$/;"	t	typeref:struct:_icmphdr_t
+id	icmp.h	/^			ushort id;$/;"	m	struct:_icmphdr_t::_un::__anon57
+id	info.h	/^	int id;                        \/\/ FIFO id$/;"	m	struct:_info_config_t
+id	uswitch/multiswitch.h	/^    uint8_t id[8];		\/\/ priority (2) + MAC address (6)$/;"	m	union:bridge_id
+id	uswitch/port.h	/^	int id;			\/* port ID *\/$/;"	m	struct:port
+id	wgini/gwcenter.h	/^	   unsigned int id;$/;"	m	struct:__anon21
+id	wgini/gwcenter.h	/^	 int id;$/;"	m	struct:WGNEvent
+idlestart	simplequeue.h	/^	double avgqsize, idlestart;$/;"	m	struct:_simplequeue_t
+if_timer	wgini/gwcenter.h	/^	NormalTimer *if_timer;$/;"	m	struct:__anon7
+iface	gnet.h	/^	interface_t *iface;$/;"	m	struct:_vplinfo_t
+iface_fd	gnet.h	/^	int iface_fd;						\/\/ file descriptor for ??$/;"	m	struct:_interface_t
+incl_len	gpcap.h	/^        uint32_t incl_len;       \/* number of octets of packet saved in file *\/$/;"	m	struct:pcaprec_hdr_s
+incr	wgini/gwcenter.h	/^	 double ***incr;$/;"	m	struct:__anon49
+inf	wgini/gwcenter.h	/^	struct interface *inf;                \/\/interface to the UML$/;"	m	struct:__anon20	typeref:struct:__anon20::interface
+info_config_t	info.h	/^} info_config_t;$/;"	t	typeref:struct:_info_config_t
+intPwr	wgini/gwcenter.h	/^	double intPwr;                    \/\/(W)$/;"	m	struct:__anon28
+interface	routetable.h	/^	int  interface;			        \/\/ output interface$/;"	m	struct:_route_entry_t
+interface	wgini/gwcenter.h	/^ struct interface {$/;"	s
+interface_array_t	gnet.h	/^} interface_array_t;$/;"	t	typeref:struct:_interface_array_t
+interface_id	gnet.h	/^	int interface_id;					\/\/ interface identifier$/;"	m	struct:_interface_t
+interface_t	gnet.h	/^} interface_t;$/;"	t	typeref:struct:_interface_t
+ip_addr	arp.h	/^	uchar ip_addr[4];$/;"	m	struct:_arp_entry_t
+ip_addr	classspec.h	/^	uchar ip_addr[4];$/;"	m	struct:_ip_spec_t
+ip_addr	gnet.h	/^	uchar ip_addr[4];		        	\/\/ 4 for Internet protocol as network address$/;"	m	struct:_interface_t
+ip_addr	mtu.h	/^	uchar ip_addr[4];$/;"	m	struct:_mtu_entry_t
+ip_cksum	ip.h	/^	uint16_t ip_cksum;                      \/\/ checksum $/;"	m	struct:_ip_packet_t
+ip_dst	ip.h	/^	uchar ip_src[4], ip_dst[4];             \/\/ source and dest address $/;"	m	struct:_ip_packet_t
+ip_frag_off	ip.h	/^	uint16_t ip_frag_off;                   \/\/ fragment offset field $/;"	m	struct:_ip_packet_t
+ip_hdr_len	ip.h	/^	uint8_t ip_hdr_len:4;                   \/\/ header length $/;"	m	struct:_ip_packet_t
+ip_identifier	ip.h	/^	uint16_t ip_identifier;                 \/\/ identification $/;"	m	struct:_ip_packet_t
+ip_packet_t	ip.h	/^} ip_packet_t;$/;"	t	typeref:struct:_ip_packet_t
+ip_pkt_len	ip.h	/^	uint16_t ip_pkt_len;                    \/\/ total length $/;"	m	struct:_ip_packet_t
+ip_prot	ip.h	/^	uint8_t ip_prot;                        \/\/ protocol $/;"	m	struct:_ip_packet_t
+ip_spec_t	classspec.h	/^} ip_spec_t;$/;"	t	typeref:struct:_ip_spec_t
+ip_src	ip.h	/^	uchar ip_src[4], ip_dst[4];             \/\/ source and dest address $/;"	m	struct:_ip_packet_t
+ip_tos	ip.h	/^	uint8_t ip_tos;                         \/\/ type of service $/;"	m	struct:_ip_packet_t
+ip_ttl	ip.h	/^	uint8_t ip_ttl;                         \/\/ time to live $/;"	m	struct:_ip_packet_t
+ip_version	ip.h	/^	uint8_t ip_version:4;                   \/\/ version $/;"	m	struct:_ip_packet_t
+is_empty	arp.h	/^	bool is_empty;                          \/\/ entry used or not$/;"	m	struct:_arp_buffer_entry_t
+is_empty	arp.h	/^	bool is_empty;                          \/\/ entry used or not$/;"	m	struct:_arp_entry_t
+is_empty	mtu.h	/^	bool is_empty;                     \/\/ indicate entry used or not$/;"	m	struct:_mtu_entry_t
+is_empty	routetable.h	/^	bool is_empty;			        \/\/ indicates whether entry is used or not$/;"	m	struct:_route_entry_t
+jamInt	wgini/gwcenter.h	/^	double jamInt;                    \/\/(W)$/;"	m	struct:__anon28
+keystr	cli.h	/^	char keystr[MAX_KEY_LEN];$/;"	m	struct:_cli_entry_t
+keystr	wgini/cli.h	/^	char keystr[MAX_KEY_LEN];$/;"	m	struct:_cli_entry_t
+label	message.h	/^	label_t label[8];				 \/\/ label for flow table; required by packet core, filled by each protoco process$/;"	m	struct:_pkt_frame_t
+label_t	message.h	/^} label_t;$/;"	t	typeref:struct:_label_t
+last_seen	uswitch/hash.h	/^	time_t last_seen;$/;"	m	struct:hash_entry
+lastqid	packetcore.h	/^    int lastqid;$/;"	m	struct:_pktcore_t
+layer_t	layer.h	/^} layer_t;$/;"	t	typeref:struct:_layer_t
+layerid	layer.h	/^	uint layerid;$/;"	m	struct:_layer_t
+level	layer.h	/^	int level;$/;"	m	struct:_layer_t
+link_end_time	wgini/gwcenter.h	/^	WGNTime link_end_time;$/;"	m	struct:__anon17
+link_start_time	wgini/gwcenter.h	/^	WGNTime link_start_time;$/;"	m	struct:__anon17
+linkmatrix	wgini/gwcenter.h	/^	  int **linkmatrix;$/;"	m	struct:__anon50
+local_addr	vpl.h	/^	void *local_addr;$/;"	m	struct:_vpl_data_t
+local_addr	wgini/vpl.h	/^	void *local_addr;$/;"	m	struct:vpl_data
+lock	msgqueue.h	/^	pthread_mutex_t lock;$/;"	m	struct:_messageclass_t
+long_helpstr	cli.h	/^	char long_helpstr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+long_helpstr	wgini/cli.h	/^	char long_helpstr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+long_retry_counter	wgini/gwcenter.h	/^	int long_retry_counter;	$/;"	m	struct:__anon26
+ltom_array_mutex	wgini/gwcenter.h	/^	pthread_mutex_t ltom_array_mutex;			\/* LLToUMLBuf array buffer mutex*\/$/;"	m	struct:__anon20
+ltom_buf_Rcount	wgini/gwcenter.h	/^	int ltom_buf_Rcount;$/;"	m	struct:__anon20
+ltom_buf_Wcount	wgini/gwcenter.h	/^	int ltom_buf_Wcount;$/;"	m	struct:__anon20
+ltom_nonempty	wgini/gwcenter.h	/^    pthread_cond_t ltom_nonempty;				\/* array non empty condition *\/$/;"	m	struct:__anon20
+ltom_nonfull	wgini/gwcenter.h	/^    pthread_cond_t ltom_nonfull;					\/* array non full condition *\/$/;"	m	struct:__anon20
+ltombufempty	wgini/gwcenter.h	/^	WGNflag ltombufempty;$/;"	m	struct:__anon20
+ltou_array_mutex	wgini/gwcenter.h	/^	pthread_mutex_t ltou_array_mutex;			\/* LLToUMLBuf array buffer mutex*\/$/;"	m	struct:__anon20
+ltou_buf_Rcount	wgini/gwcenter.h	/^	int ltou_buf_Rcount;$/;"	m	struct:__anon20
+ltou_buf_Wcount	wgini/gwcenter.h	/^    int ltou_buf_Wcount;$/;"	m	struct:__anon20
+ltou_nonempty	wgini/gwcenter.h	/^    pthread_cond_t ltou_nonempty;				\/* array non empty condition *\/$/;"	m	struct:__anon20
+ltou_nonfull	wgini/gwcenter.h	/^    pthread_cond_t ltou_nonfull;					\/* array non full condition *\/$/;"	m	struct:__anon20
+mac	uswitch/hash.h	/^	unsigned char mac[ETH_ALEN];$/;"	m	struct:hash_entry
+mac	uswitch/multiswitch.h	/^	uint8_t	 mac[6];$/;"	m	struct:bridge_id::__anon55
+macMib	wgini/gwcenter.h	/^	MacMib *macMib;$/;"	m	struct:__anon26
+macType	wgini/gwcenter.h	/^	   MAC_type macType;$/;"	m	struct:__anon24
+macType	wgini/gwcenter.h	/^MAC_type macType;$/;"	v
+mac_addr	arp.h	/^	uchar mac_addr[6];$/;"	m	struct:_arp_entry_t
+mac_addr	gnet.h	/^	uchar mac_addr[6];		        	\/\/ 6 for Ethernet MACs$/;"	m	struct:_interface_t
+mac_addr	wgini/gwcenter.h	/^	   unsigned char mac_addr[MAC_ADDR_LEN];$/;"	m	struct:__anon21
+mac_addr	wgini/gwcenter.h	/^	unsigned char mac_addr[MAC_ADDR_LEN];$/;"	m	struct:__anon26
+mac_addr_array	wgini/gwcenter.h	/^  MacAddr mac_addr_array[MaxNodeNo];$/;"	v
+mac_buf_index	wgini/gwcenter.h	/^	int *mac_buf_index;		$/;"	m	struct:__anon26
+mac_buffer	wgini/gwcenter.h	/^	int *mac_buffer;		                              	\/\/used in duplication checking purpose               $/;"	m	struct:__anon26
+mac_info	wgini/gwcenter.h	/^	MacMib *mac_info;$/;"	m	struct:__anon52
+mac_size	wgini/gwcenter.h	/^	int mac_size;                                            \/\/ size of the mac frame body (bytes)!$/;"	m	struct:__anon17
+magic	uswitch/uswitch.h	/^	uint32_t magic;$/;"	m	struct:request_v3
+magic	vpl.h	/^	uint32_t magic;$/;"	m	struct:request_v3
+magic	wgini/vpl.h	/^	uint32_t magic;$/;"	m	struct:request_v3
+magic_number	gpcap.h	/^        uint32_t magic_number;   \/* magic number *\/$/;"	m	struct:pcap_hdr_s
+map_info	wgini/gwcenter.h	/^	MapMib *map_info;$/;"	m	struct:__anon52
+max	grouter.h	57;"	d
+maxport	classspec.h	/^	int maxport;$/;"	m	struct:_port_range_t
+maxqsize	packetcore.h	/^    int maxqsize;$/;"	m	struct:_pktcore_t
+maxsize	msgqueue.h	/^	int maxsize, cursize;$/;"	m	struct:_messagequeue_t
+maxsize	simplequeue.h	/^	int maxsize, cursize, bytesleft;$/;"	m	struct:_simplequeue_t
+maxval	qdisc.h	/^	double minval, maxval;$/;"	m	struct:_qentrytype_t
+maxval	simplequeue.h	/^	double minval, maxval, pmaxval;$/;"	m	struct:_simplequeue_t
+messageclass_t	msgqueue.h	/^} messageclass_t;$/;"	t	typeref:struct:_messageclass_t
+messagequeue_t	msgqueue.h	/^} messagequeue_t;$/;"	t	typeref:struct:_messagequeue_t
+messagewrapper_t	msgqueue.h	/^} messagewrapper_t;$/;"	t	typeref:struct:_messagewrapper_t
+min	grouter.h	58;"	d
+minport	classspec.h	/^	int minport;$/;"	m	struct:_port_range_t
+minval	qdisc.h	/^	double minval, maxval;$/;"	m	struct:_qentrytype_t
+minval	simplequeue.h	/^	double minval, maxval, pmaxval;$/;"	m	struct:_simplequeue_t
+mobilityType	wgini/gwcenter.h	/^	Mobility_type mobilityType;$/;"	m	struct:__anon37
+mode	gnet.h	/^	int mode;                       	\/\/ client OR server mode$/;"	m	struct:_interface_t
+mode	layer.h	/^	uint mode;$/;"	m	struct:_typemapentry_t
+mode	wgini/gwcenter.h	/^      Awgn_Mode mode;       \/\/ mode 1: set SNR directly    mode 2: add noise  $/;"	m	struct:__anon48
+modes	layer.h	/^	uint modes[MAX_TYPES_PER_MODULE];$/;"	m	struct:_modulemapentry_t
+modulation	wgini/gwcenter.h	/^Modulation_type modulation;          \/\/  store the modulation method$/;"	v
+modulemap	layer.h	/^	Map *modulemap;$/;"	m	struct:_layer_t
+modulemapentry_t	layer.h	/^} modulemapentry_t;$/;"	t	typeref:struct:_modulemapentry_t
+movStrPtr	wgini/gwcenter.h	/^	void * movStrPtr;                            \/\/ the pointer point to the structure corresponding to the specific movement mode $/;"	m	struct:__anon37
+mov_rep_name	wgini/gwcenter.h	/^	char* mov_rep_name;$/;"	m	struct:__anon37
+msglist	msgqueue.h	/^	List *msglist;$/;"	m	struct:_messageclass_t
+msgqueue	layer.h	/^	messagequeue_t *msgqueue;$/;"	m	struct:_layer_t
+mtu	icmp.h	/^			ushort mtu;$/;"	m	struct:_icmphdr_t::_un::__anon58
+mtu	mtu.h	/^	int mtu;                           \/\/ mtu value$/;"	m	struct:_mtu_entry_t
+mtu_entry_t	mtu.h	/^} mtu_entry_t;$/;"	t	typeref:struct:_mtu_entry_t
+name	layer.h	/^	char name[MAX_NAME_LEN];$/;"	m	struct:_layer_t
+name	msgqueue.h	/^	char name[MAX_NAME_LEN];$/;"	m	struct:_messagequeue_t
+name	packetcore.h	/^    char name[MAX_NAME_LEN];$/;"	m	struct:_pktcore_t
+name	qdisc.h	/^	char name[MAX_NAME_LEN];$/;"	m	struct:_qentrytype_t
+name	simplequeue.h	/^	char name[MAX_NAME_LEN];$/;"	m	struct:_simplequeue_t
+nav_timer	wgini/gwcenter.h	/^	NormalTimer *nav_timer;$/;"	m	struct:__anon7
+netmask	routetable.h	/^	uchar netmask[4];			\/\/ Netmask$/;"	m	struct:_route_entry_t
+network	gpcap.h	/^        uint32_t network;        \/* data link type *\/$/;"	m	struct:pcap_hdr_s
+network	routetable.h	/^	uchar network[4];			\/\/ Network IP address$/;"	m	struct:_route_entry_t
+next	uswitch/cleanup.h	/^  struct cleanup *next;$/;"	m	struct:cleanup	typeref:struct:cleanup::cleanup
+next	uswitch/hash.h	/^	struct hash_entry * next;$/;"	m	struct:hash_entry	typeref:struct:hash_entry::hash_entry
+next	uswitch/port.h	/^	struct port *next;	\/* next item in list *\/$/;"	m	struct:port	typeref:struct:port::port
+next	uswitch/uswitch.h	/^	struct fd *next;	\/* next item in linked list *\/$/;"	m	struct:fd	typeref:struct:fd::fd
+nextEventPtr	wgini/gwcenter.h	/^	 struct WGNEvent* nextEventPtr;$/;"	m	struct:WGNEvent	typeref:struct:WGNEvent::WGNEvent
+nexthop	routetable.h	/^	uchar nexthop[4];			\/\/ Nexthop IP address$/;"	m	struct:_route_entry_t
+nodeAntenna	wgini/gwcenter.h	/^		NodeAntenna *nodeAntenna;$/;"	m	struct:__anon42
+nodeEnergy	wgini/gwcenter.h	/^		NodeEnergy *nodeEnergy;$/;"	m	struct:__anon42
+nodeLlc	wgini/gwcenter.h	/^	NodeLlc *nodeLlc;$/;"	m	struct:__anon53
+nodeMac	wgini/gwcenter.h	/^	NodeMac *nodeMac;$/;"	m	struct:__anon53
+nodeMobility	wgini/gwcenter.h	/^		NodeMobility *nodeMobility;$/;"	m	struct:__anon42
+nodePhy	wgini/gwcenter.h	/^	NodePhy *nodePhy;$/;"	m	struct:__anon53
+nodeSpd	wgini/gwcenter.h	/^	NodeSpd * nodeSpd;                      \/\/ the real speed of the node$/;"	m	struct:__anon37
+nodeStats	wgini/gwcenter.h	/^	NodeStats *nodeStats;$/;"	m	struct:__anon53
+nodeTimer	wgini/gwcenter.h	/^    NodeTimer *nodeTimer;$/;"	m	struct:__anon26
+nodeType	wgini/gwcenter.h	/^	NodeType nodeType;       $/;"	m	struct:__anon53
+nodeWCard	wgini/gwcenter.h	/^		NodeWCard *nodeWCard;$/;"	m	struct:__anon42
+node_id	wgini/gwcenter.h	/^	int node_id;$/;"	m	struct:interface
+noise	wgini/gwcenter.h	/^	  double noise;     \/\/noise variance$/;"	m	struct:__anon48
+noise	wgini/gwcenter.h	/^double noise;     \/\/noise variance$/;"	v
+noiseErrorSign	wgini/gwcenter.h	/^	WGNflag noiseErrorSign;$/;"	m	struct:__anon17
+normal_retry_counter	wgini/gwcenter.h	/^	int normal_retry_counter;$/;"	m	struct:__anon26
+nreceived	icmp.h	/^	int nreceived;$/;"	m	struct:_pingstat_t
+ntransmitted	icmp.h	/^	int ntransmitted;$/;"	m	struct:_pingstat_t
+num	flowtable.h	/^    int num;$/;"	m	struct:_flowtable_t
+numofentries	packetcore.h	/^    int numofentries;$/;"	m	struct:_pktcorecnamecache_t
+nxth_ip_addr	message.h	/^	uchar nxth_ip_addr[4];           \/\/ destination interface IP address; required by ARP, filled IP$/;"	m	struct:_pkt_frame_t
+orig_len	gpcap.h	/^        uint32_t orig_len;       \/* actual length of packet *\/$/;"	m	struct:pcaprec_hdr_s
+oscnum	wgini/gwcenter.h	/^int oscnum;$/;"	v
+outputQ	packetcore.h	/^    simplequeue_t *outputQ;$/;"	m	struct:_pktcore_t
+packet	uswitch/port.h	/^struct packet {$/;"	s
+packetcnt	packetcore.h	/^    int packetcnt;$/;"	m	struct:_pktcore_t
+passes	filter.h	/^	int passes;$/;"	m	struct:_filterrule_t
+path	info.h	/^	char path[MAX_NAME_LEN];       \/\/ FIFO path$/;"	m	struct:_info_config_t
+pathlossexp	wgini/gwcenter.h	/^	 double pathlossexp;$/;"	m	struct:__anon46
+pathlossexp	wgini/gwcenter.h	/^double pathlossexp;$/;"	v
+pause	wgini/gwcenter.h	/^	WGNflag pause;$/;"	m	struct:__anon5
+payload_len	wgini/gwcenter.h	/^  int payload_len;                   \/\/header+data$/;"	m	struct:__anon13
+pcache	packetcore.h	/^    pktcorecnamecache_t *pcache;$/;"	m	struct:_pktcore_t
+pcap_hdr_s	gpcap.h	/^typedef struct pcap_hdr_s {$/;"	s
+pcap_hdr_t	gpcap.h	/^} pcap_hdr_t;$/;"	t	typeref:struct:pcap_hdr_s
+pcaprec_hdr_s	gpcap.h	/^typedef struct pcaprec_hdr_s {$/;"	s
+pcaprec_hdr_t	gpcap.h	/^} pcaprec_hdr_t;$/;"	t	typeref:struct:pcaprec_hdr_s
+pchSocket	wgini/gwcenter.h	/^char *pchSocket[MaxNodeNo];$/;"	v
+pha	wgini/gwcenter.h	/^	 double ***pha;$/;"	m	struct:__anon49
+phyMib	wgini/gwcenter.h	/^		PhyMib *phyMib;$/;"	m	struct:__anon42
+phy_info	wgini/gwcenter.h	/^	PhyMib *phy_info;$/;"	m	struct:__anon52
+phy_size	wgini/gwcenter.h	/^	int phy_size;                                              \/\/ size of the mac frame body + phy header size$/;"	m	struct:__anon17
+pingstat_t	icmp.h	/^} pingstat_t;$/;"	t	typeref:struct:_pingstat_t
+pktRsp	wgini/gwcenter.h	/^	WGN_802_11_Mac_Frame *pktRsp;$/;"	m	struct:__anon26
+pktRts	wgini/gwcenter.h	/^	WGN_802_11_Mac_Frame *pktRts;$/;"	m	struct:__anon26
+pktRx	wgini/gwcenter.h	/^	WGN_802_11_Mac_Frame *pktRx;$/;"	m	struct:__anon26
+pktTx	wgini/gwcenter.h	/^	WGN_802_11_Mac_Frame *pktTx;$/;"	m	struct:__anon26
+pkt_data_t	message.h	/^} pkt_data_t;$/;"	t	typeref:struct:_pkt_data_t
+pkt_frame_t	message.h	/^} pkt_frame_t;$/;"	t	typeref:struct:_pkt_frame_t
+pkt_rep_name	wgini/stats.h	/^ char pkt_rep_name[MAX_REPORT_NAME_LEN];$/;"	v
+pktcore_t	packetcore.h	/^} pktcore_t;$/;"	t	typeref:struct:_pktcore_t
+pktcorecnamecache_t	packetcore.h	/^} pktcorecnamecache_t;$/;"	t	typeref:struct:_pktcorecnamecache_t
+pmaxval	qdisc.h	/^	double pmaxval;$/;"	m	struct:_qentrytype_t
+pmaxval	simplequeue.h	/^	double minval, maxval, pmaxval;$/;"	m	struct:_simplequeue_t
+port	uswitch/hash.h	/^	struct port * port;$/;"	m	struct:hash_entry	typeref:struct:hash_entry::port
+port	uswitch/multiswitch.h	/^    uint16_t	port;		\/\/ port ID within a bridge$/;"	m	struct:_bpdu_t
+port	uswitch/port.h	/^struct port {$/;"	s
+port_range_t	classspec.h	/^} port_range_t;$/;"	t	typeref:struct:_port_range_t
+preflen	classspec.h	/^	int preflen;$/;"	m	struct:_ip_spec_t
+prev	uswitch/hash.h	/^	struct hash_entry * prev;$/;"	m	struct:hash_entry	typeref:struct:hash_entry::hash_entry
+prev	uswitch/port.h	/^	struct port *prev;	\/* prev item in list *\/$/;"	m	struct:port	typeref:struct:port::port
+prev	uswitch/uswitch.h	/^	struct fd *prev;$/;"	m	struct:fd	typeref:struct:fd::fd
+prevaccesstime	simplequeue.h	/^	double prevaccesstime;$/;"	m	struct:_simplequeue_t
+prg	uswitch/cleanup.h	/^  void (*prg)(void);$/;"	m	struct:cleanup
+priority	uswitch/multiswitch.h	/^	uint16_t priority;$/;"	m	struct:bridge_id::__anon55
+process	message.h	/^    ushort process;$/;"	m	struct:_label_t
+prop_type	wgini/gwcenter.h	/^     Prop_type prop_type;        $/;"	m	struct:__anon46
+prop_type	wgini/gwcenter.h	/^Prop_type prop_type;$/;"	v
+prot	classifier.h	/^	int prot;$/;"	m	struct:_classdef_t
+prot	message.h	/^		ushort prot;                \/\/ protocol field$/;"	m	struct:_pkt_data_t::__anon56
+prot	message.h	/^    ushort prot;$/;"	m	struct:_label_t
+prot	uswitch/port.h	/^		unsigned char prot[2];$/;"	m	struct:packet::__anon54
+prot	wgini/gwcenter.h	/^   unsigned char prot[2];	$/;"	m	struct:__anon12
+protocal	flowtable.h	/^    ushort protocal;$/;"	m	struct:_ftentry_t
+protocol	uswitch/multiswitch.h	/^    uint16_t	protocol;	\/\/ set to 0 for STP$/;"	m	struct:_bpdu_t
+pseudo_header	wgini/gwcenter.h	/^  WGN_802_11_Mac_Pseudo_Header *pseudo_header;		           \/\/just for computation in WGN$/;"	m	struct:__anon18
+qdisc	simplequeue.h	/^	char qdisc[MAX_NAME_LEN];$/;"	m	struct:_simplequeue_t
+qdiscnums	qdisc.h	/^	int qdiscnums;$/;"	m	struct:_qdisctable_t
+qdiscs	packetcore.h	/^    qdisctable_t *qdiscs;$/;"	m	struct:_pktcore_t
+qdisctable_t	qdisc.h	/^} qdisctable_t;$/;"	t	typeref:struct:_qdisctable_t
+qempty	simplequeue.h	/^	pthread_cond_t qfull, qempty;$/;"	m	struct:_simplequeue_t
+qentry	qdisc.h	/^	qentrytype_t qentry[MAX_QDISC_TYPES];$/;"	m	struct:_qdisctable_t
+qentrytype_t	qdisc.h	/^} qentrytype_t;$/;"	t	typeref:struct:_qentrytype_t
+qfull	msgqueue.h	/^	pthread_cond_t qfull;$/;"	m	struct:_messagequeue_t
+qfull	simplequeue.h	/^	pthread_cond_t qfull, qempty;$/;"	m	struct:_simplequeue_t
+qlock	msgqueue.h	/^	pthread_mutex_t qlock;$/;"	m	struct:_messagequeue_t
+qlock	packetcore.h	/^    pthread_mutex_t qlock;                \/\/ lock for the main queue$/;"	m	struct:_pktcore_t
+qlock	simplequeue.h	/^	pthread_mutex_t qlock;$/;"	m	struct:_simplequeue_t
+qtargets	info.h	/^	List *qtargets;$/;"	m	struct:_info_config_t
+queue	info.h	/^	simplequeue_t *queue;$/;"	m	struct:_queue_target_t
+queue	msgqueue.h	/^	Map *queue;$/;"	m	struct:_messagequeue_t
+queue	simplequeue.h	/^	List *queue;$/;"	m	struct:_simplequeue_t
+queue_target_t	info.h	/^} queue_target_t;$/;"	t	typeref:struct:_queue_target_t
+queues	packetcore.h	/^    Map *queues;$/;"	m	struct:_pktcore_t
+rawtimemode	info.h	/^	int rawtimemode;               \/\/ if TRUE output time as sec otherwise human friendly$/;"	m	struct:_info_config_t
+remain_time	wgini/gwcenter.h	/^	unsigned int remain_time;                                          \/\/nanoseconds$/;"	m	struct:__anon5
+request_type	uswitch/uswitch.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	g
+request_type	vpl.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	g
+request_type	wgini/vpl.h	/^enum request_type { REQ_NEW_CONTROL };$/;"	g
+request_v3	uswitch/uswitch.h	/^struct request_v3 {$/;"	s
+request_v3	vpl.h	/^struct request_v3 {$/;"	s
+request_v3	wgini/vpl.h	/^struct request_v3 {$/;"	s
+rmport	uswitch/uswitch.h	/^	struct port *rmport;	\/* remote port *\/$/;"	m	struct:fd	typeref:struct:fd::port
+rname	layer.h	/^	char rname[MAX_NAME_LEN];$/;"	m	struct:_layer_t
+root	uswitch/multiswitch.h	/^    union bridge_id root;	\/\/ bridge ID believed to be the root$/;"	m	struct:_bpdu_t	typeref:union:_bpdu_t::bridge_id
+route_entry_t	routetable.h	/^} route_entry_t;$/;"	t	typeref:struct:_route_entry_t
+router_config	grouter.h	/^} router_config;$/;"	t	typeref:struct:_router_config
+router_name	grouter.h	/^	char *router_name;$/;"	m	struct:_router_config
+rulecnt	filter.h	/^	int rulecnt;$/;"	m	struct:_filtertab_t
+ruletab	filter.h	/^	filterrule_t *ruletab[MAX_FILTER_RULES];$/;"	m	struct:_filtertab_t
+rxStatus	wgini/gwcenter.h	/^	MacStatus rxStatus;$/;"	m	struct:__anon26
+rx_pwr	wgini/gwcenter.h	/^	double rx_pwr;											  \/\/ (db)$/;"	m	struct:__anon17
+rx_timer	wgini/gwcenter.h	/^    NormalTimer *rx_timer;$/;"	m	struct:__anon7
+rxid	wgini/gwcenter.h	/^	unsigned int rxid;$/;"	m	struct:__anon17
+s	uswitch/uswitch.h	/^	struct sockaddr *s;$/;"	m	union:sa	typeref:struct:sa::sockaddr
+sVPLdata	wgini/gwcenter.h	/^	struct vpl_data sVPLdata;		\/* vpl library stucture*\/$/;"	m	struct:interface	typeref:struct:interface::vpl_data
+sa	uswitch/port.h	/^	struct sockaddr * sa;$/;"	m	struct:port	typeref:struct:port::sockaddr
+sa	uswitch/uswitch.h	/^union sa {$/;"	u
+sa_un	uswitch/uswitch.h	/^	struct sockaddr_un sa_un;$/;"	m	struct:request_v3	typeref:struct:request_v3::sockaddr_un
+sc	wgini/gwcenter.h	/^	WGN_802_11_Mac_Pseudo_Sequence_Control sc;$/;"	m	struct:__anon17
+sc_fragment_number	wgini/gwcenter.h	/^	unsigned int     sc_fragment_number;     $/;"	m	struct:__anon15
+sc_sequence	wgini/gwcenter.h	/^	unsigned int     sc_sequence;                    $/;"	m	struct:__anon15
+schedcycle	grouter.h	/^	int schedcycle;$/;"	m	struct:_router_config
+scheduler	grouter.h	/^	pthread_t scheduler;$/;"	m	struct:_router_config
+schwaiting	packetcore.h	/^    pthread_cond_t schwaiting;$/;"	m	struct:_pktcore_t
+sdwthread	gnet.h	/^	pthread_t sdwthread;$/;"	m	struct:_interface_t
+sender	uswitch/port.h	/^	void (*sender)		\/* handler function *\/$/;"	m	struct:port
+seq_no	wgini/gwcenter.h	/^	int seq_no;$/;"	m	struct:__anon26
+sequence	icmp.h	/^			ushort sequence;$/;"	m	struct:_icmphdr_t::_un::__anon57
+short_helpstr	cli.h	/^	char short_helpstr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+short_helpstr	wgini/cli.h	/^	char short_helpstr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+short_retry_counter	wgini/gwcenter.h	/^	int short_retry_counter;$/;"	m	struct:__anon26
+sigfigs	gpcap.h	/^        uint32_t sigfigs;        \/* accuracy of timestamps *\/$/;"	m	struct:pcap_hdr_s
+signal	wgini/gwcenter.h	/^	int signal;                                           \/\/modulation spd$/;"	m	struct:__anon17
+simplequeue_t	simplequeue.h	/^} simplequeue_t;$/;"	t	typeref:struct:_simplequeue_t
+simplewrapper_t	simplequeue.h	/^} simplewrapper_t;$/;"	t	typeref:struct:_simplewrapper_t
+sin	uswitch/uswitch.h	/^	struct sockaddr_in *sin;$/;"	m	union:sa	typeref:struct:sa::sockaddr_in
+size	msgqueue.h	/^	int size;$/;"	m	struct:_messagewrapper_t
+size	simplequeue.h	/^	int size;$/;"	m	struct:_simplewrapper_t
+snaplen	gpcap.h	/^        uint32_t snaplen;        \/* max length of captured packets, in octets *\/$/;"	m	struct:pcap_hdr_s
+snoopid	layer.h	/^	int snoopid;$/;"	m	struct:_modulemapentry_t
+snr	wgini/gwcenter.h	/^      double snr;        \/\/db$/;"	m	struct:__anon48
+snr_Eb_N0	wgini/gwcenter.h	/^double snr_Eb_N0;        \/\/db$/;"	v
+sock	vpl.h	/^	struct sockaddr_un sock;$/;"	m	struct:request_v3	typeref:struct:request_v3::sockaddr_un
+sock	wgini/vpl.h	/^	struct sockaddr_un sock;$/;"	m	struct:request_v3	typeref:struct:request_v3::sockaddr_un
+sock_name	gnet.h	/^	char sock_name[MAX_DNAME_LEN];$/;"	m	struct:_interface_t
+sock_type	vpl.h	/^	char *sock_type;$/;"	m	struct:_vpl_data_t
+sock_type	wgini/vpl.h	/^	char *sock_type;$/;"	m	struct:vpl_data
+spd_tot	wgini/gwcenter.h	/^	double spd_tot;    \/\/ the real total speed of the node$/;"	m	struct:__anon33
+spd_x	wgini/gwcenter.h	/^    double spd_x;      \/\/ the real speed in the x-axle of the node$/;"	m	struct:__anon33
+spd_y	wgini/gwcenter.h	/^    double spd_y;      \/\/ the real speed in the y-axle of the node$/;"	m	struct:__anon33
+spd_z	wgini/gwcenter.h	/^    double spd_z;      \/\/ the real speed in the z-axle of the node$/;"	m	struct:__anon33
+spolicy	packetcore.h	/^    char spolicy[MAX_NAME_LEN];$/;"	m	struct:_pktcore_t
+src	message.h	/^		uchar src[6];                \/\/ source host's MAC address (filled by gnet)$/;"	m	struct:_pkt_data_t::__anon56
+src	uswitch/port.h	/^		unsigned char src[ETH_ALEN];$/;"	m	struct:packet::__anon54
+src	wgini/gwcenter.h	/^   unsigned char src[6];		$/;"	m	struct:__anon12
+srcPosition	wgini/gwcenter.h	/^	NodePosition *srcPosition;            \/\/ the starting location for each piece of movement $/;"	m	struct:__anon37
+src_hw_addr	arp.h	/^	uchar src_hw_addr[6];	                 \/\/ Sender hardware address$/;"	m	struct:_arp_packet_t
+src_hw_addr	message.h	/^	uchar src_hw_addr[6];            \/\/ source MAC address; required for ARP, filled by gnet$/;"	m	struct:_pkt_frame_t
+src_interface	message.h	/^	int src_interface;               \/\/ incoming interface number; filled in by gnet?$/;"	m	struct:_pkt_frame_t
+src_ip_addr	arp.h	/^	uchar src_ip_addr[4];                    \/\/ Sender IP address$/;"	m	struct:_arp_packet_t
+src_ip_addr	message.h	/^	uchar src_ip_addr[4];            \/\/ source IP address; required for ARP, IP, gnet$/;"	m	struct:_pkt_frame_t
+srcid	wgini/gwcenter.h	/^	unsigned int srcid;$/;"	m	struct:__anon17
+srcports	classifier.h	/^	port_range_t *srcports;$/;"	m	struct:_classdef_t
+srcspec	classifier.h	/^	ip_spec_t *srcspec;$/;"	m	struct:_classdef_t
+start_time	wgini/gwcenter.h	/^	WGNTime start_time;$/;"	m	struct:__anon5
+start_time	wgini/gwcenter.h	/^	WGNTime start_time;$/;"	m	struct:__anon6
+state	gnet.h	/^	int state;                          \/\/ active OR inactive$/;"	m	struct:_interface_t
+stime	simplequeue.h	/^	double stime, ftime;$/;"	m	struct:_simplequeue_t
+sun	uswitch/uswitch.h	/^	struct sockaddr_un *sun;$/;"	m	union:sa	typeref:struct:sa::sockaddr_un
+switcher	wgini/gwcenter.h	/^	  Switch switcher;$/;"	m	struct:__anon48
+switcher	wgini/gwcenter.h	/^	 Switch switcher;$/;"	m	struct:__anon49
+switcher	wgini/gwcenter.h	/^	Switch switcher;$/;"	m	struct:__anon5
+switcher	wgini/gwcenter.h	/^	Switch switcher;$/;"	m	struct:__anon6
+targetname	info.h	/^	char targetname[MAX_NAME_LEN];$/;"	m	struct:_queue_target_t
+thiszone	gpcap.h	/^        uint32_t  thiszone;       \/* GMT to local correction *\/$/;"	m	struct:pcap_hdr_s
+threadID	wgini/gwcenter.h	/^	pthread_t threadID;				\/* thread id assigned to this interface*\/$/;"	m	struct:interface
+threadid	gnet.h	/^	pthread_t threadid;					\/\/ thread ID assigned to this interface$/;"	m	struct:_interface_t
+threadid	info.h	/^	pthread_t threadid;            \/\/ thread for the info handler$/;"	m	struct:_info_config_t
+timeOutTime	wgini/gwcenter.h	/^  WGNTime timeOutTime;        \/\/the execution time of the earliest timeout event$/;"	v
+time_info	wgini/gwcenter.h	/^	TimeMib *time_info;$/;"	m	struct:__anon52
+timeout_time	wgini/gwcenter.h	/^    WGNTime timeout_time;                                   \/\/the time timeout happens$/;"	m	struct:__anon5
+tmax	icmp.h	/^	int tmax;$/;"	m	struct:_pingstat_t
+tmin	icmp.h	/^	int tmin;$/;"	m	struct:_pingstat_t
+todev	device.h	/^	void * (*todev)(void *arg);$/;"	m	struct:_device_t
+todev	device.h	/^	void * (*todev)(void *arg);$/;"	m	struct:_devicedirectory_t
+tos	classifier.h	/^	int tos;$/;"	m	struct:_classdef_t
+tot_node_no	wgini/gwcenter.h	/^	int tot_node_no;$/;"	m	struct:_wgn_config
+ts_sec	gpcap.h	/^        uint32_t ts_sec;         \/* timestamp seconds *\/$/;"	m	struct:pcaprec_hdr_s
+ts_usec	gpcap.h	/^        uint32_t ts_usec;        \/* timestamp microseconds *\/$/;"	m	struct:pcaprec_hdr_s
+tsum	icmp.h	/^	int tsum;$/;"	m	struct:_pingstat_t
+tv_nsec	wgini/gwcenter.h	/^	 unsigned int tv_nsec;$/;"	m	struct:__anon3
+tv_sec	wgini/gwcenter.h	/^     unsigned int tv_sec;$/;"	m	struct:__anon3
+txStatus	wgini/gwcenter.h	/^	MacStatus txStatus;$/;"	m	struct:__anon26
+tx_pwr	wgini/gwcenter.h	/^	double tx_pwr;			                                  \/\/ (db)$/;"	m	struct:__anon17
+tx_timer	wgini/gwcenter.h	/^	NormalTimer *tx_timer;$/;"	m	struct:__anon7
+txid	wgini/gwcenter.h	/^	unsigned int txid;$/;"	m	struct:__anon17
+txprob	wgini/gwcenter.h	/^	double txprob;$/;"	m	struct:__anon26
+type	filter.h	/^	int type;                           \/\/ deny or allow$/;"	m	struct:_filterrule_t
+type	icmp.h	/^	uchar type;                  \/* message type *\/$/;"	m	struct:_icmphdr_t
+type	uswitch/multiswitch.h	/^    uint8_t	type;		\/\/ set to 0 for configuration BPDU$/;"	m	struct:_bpdu_t
+type	uswitch/uswitch.h	/^	enum request_type type;$/;"	m	struct:request_v3	typeref:enum:request_v3::request_type
+type	vpl.h	/^	enum request_type type;$/;"	m	struct:request_v3	typeref:enum:request_v3::request_type
+type	wgini/vpl.h	/^	enum request_type type;$/;"	m	struct:request_v3	typeref:enum:request_v3::request_type
+typemap	layer.h	/^	Map *typemap;$/;"	m	struct:_layer_t
+typemapentry_t	layer.h	/^} typemapentry_t;$/;"	t	typeref:struct:_typemapentry_t
+types	layer.h	/^	uint types[MAX_TYPES_PER_MODULE];$/;"	m	struct:_modulemapentry_t
+uchar	grouter.h	/^typedef unsigned char uchar;$/;"	t
+uint	grouter.h	/^typedef unsigned int  uint;$/;"	t
+un	icmp.h	/^	} un;$/;"	m	struct:_icmphdr_t	typeref:union:_icmphdr_t::_un
+updateinterval	info.h	/^	int updateinterval;            \/\/ seconds between subsequent info. updates$/;"	m	struct:_info_config_t
+usagestr	cli.h	/^	char usagestr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+usagestr	wgini/cli.h	/^	char usagestr[MAX_BUF_LEN];$/;"	m	struct:_cli_entry_t
+ushort	grouter.h	/^typedef unsigned short ushort;$/;"	t
+vclock	packetcore.h	/^    double vclock;$/;"	m	struct:_pktcore_t
+vdata	gnet.h	/^	vpl_data_t *vdata;$/;"	m	struct:_vplinfo_t
+version	uswitch/multiswitch.h	/^    uint8_t	version;	\/\/ set to 0 for this version of STP$/;"	m	struct:_bpdu_t
+version	uswitch/uswitch.h	/^	uint32_t version;$/;"	m	struct:request_v3
+version	vpl.h	/^	uint32_t version;$/;"	m	struct:request_v3
+version	wgini/vpl.h	/^	uint32_t version;$/;"	m	struct:request_v3
+version_major	gpcap.h	/^        uint16_t version_major;  \/* major version number *\/$/;"	m	struct:pcap_hdr_s
+version_minor	gpcap.h	/^        uint16_t version_minor;  \/* minor version number *\/$/;"	m	struct:pcap_hdr_s
+vpl_data	gnet.h	/^	vpl_data_t *vpl_data;				\/\/ vpl library structure$/;"	m	struct:_interface_t
+vpl_data	wgini/vpl.h	/^struct vpl_data {$/;"	s
+vpl_data_t	vpl.h	/^} vpl_data_t;$/;"	t	typeref:struct:_vpl_data_t
+vplinfo_t	gnet.h	/^} vplinfo_t;$/;"	t	typeref:struct:_vplinfo_t
+vs_directory	wgini/gwcenter.h	/^	char *vs_directory;$/;"	m	struct:_wgn_config
+wait_msg	arp.h	/^	gpacket_t *wait_msg;                    \/\/ message that is waiting for ARP resolution$/;"	m	struct:_arp_buffer_entry_t
+wait_time	wgini/gwcenter.h	/^	unsigned int wait_time;                                              \/\/nanoseconds         \/\/ the waiting time before the backoff process $/;"	m	struct:__anon5
+waiting	msgqueue.h	/^	int waiting;$/;"	m	struct:_messageclass_t
+weight	simplequeue.h	/^	double weight;$/;"	m	struct:_simplequeue_t
+wgn_config	wgini/gwcenter.h	/^ } wgn_config;$/;"	t	typeref:struct:_wgn_config
+workQ	packetcore.h	/^    simplequeue_t *workQ;$/;"	m	struct:_pktcore_t
+worker	grouter.h	/^	pthread_t worker;$/;"	m	struct:_router_config
+wqlock	packetcore.h	/^    pthread_mutex_t wqlock;               \/\/ lock for work queue$/;"	m	struct:_pktcore_t
+x	wgini/gwcenter.h	/^    double x;$/;"	m	struct:__anon32
+x_width	wgini/gwcenter.h	/^    double x_width;$/;"	m	struct:__anon9
+y	wgini/gwcenter.h	/^    double y;$/;"	m	struct:__anon32
+y_width	wgini/gwcenter.h	/^	double y_width;$/;"	m	struct:__anon9
+z	wgini/gwcenter.h	/^    double z;$/;"	m	struct:__anon32
+z_width	wgini/gwcenter.h	/^	double z_width;$/;"	m	struct:__anon9

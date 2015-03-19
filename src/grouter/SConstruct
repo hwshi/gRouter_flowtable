@@ -1,0 +1,59 @@
+import os
+import distutils.sysconfig
+# set gini directories.
+
+
+
+gini_include = '../../include'
+#python .h directories
+python_include = distutils.sysconfig.get_python_inc()
+
+env = Environment(	SWIGFLAGS = ['-python'],
+					CPPPATH= [gini_include, python_include],
+					SHLIBPREFIX = '')
+grouter_libs = Split ("""readline
+			 termcap
+			 slack
+			 pthread
+			 util
+			 m
+			 python2.7""")
+
+#a filtered glob function
+
+
+
+
+#print(">>Building Library...")
+#   ?????  unnecessary!?
+#env.SharedLibrary('_cli.so',['cli.c', 'cli.i'])
+
+
+env.Append(CFLAGS='-g')
+env.Append(CFLAGS='-DHAVE_PTHREAD_RWLOCK=1')
+env.Append(CFLAGS='-DHAVE_GETOPT_LONG')
+env.Append(CCFLAGS=["-Wno-write-strings"])
+
+import os.path
+
+def filtered_glob(env, pattern, omit=[],
+  ondisk=True, source=False, strings=False):
+    return filter(
+      lambda f: os.path.basename(f.path) not in omit,
+      env.Glob(pattern))
+
+env.AddMethod(filtered_glob, "FilteredGlob");
+# all source files in this directory
+# we could have used Glob('*.c') as well.. but explicit
+# listing provides finer control over the list.
+
+#grouter_src = Glob('*.c')
+grouter_src = env.FilteredGlob('*.c',['ip_wrap.c', 'cli_wrap.c', 'message_wrap.c'])
+# some of the following library dependencies can be removed?
+# may be the termcap is not needed anymore..?
+# TODO: libslack should be removed.. required routines should be custom compiled
+
+
+#grouter = env.Program('grouter', grouter_src, LIBS=grouter_libs)
+grouter = env.Object(grouter_src, LIBS=grouter_libs)
+#grouter_cli = env.Object('cli_wrap.o', 'cli_wrap.c')
