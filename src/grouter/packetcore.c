@@ -385,7 +385,7 @@ void *packetProcessor(void *pc)
         //     //continue to read next pkt in workq: Haowei
         //     continue;
         // }
-
+        printf("[packetProcessor]:packet addr:(0x%lx)\n", (unsigned long)in_pkt);
 
         ftentry_t *entry_res;
         ushort prot;
@@ -398,15 +398,16 @@ void *packetProcessor(void *pc)
         }
         //TODO: call function using action(char *):  PyObject_CallFunction(String)
         printf("[packetProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+
         if (entry_res->language == C_FUNCTION)
         {
 
-            printf("[packetProcessor]:: C Function: Action: %s\n", entry_res->action);
+            printf("[packetProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
             int (*processor)(gpacket_t *);
             processor = entry_res->action;
             int nextlable = (*processor)(in_pkt);
-            if(nextlable == EXIT_SUCCESS || nextlable == EXIT_FAILURE) continue;
-            if(nextlable == UDP_PROTOCOL) printf("UDP!!!!!!!!");
+            if (nextlable == EXIT_SUCCESS || nextlable == EXIT_FAILURE) continue;
+            if (nextlable == UDP_PROTOCOL) printf("UDP!!!!!!!!");
             verbose(2, "[Ft]New style round");
             labelNext(in_pkt, entry_res->protocol, nextlable);
             verbose(2, "Writing back to work Q...");
@@ -414,16 +415,15 @@ void *packetProcessor(void *pc)
 
             verbose(2, "Wrote back to work Q...");
             printSimpleQueue(pcore->workQ);
-            getchar();
-        
+
         }
         else if (entry_res->language == PYTHON_FUNCTION)
         {
-            printf("[packetProcessor]:: Python Function: Action: %s\n", entry_res->action);
+            printf("[packetProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
             //TODO: Python embedding
             PyObject * Py_pFun = entry_res->action;
-            PyObject *Py_pResult = PyObject_CallFunction(Py_pFun, NULL, NULL);
-            
+            PyObject *Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+
         }
 
 
@@ -621,7 +621,7 @@ int FTCheckPacket4Me(gpacket_t *in_pkt)
 }
 int labelInit(gpacket_t *pkt)
 {
-    printf("[labelInit]::\n");
+    verbose(2, "[labelInit]::");
     int i;
     for (i = 0; i < 8; i ++)
     {
@@ -635,17 +635,20 @@ int labelNext(gpacket_t *pkt, int cur_prot, int next_prot)
     int i;
     if (cur_prot == NULL_PROTOCOL)
     {
-        printf("[labelNext]:: 1st Round\n");
+        verbose(2, "[labelNext]:: 1st Round");
         pkt->frame.label[4].prot = next_prot;
         pkt->frame.label[4].process = 0;
     }
     else
     {
-        printf("[labelNext]:: else");
+        verbose(2, "[labelNext]:: else");
         for (i = 0; i < 8; i ++)
         {
             if (pkt->frame.label[i].prot == cur_prot)
             {
+                //set processed label
+                pkt->frame.label[i].process = 1;
+
                 if (IPCheckPacket4Me(pkt))
                 {
                     if (i + 1 > 7)
@@ -654,7 +657,8 @@ int labelNext(gpacket_t *pkt, int cur_prot, int next_prot)
                         return EXIT_FAILURE;
                     }
                     pkt->frame.label[i + 1].prot = next_prot;
-                    pkt->frame.label[4].process = 0;
+                    pkt->frame.label[i + 1].process = 0;
+                    verbose(2, "For me:: Label [%d] changed to protocol [%d]", cur_prot, next_prot);
                 }
                 else
                 {
@@ -663,8 +667,10 @@ int labelNext(gpacket_t *pkt, int cur_prot, int next_prot)
                         printf("LABEL EXECEEDED 2!\n");
                         return EXIT_FAILURE;
                     }
+
                     pkt->frame.label[i - 1].prot = next_prot;
-                    pkt->frame.label[4].process = 0;
+                    pkt->frame.label[i - 1].process = 0;
+                    verbose(2, "For others:: Label [%d] changed to protocol [%d]", cur_prot, next_prot);
                 }
             }
         }

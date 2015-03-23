@@ -25,11 +25,16 @@ int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
         if (flowtable->num < MAX_ENTRY_NUMBER)
         {
             //flowtable->entry[flowtable->num].protocol = 0;//TODO: Haowei bug??
-            flowtable->num++;
+
             flowtable->entry[flowtable->num].is_empty = 0;
             flowtable->entry[flowtable->num].language = language;
             flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL;
+            if (content == NULL)
+            {
+                verbose(2, "pFunc is NULL !!");
+            }
             flowtable->entry[flowtable->num].action = content;//BUG !!
+            flowtable->num++;
             return EXIT_SUCCESS;
         }
         else
@@ -99,7 +104,7 @@ int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
     //SWIG_init();
     //init_CFT();//TODO: build CFT
     //==
-    verbose(2, "Start to add protocol");
+    verbose(2, "[addProtocol]Start to add protocol");
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append('./')");
 
@@ -107,25 +112,29 @@ int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
     pProtMod = PyImport_ImportModule(protname);//load protocol.py
     if (!pProtMod)
     {
-        verbose(2  , "loading protocol module failed!\n");
+        verbose(2  , "[addProtocol]loading protocol module failed!\n");
         return EXIT_FAILURE;
     }
     //verbose(2  , "Executing Python scritps...\n");
 
     //verbose(2  , "%s",pUDPMod);
-    verbose(2  , "New protocol Module loaded\n");
-    if (pProtMod)
+    verbose(2  , "[addProtocol]New protocol Module loaded\n");
+    if (pProtMod != NULL)
     {
-        verbose(2  , "module [udp] imported\n");
+        verbose(2  , "[addProtocol]module [udp] imported\n");
         pProtGlobalDict = PyModule_GetDict(pProtMod);   // Get main dictionary
         //CheckPythonError();
-        if (pProtGlobalDict)
+        if (pProtGlobalDict != NULL)
         {
-            verbose(2  , "main dictionary got\n");
+            verbose(2  , "[addProtocol]main dictionary got\n");
             pFunc = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor");//TODO: find function of getEntry
             //CheckPythonError();
+            if (pFunc == NULL) {
+                verbose(2, "[addProtocol]pFunc is NULL !!");
+                return EXIT_FAILURE;
+            }
             addEntry(flowtable, CLASSICAL, language, (void *)pFunc);//add protocol into flow table
-            verbose(2, "!!!!Python Processor added into flowtable!!!");
+            verbose(2, "[addProtocol]!!!!Python Processor added into flowtable!!!");
             /*            if (pFunc)
                         {
                             verbose(2  , "found function [getEntry]\n");
@@ -176,8 +185,8 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
         //verbose(2  , "[checkFlowTable]::Checking for entry");
         if (flowtable->entry[j].protocol == prot)
         {
-            
-            verbose(2  , "[checkFlowTable]:: Entry found protocol(EtherType): %#06x\n", flowtable->entry[j].protocol);
+
+            verbose(2  , "[checkFlowTable]:: Entry found protocol(entry): %#06x\n", flowtable->entry[j].protocol);
             return &(flowtable->entry[j]);
         }
     }
