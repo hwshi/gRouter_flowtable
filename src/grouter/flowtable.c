@@ -10,7 +10,7 @@
 #include "flowtable.h"
 #include "Python.h"
 //
-int addEntry(flowtable_t *flowtable, int type, void *content)
+int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
 {
     verbose(2  , "[addEntry]:: \n");
     if (type == CLASSICAL)
@@ -24,7 +24,11 @@ int addEntry(flowtable_t *flowtable, int type, void *content)
         //append: reason: less time when check pkt/add entry, more time delete entry;
         if (flowtable->num < MAX_ENTRY_NUMBER)
         {
-            flowtable->entry[flowtable->num].protocol = 0;//TODO: Haowei bug??
+            //flowtable->entry[flowtable->num].protocol = 0;//TODO: Haowei bug??
+            flowtable->num++;
+            flowtable->entry[flowtable->num].is_empty = 0;
+            flowtable->entry[flowtable->num].language = language;
+            flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL;
             flowtable->entry[flowtable->num].action = content;//BUG !!
             return EXIT_SUCCESS;
         }
@@ -75,7 +79,7 @@ int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function)
     if (flowtable->num < MAX_ENTRY_NUMBER)
     {
         flowtable->entry[flowtable->num].is_empty = 0;
-        flowtable->entry[flowtable->num].language = 0;
+        flowtable->entry[flowtable->num].language = C_FUNCTION;
         flowtable->entry[flowtable->num].protocol = prot;
         flowtable->entry[flowtable->num].action = function;
         flowtable->num ++;
@@ -87,7 +91,7 @@ int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function)
     }
     return EXIT_SUCCESS;
 }
-int addProtocol(flowtable_t *flowtable, char *protname)
+int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
 {
     //TODO: 1. import module 2. find getEntry function 3.addEntry with \
     //given entry
@@ -95,6 +99,7 @@ int addProtocol(flowtable_t *flowtable, char *protname)
     //SWIG_init();
     //init_CFT();//TODO: build CFT
     //==
+    verbose(2, "Start to add protocol");
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append('./')");
 
@@ -105,7 +110,7 @@ int addProtocol(flowtable_t *flowtable, char *protname)
         verbose(2  , "loading protocol module failed!\n");
         return EXIT_FAILURE;
     }
-    verbose(2  , "Executing Python scritps...\n");
+    //verbose(2  , "Executing Python scritps...\n");
 
     //verbose(2  , "%s",pUDPMod);
     verbose(2  , "New protocol Module loaded\n");
@@ -113,13 +118,14 @@ int addProtocol(flowtable_t *flowtable, char *protname)
     {
         verbose(2  , "module [udp] imported\n");
         pProtGlobalDict = PyModule_GetDict(pProtMod);   // Get main dictionary
-        CheckPythonError();
+        //CheckPythonError();
         if (pProtGlobalDict)
         {
             verbose(2  , "main dictionary got\n");
             pFunc = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor");//TODO: find function of getEntry
-            CheckPythonError();
-            addEntry(flowtable, CLASSICAL, (void *)pFunc);//add protocol into flow table
+            //CheckPythonError();
+            addEntry(flowtable, CLASSICAL, language, (void *)pFunc);//add protocol into flow table
+            verbose(2, "!!!!Python Processor added into flowtable!!!");
             /*            if (pFunc)
                         {
                             verbose(2  , "found function [getEntry]\n");

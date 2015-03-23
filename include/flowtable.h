@@ -28,7 +28,6 @@
 
  //type of language
  #define C_FUNCTION 0
-  #define PYTHON_FUNCTION 1
  #define PYTHON_FUNCTION 1
 
 
@@ -47,11 +46,10 @@ typedef struct _flowtable_t
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
 
-
-int addEntry();
+int addEntry(flowtable_t *flowtable, int type, ushort language, void *content);
 int deleteEntry();
 flowtable_t *initFlowTable();
 int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function);
-int addProtocol(flowtable_t *flowtable, char *protname);
+int addProtocol(flowtable_t *flowtable,ushort language, char *protname);
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
 #endif

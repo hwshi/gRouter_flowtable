@@ -1191,10 +1191,23 @@ void addprotCmd()
     {
         printf("[addprotCmd]:: adding %s\n", next_tok);
         //TODO: addProtocol(pcore->flowtable, next_tok);
-        if(!addProtocol(pcore->flowtable, next_tok))
-        {
-        	printf("[addprotCmd]:: failed to add protocol:  %s\n", next_tok);
-        }
-
+        //FOR PYTHON
+        ushort language = PYTHON_FUNCTION;
+        addProtocol(pcore->flowtable, language, next_tok);
+        // PyObject *Py_pMod = PyImport_ImportModule(next_tok);
+        // if(Py_pMod != NULL){
+        //     Py_pGlobDict = PyModule_GetDict(Py_pMod);
+        //     if(Py_pGlobDict != NULL){
+        //         Py_pFunc = PyDict_GetItemString(Py_pGlobDict, "UDPPacketProcess");
+        //         if(Py_pFunc != NULL){
+        //             addProtocol(pcore->flowtable, );
+        //         }
+        //     }
+        // }
+        // if(!addProtocol(pcore->flowtable, next_tok))
+        // {
+        // 	printf("[addprotCmd]:: failed to add protocol:  %s\n", next_tok);
+        // }
+        verbose(2, "Protocol Added");
     }
 }

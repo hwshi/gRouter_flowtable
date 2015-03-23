@@ -24,8 +24,8 @@
 #include <sys/time.h>
 #include <pthread.h>
 //Haowei Debug
-
- #include <memdebug.h>
+#include "Python.h"
+ //#include <memdebug.h>
 /*
  * global definitions.... this is stuff that could not be
  * put into specialized header files....

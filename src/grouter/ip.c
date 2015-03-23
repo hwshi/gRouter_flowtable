@@ -19,7 +19,7 @@
 #include <string.h>
 
 //Haowei
-#include "ip_wrap.c"
+//#include "ip_wrap.c"
 
 route_entry_t route_tbl[MAX_ROUTES];       	// routing table
 mtu_entry_t MTU_tbl[MAX_MTU];		        // MTU table
@@ -40,7 +40,9 @@ void IPInit()
  * This is a wrapper routine that calls the appropriate subroutine to take
  * the appropriate function.
  */
-void IPIncomingPacket(gpacket_t *in_pkt)
+
+ //** Modification from void IPIncomingPacket(gpacket_t *in_pkt)
+int IPIncomingPacket(gpacket_t *in_pkt)
 {
 	char tmpbuf[MAX_TMPBUF_LEN];
 	// get a pointer to the IP packet
@@ -317,8 +319,9 @@ int IPProcessMyPacket(gpacket_t *in_pkt)
 		// Is packet UDP/TCP (only UDP implemented now)
 		// May be we can deal with other connectionless protocols as well.
 		if (ip_pkt->ip_prot == UDP_PROTOCOL){
-			UDPProcess(in_pkt);
-		  return EXIT_SUCCESS;
+			//UDPProcess(in_pkt);
+		  //return EXIT_SUCCESS;
+			return UDP_PROTOCOL;
     }
 
 	}
@@ -332,23 +335,23 @@ int IPProcessMyPacket(gpacket_t *in_pkt)
  */
 extern PyObject *pUDPMod, *pUDPGlobalDict;
 PyObject *pFunc, *pResult, *pArg, *pPcore;
-int PythonError(PyObject *pObj)
-{
-	char *Str = PyString_AsString(pObj);
-	return printf(Str);
-}
+// int PythonError(PyObject *pObj)
+// {
+// 	char *Str = PyString_AsString(pObj);
+// 	return printf(Str);
+// }
 
-void CheckPythonError(void)
-{
-	if (PyErr_Occurred() != NULL)
-	{
-		PyErr_Print();
-		PyErr_Clear();
-	}
-}
+// void CheckPythonError(void)
+// {
+// 	if (PyErr_Occurred() != NULL)
+// 	{
+// 		PyErr_Print();
+// 		PyErr_Clear();
+// 	}
+// }
 int UDPProcess(gpacket_t *in_pkt)
 {
-	//freopen("PyTest.Log", "w", stdout);
+/*	//freopen("PyTest.Log", "w", stdout);
 	printf("Process ID = %d\n", getpid());
 	
 	verbose(2, "[UDPProcess]:: packet received for processing.. IMPLEMENTING!! ");
@@ -410,6 +413,9 @@ int UDPProcess(gpacket_t *in_pkt)
     }
     //Py_Finalize();
  	return EXIT_SUCCESS;
+ 	*/
+ 	printf("!!!!!!!   Invalid UPD Function ! You are not supposed to be here : )\n");
+ 	return EXIT_FAILURE;
 }
 
 

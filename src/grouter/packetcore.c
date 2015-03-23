@@ -404,12 +404,26 @@ void *packetProcessor(void *pc)
             printf("[packetProcessor]:: C Function: Action: %s\n", entry_res->action);
             int (*processor)(gpacket_t *);
             processor = entry_res->action;
-            (*processor)(in_pkt);
-            //free(in_pkt);//TODO: Temporary solution for DUPLICATE PKT
+            int nextlable = (*processor)(in_pkt);
+            if(nextlable == EXIT_SUCCESS || nextlable == EXIT_FAILURE) continue;
+            if(nextlable == UDP_PROTOCOL) printf("UDP!!!!!!!!");
+            verbose(2, "[Ft]New style round");
+            labelNext(in_pkt, entry_res->protocol, nextlable);
+            verbose(2, "Writing back to work Q...");
+            writeQueue(pcore->workQ, in_pkt, sizeof(gpacket_t));
+
+            verbose(2, "Wrote back to work Q...");
+            printSimpleQueue(pcore->workQ);
+            getchar();
+        
         }
         else if (entry_res->language == PYTHON_FUNCTION)
         {
             printf("[packetProcessor]:: Python Function: Action: %s\n", entry_res->action);
+            //TODO: Python embedding
+            PyObject * Py_pFun = entry_res->action;
+            PyObject *Py_pResult = PyObject_CallFunction(Py_pFun, NULL, NULL);
+            
         }
 
 

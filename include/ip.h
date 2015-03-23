@@ -59,7 +59,8 @@ typedef struct _ip_packet_t
 // function prototypes...
 
 void IPInit();
-void IPIncomingPacket(gpacket_t *in_pkt);
+//** Modification from void IPIncomingPacket(gpacket_t *in_pkt)
+int IPIncomingPacket(gpacket_t *in_pkt);
 int IPCheckPacket4Me(gpacket_t *in_pkt);
 int IPProcessBcastPacket(gpacket_t *in_pkt);
 int IPProcessForwardingPacket(gpacket_t *in_pkt);
