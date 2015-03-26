@@ -27,6 +27,8 @@
 #include "classifier.h"
 #include "grouter.h"
 
+#include "ginic_wrap.c"
+
 extern classlist_t *classifier;
 //extern route_entry_t route_tbl[MAX_ROUTES];        // in ip.c routing table
 extern mtu_entry_t MTU_tbl[MAX_MTU];               // in ip.c MTU table
@@ -394,7 +396,8 @@ void *packetProcessor(void *pc)
         if (entry_res == NULL)
             //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
         {
-            printf("[packetProcessor]:: Cannot find action to given packet...\n");
+            printf("[packetProcessor]:: Cannot find action to given packet...Drop!\n");
+            return;
         }
         //TODO: call function using action(char *):  PyObject_CallFunction(String)
         printf("[packetProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
@@ -402,14 +405,17 @@ void *packetProcessor(void *pc)
         if (entry_res->language == C_FUNCTION)
         {
 
-            printf("[packetProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
+            verbose(2, "[packetProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
             int (*processor)(gpacket_t *);
             processor = entry_res->action;
-            int nextlable = (*processor)(in_pkt);
-            if (nextlable == EXIT_SUCCESS || nextlable == EXIT_FAILURE) continue;
-            if (nextlable == UDP_PROTOCOL) printf("UDP!!!!!!!!");
+            int nextlabel = (*processor)(in_pkt);
+            if (nextlabel == EXIT_SUCCESS){
+                verbose(2, "[packetProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
+                continue;
+            } 
+            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
             verbose(2, "[Ft]New style round");
-            labelNext(in_pkt, entry_res->protocol, nextlable);
+            labelNext(in_pkt, entry_res->protocol, nextlabel);
             verbose(2, "Writing back to work Q...");
             writeQueue(pcore->workQ, in_pkt, sizeof(gpacket_t));
 
@@ -419,11 +425,20 @@ void *packetProcessor(void *pc)
         }
         else if (entry_res->language == PYTHON_FUNCTION)
         {
-            printf("[packetProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
+            verbose(2, "[packetProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
             //TODO: Python embedding
-            PyObject * Py_pFun = entry_res->action;
-            PyObject *Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
-
+            //TODO: ?? Where to declaire!?
+            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+            Py_pFun = entry_res->action;
+            Py_pPkt = SWIG_NewPointerObj((void *)in_pkt, SWIGTYPE_p__gpacket_t, 1);
+            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+            if(Py_pPkt)
+            {
+                verbose(2, "Got Pyton obj\n");
+                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+                //CheckPythonError();
+                printf("pResult: %s",Py_pResult);
+            }
         }
 
 
@@ -491,8 +506,8 @@ char *tagPacket(pktcore_t *pcore, gpacket_t *in_pkt)
         return defaultstr;
 }
 
-
-void enqueuePacket(pktcore_t *pcore, gpacket_t *in_pkt, int pktsize)
+//Haowei void -> int
+int enqueuePacket(pktcore_t *pcore, gpacket_t *in_pkt, int pktsize)
 {
     char *qkey;
     simplequeue_t *thisq;
@@ -653,7 +668,7 @@ int labelNext(gpacket_t *pkt, int cur_prot, int next_prot)
                 {
                     if (i + 1 > 7)
                     {
-                        printf("LABEL EXECEEDED 1!\n");
+                        verbose(2, "LABEL EXECEEDED 1!\n");
                         return EXIT_FAILURE;
                     }
                     pkt->frame.label[i + 1].prot = next_prot;
@@ -664,7 +679,7 @@ int labelNext(gpacket_t *pkt, int cur_prot, int next_prot)
                 {
                     if (i - 1 < 0)
                     {
-                        printf("LABEL EXECEEDED 2!\n");
+                        verbose(2, "LABEL EXECEEDED 2!\n");
                         return EXIT_FAILURE;
                     }
 

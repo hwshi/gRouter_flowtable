@@ -3,7 +3,7 @@
 #instance_var_name, function_parameter_name, local_var_name.
 
 
-import Cip#,Cmessage,Csimplequeue
+import _GINIC#,Cmessage,Csimplequeue
 import inspect
 import struct
 import string
@@ -127,11 +127,17 @@ def ncCmdPy():
 	#print(nc)
 	PCBCore.NAME = "ncCmdPyed!"
 	#nc.thread_recv_from()
+def Protocol_Processor():
+	print("=====Py#[Packet_Processor]::=====")
+	print("[UDPPacketProcess]Process ID: %d") % os.getpid();
+	print("ready")
+	print(gpkt)
+	print("dir:")
+	print(dir(gpkt))
+	print("Done")
 
-def UDPPacketProcess(gpkt, pcore):
-	Cip.cvar.pcore = pcore
-	print("<--python--pcore at: %s") % hex(id(pcore))
-	print("[Python]Process ID: %d") % os.getpid();
+def UDPPacketProcess(gpkt):
+	print("[UDPPacketProcess]Process ID: %d") % os.getpid();
 	print("[UDPPacketProcess]::")
 	PCBCore.get_name() 
 	PCBCore.NAME = "Processed!"

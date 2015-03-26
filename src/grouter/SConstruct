@@ -48,7 +48,7 @@ env.AddMethod(filtered_glob, "FilteredGlob");
 # listing provides finer control over the list.
 
 #grouter_src = Glob('*.c')
-grouter_src = env.FilteredGlob('*.c',['ip_wrap.c', 'cli_wrap.c', 'message_wrap.c'])
+grouter_src = env.FilteredGlob('*.c',['ginic_wrap.c'])
 # some of the following library dependencies can be removed?
 # may be the termcap is not needed anymore..?
 # TODO: libslack should be removed.. required routines should be custom compiled

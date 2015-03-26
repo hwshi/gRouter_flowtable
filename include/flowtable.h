@@ -21,6 +21,7 @@
 #include "protocols.h"
  #include "ip.h"
  #include "arp.h"
+ #include "icmp.h"
 //#include "packetcore.h"
 //tpye of entry
 #define CLASSICAL 1

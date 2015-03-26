@@ -1,14 +1,6 @@
-swig -python ip.i 
-#swig -python cli.i
-#swig -python simplequeue.i
+swig -python ginic.i 
 scons
-gcc -shared -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o _Cip.so
-
-#gcc -shared -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o _Cip.so
-#gcc -shared -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o _Ccli.so
-#gcc -shared -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o _Csimplequeue.so
-#rm cli_wrap.o
-#gcc -fPIC -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o grouter
+gcc -shared -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o _GINIC.so
 gcc -I/usr/include/python2.7/ -I../../include *.o -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -o grouter
 
 rm *.o

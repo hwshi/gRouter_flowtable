@@ -62,6 +62,8 @@ void printOneQueue(pktcore_t *pcore, char *qname);
 void modifyQueueWeight(pktcore_t *pcore, char *qname, double weight);
 void modifyQueueDiscipline(pktcore_t *pcore, char *qname, char *qdisc);
 int delPktCoreQueue(pktcore_t *pcore, char *qname);
+//Haowei add
+int enqueuePacket(pktcore_t *pcore, gpacket_t *in_pkt, int pktsize);
 
 pthread_t PktCoreSchedulerInit(pktcore_t *pcore);
 int PktCoreWorkerInit(pktcore_t *pcore);

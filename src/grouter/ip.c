@@ -312,8 +312,9 @@ int IPProcessMyPacket(gpacket_t *in_pkt)
 		// further processing with appropriate type code
 
 		if (ip_pkt->ip_prot == ICMP_PROTOCOL) {
-			ICMPProcessPacket(in_pkt);
-		  return EXIT_SUCCESS;
+			//ICMPProcessPacket(in_pkt);
+		  	//return EXIT_SUCCESS;
+		  	return ICMP_PROTOCOL;
     }
 
 		// Is packet UDP/TCP (only UDP implemented now)

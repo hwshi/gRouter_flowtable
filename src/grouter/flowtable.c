@@ -16,24 +16,14 @@ int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
     if (type == CLASSICAL)
     {
         verbose(2  , "[addEntry]:: Adding a classical entry\n");
-        //ftentry_t *entry = (ftentry_t *)malloc(sizeof(ftentry_t));
-        //entry->protocol = 0;//TODO: protocol num by RFC;
-        //PyObject *action = (PyObject)content;
-        //entry->action = content;
         //TODO: how to add?: append? insert? : Haowei
         //append: reason: less time when check pkt/add entry, more time delete entry;
         if (flowtable->num < MAX_ENTRY_NUMBER)
         {
-            //flowtable->entry[flowtable->num].protocol = 0;//TODO: Haowei bug??
-
             flowtable->entry[flowtable->num].is_empty = 0;
             flowtable->entry[flowtable->num].language = language;
             flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL;
-            if (content == NULL)
-            {
-                verbose(2, "pFunc is NULL !!");
-            }
-            flowtable->entry[flowtable->num].action = content;//BUG !!
+            flowtable->entry[flowtable->num].action = content;
             flowtable->num++;
             return EXIT_SUCCESS;
         }
@@ -53,6 +43,7 @@ int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
 
     return EXIT_FAILURE;
 }
+
 int deleteEntry()
 {
     verbose(2  , "[deleteEntry]:: \n");
@@ -66,6 +57,7 @@ flowtable_t *initFlowTable()
     //int (*function_ptr)(gpacket_t);
     defaultProtocol(flowtable, ARP_PROTOCOL, (void *)ARPProcess);
     defaultProtocol(flowtable, IP_PROTOCOL, (void *)IPIncomingPacket);
+    defaultProtocol(flowtable, ICMP_PROTOCOL, (void *)ICMPProcessPacket);
     //default entries IP
     // ftentry_t *entry = (ftentry_t *)malloc(sizeof(ftentry_t));
     // entry->is_empty = 0;
