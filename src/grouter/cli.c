@@ -93,6 +93,7 @@ int CLIInit(router_config *rarg)
     registerCLI("filter", filterCmd, SHELP_FILTER, USAGE_FILTER, LHELP_FILTER);
     //adding commands for protocol importing
     registerCLI("addprot", addprotCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
+    registerCLI("flowtable", showftCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
 
 
     if (rarg->config_dir != NULL)
@@ -1211,3 +1212,9 @@ void addprotCmd()
         verbose(2, "Protocol Added");
     }
 }
+
+void showftCmd()
+{
+    printFlowTable(pcore->flowtable);
+}
+

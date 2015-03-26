@@ -15,7 +15,10 @@
 #include "packetcore.h"
 #include "classifier.h"
 #include "filter.h"
+// python swig module
 #include <pthread.h>
+
+
 
 router_config rconfig = {.router_name=NULL, .gini_home=NULL, .cli_flag=0, .config_file=NULL, .config_dir=NULL, .ghandler=0, .clihandler= 0, .scheduler=0, .worker=0, .schedcycle=10000};
 pktcore_t *pcore;
@@ -76,7 +79,8 @@ int main(int ac, char *av[])
 
 	classifier = createClassifier();
 	filter = createFilter(classifier, 0);
-
+	//Haowei for Python
+	Py_Initialize();
 	pcore = createPacketCore(rconfig.router_name, outputQ, workQ);
 	printf("[main]:: flowtable size: %d\n", pcore->flowtable->num);
 	// add a default Queue.. the createClassifier has already added a rule with "default" tag
@@ -92,8 +96,9 @@ int main(int ac, char *av[])
 		addTarget("Default Queue", qtoa);
 	else
 		printf("Error .. found null queue for default\n");
-	//Haowei for Python
-	Py_Initialize();
+	
+	
+
 	// start the CLI..
 	CLIInit(&(rconfig));
 

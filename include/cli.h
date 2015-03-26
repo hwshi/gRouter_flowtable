@@ -73,6 +73,6 @@ void spolicyCmd();
 void classCmd();
 void filterCmd();
 void addprotCmd();
-
+void showftCmd();
 
 #endif

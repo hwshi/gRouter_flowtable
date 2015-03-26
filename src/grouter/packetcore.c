@@ -122,6 +122,9 @@ pktcore_t *createPacketCore(char *rname, simplequeue_t *outQ, simplequeue_t *wor
     }
 
     verbose(6, "[createPacketCore]:: packet core successfully created ...");
+    //Haowei
+    SWIG_init();
+    //Init_GINIC();
     return pcore;
 }
 
@@ -437,7 +440,7 @@ void *packetProcessor(void *pc)
                 verbose(2, "Got Pyton obj\n");
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
                 //CheckPythonError();
-                printf("pResult: %s",Py_pResult);
+                printf("pResult: %p",Py_pResult);
             }
         }
 

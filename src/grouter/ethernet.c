@@ -110,7 +110,7 @@ void* fromEthernetDev(void *arg)
 		if ((COMPARE_MAC(in_pkt->data.header.dst, iface->mac_addr) != 0) &&
 			(COMPARE_MAC(in_pkt->data.header.dst, bcast_mac) != 0))
 		{
-			verbose(1, "[fromEthernetDev]:: Packet dropped .. not for this router!? ");
+			verbose(2, "[fromEthernetDev]:: Packet dropped .. not for this router!? ");
 			free(in_pkt);
 			continue;
 		}

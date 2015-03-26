@@ -55,5 +55,5 @@ grouter_src = env.FilteredGlob('*.c',['ginic_wrap.c'])
 
 
 #grouter = env.Program('grouter', grouter_src, LIBS=grouter_libs)
-grouter = env.Object(grouter_src, LIBS=grouter_libs)
+grouter = env.Program('grouter', grouter_src, LIBS=grouter_libs)
 #grouter_cli = env.Object('cli_wrap.o', 'cli_wrap.c')

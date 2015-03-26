@@ -185,3 +185,20 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
     verbose(2  , "!!!!?????\n");
     return NULL;
 }
+
+void printFlowTable(flowtable_t *flowtable)
+{
+    printf("--  Flow Table Status  --\n");
+    printf("Size: %d\n", flowtable->num);
+    printf("Details: \n");
+    int i;
+    for(i = 0;i < flowtable->num; i ++)
+    {
+        printf("\t[%d]protocol: %d language: %d :: action %p\n", 
+            i, 
+            flowtable->entry[i].protocol, 
+            flowtable->entry[i].language, 
+            flowtable->entry[i].action);
+    }
+    printf("-- End of Flow Table --\n");
+}

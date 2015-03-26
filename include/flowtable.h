@@ -53,4 +53,5 @@ flowtable_t *initFlowTable();
 int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function);
 int addProtocol(flowtable_t *flowtable,ushort language, char *protname);
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
+void printFlowTable(flowtable_t *flowtable);
 #endif

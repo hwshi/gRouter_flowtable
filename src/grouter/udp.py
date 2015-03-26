@@ -15,73 +15,73 @@ import thread
 import os
 #,Cmessage
 # PCB set2q1
-class PCBCore:
-	print("PCBCore is initilizing...")
-	NAME = 'PCB CORE'
-	MAX_PCB_NUMBER = 20
-	MAX_PORT_NUMBER = 65536
-	MAX_BUFFER_SIZE = 1000
-	socket_count = 0
-	PCB_dict = {} #{port: (pkt1, pkt2, ...)}
-	#lock = thread.allocate_lock()
-	#print(lock)
-	print("PCBCore is initilaized")
-	@staticmethod
-	def pcb_bind_socket(port):
-		if PCBCore.socket_count == PCBCore.MAX_PCB_NUMBER:
-			print("Fail! Cannot have more sockets!")
-			return
-		if PCBCore.socket_count ==  PCBCore.MAX_PORT_NUMBER:
-			print("Fail! Port number invalid")
-			return
-		if PCBCore.PCB_dict.has_key(port):
-			print("Fail! Port already binded!")
-			return
-		PCBCore.PCB_dict.update({port : []})
-		print("Socket binded!")
+# class PCBCore:
+# 	print("PCBCore is initilizing...")
+# 	NAME = 'PCB CORE'
+# 	MAX_PCB_NUMBER = 20
+# 	MAX_PORT_NUMBER = 65536
+# 	MAX_BUFFER_SIZE = 1000
+# 	socket_count = 0
+# 	PCB_dict = {} #{port: (pkt1, pkt2, ...)}
+# 	#lock = thread.allocate_lock()
+# 	#print(lock)
+# 	print("PCBCore is initilaized")
+# 	@staticmethod
+# 	def pcb_bind_socket(port):
+# 		if PCBCore.socket_count == PCBCore.MAX_PCB_NUMBER:
+# 			print("Fail! Cannot have more sockets!")
+# 			return
+# 		if PCBCore.socket_count ==  PCBCore.MAX_PORT_NUMBER:
+# 			print("Fail! Port number invalid")
+# 			return
+# 		if PCBCore.PCB_dict.has_key(port):
+# 			print("Fail! Port already binded!")
+# 			return
+# 		PCBCore.PCB_dict.update({port : []})
+# 		print("Socket binded!")
 
-	@staticmethod
-	def pcb_close_socket(port):
-		#PCBCore.lock.acquire()
-		if PCBCore.PCB_dict.has_key(port):
-			##PCBCore.lock.acquire()
-			del PCBCore.PCB_dict[port]
-			PCBCore.socket_count = PCBCore.socket_count - 1
-			#PCBCore.lock.release()
-		else:
-			#PCBCore.lock.release()
-			print("Socket doesn't exist!")
+# 	@staticmethod
+# 	def pcb_close_socket(port):
+# 		#PCBCore.lock.acquire()
+# 		if PCBCore.PCB_dict.has_key(port):
+# 			##PCBCore.lock.acquire()
+# 			del PCBCore.PCB_dict[port]
+# 			PCBCore.socket_count = PCBCore.socket_count - 1
+# 			#PCBCore.lock.release()
+# 		else:
+# 			#PCBCore.lock.release()
+# 			print("Socket doesn't exist!")
 
-	@staticmethod
-	def recv_packet(pkt):
-		print("[recv_packet] 1")
-		port = pkt.dport
-		print("[recv_packet] testing PCB_dict")
-		#PCBCore.lock.acquire()
-		if PCBCore.PCB_dict.has_key(port):
-			print("[recv_packet] 2")
-			new_value = PCBCore.PCB_dict[port].append(pkt)
-			PCBCore.PCB_dict.update({port: new_value})
-		print("[recv_packet] Done")
-		#PCBCore.lock.release()
+# 	@staticmethod
+# 	def recv_packet(pkt):
+# 		print("[recv_packet] 1")
+# 		port = pkt.dport
+# 		print("[recv_packet] testing PCB_dict")
+# 		#PCBCore.lock.acquire()
+# 		if PCBCore.PCB_dict.has_key(port):
+# 			print("[recv_packet] 2")
+# 			new_value = PCBCore.PCB_dict[port].append(pkt)
+# 			PCBCore.PCB_dict.update({port: new_value})
+# 		print("[recv_packet] Done")
+# 		#PCBCore.lock.release()
 
-	@staticmethod
-	def pcb_get_packet(port):
-		print("[pcb_get_packet] 1")
-		#PCBCore.lock.acquire()
-		print("[pcb_get_packet] locked")
-		if len(PCBCore.PCB_dict[port]) > 0:
-			print("Found pkt")
-			pkt = PCBCore.PCB_dict[port].pop(0)
-			print("[pcb_get_packet] Done")
-			#PCBCore.lock.release()
-			return pkt
-		else:
-			print ""
-			#PCBCore.lock.release()
-	@staticmethod
-	def get_name():
-		print("[get_name]: %s") % PCBCore.NAME
+# 	@staticmethod
+# 	def pcb_get_packet(port):
+# 		print("[pcb_get_packet] 1")
+# 		#PCBCore.lock.acquire()
+# 		print("[pcb_get_packet] locked")
+# 		if len(PCBCore.PCB_dict[port]) > 0:
+# 			print("Found pkt")
+# 			pkt = PCBCore.PCB_dict[port].pop(0)
+# 			print("[pcb_get_packet] Done")
+# 			#PCBCore.lock.release()
+# 			return pkt
+# 		else:
+# 			print ""
+# 			#PCBCore.lock.release()
+# 	@staticmethod
+# 	def get_name():
+# 		print("[get_name]: %s") % PCBCore.NAME
 		
 # PCB
 # class PCB:
@@ -127,13 +127,19 @@ def ncCmdPy():
 	#print(nc)
 	PCBCore.NAME = "ncCmdPyed!"
 	#nc.thread_recv_from()
-def Protocol_Processor():
+def Protocol_Processor(gpkt):
 	print("=====Py#[Packet_Processor]::=====")
 	print("[UDPPacketProcess]Process ID: %d") % os.getpid();
 	print("ready")
 	print(gpkt)
 	print("dir:")
 	print(dir(gpkt))
+	udpPacketFromC = GINIC.getUDPPacketString(gpkt)
+	packet = disassemble(udpPacketFromC, 1)
+	print(packet)
+	if packet.dport == 7:
+		print("recieved an UDP ECHO packet")
+		_udp_echo_reply(packet)
 	print("Done")
 
 def UDPPacketProcess(gpkt):
@@ -173,16 +179,8 @@ def _udp_echo_reply(packet):
 	print("sending to %s : %d") % (dest_ip, packet.dport)
 	print("udppkt size: %d") % (len(pkt))
 	udp2gpkt = pkt #process udp2gpkt in typemap
-	print("sending...")
-	#dest_ip should be 2.1.168.192
-	
-	if Cip.cvar.pcore == None:
-		print(">> pcore is None!!!")
-	if Cip.cvar.pcore == False:
-		print(">>pcore is FALSE!!!")
-	# print("Checking pcore:: this own")
-	#print(Cip.cvar.pcore.thisown)
-	Cip.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
+	print("Start to send back to C")
+	#Cip.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
 
 
 def _UDPPacketProcess(packet):
@@ -220,15 +218,12 @@ def net2updh(s):
 	print("in net2udph")
 	return __ntohs(s[0:2]) + __ntohs(s[2:4]) + __ntohs(s[4:6]) + s[6:]
 def udpcksum(s):
-	#print("chsum>>1")
 	if len(s) & 1:
 		s = s + '\0'
 	words = array.array('h', s)
-	#print("chsum>>2")
 	sum = 0
 	for word in words:
 		sum = sum + (word & 0xffff)
-	#print("chsum>>3")
 	hi = sum >> 16
 	lo = sum & 0xffff
 	sum = hi + lo

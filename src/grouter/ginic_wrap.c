@@ -2960,7 +2960,25 @@ static swig_module_info swig_module = {swig_types, 8, 0, 0, 0, 0};
 	#define uchar unsigned char
 	#define ushort unsigned short
 
-
+	#ifndef __IP__HELPER__
+	#define __IP__HELPER__
+	PyObject* getUDPPacketString(gpacket_t *gpacket){
+		printf("[UDPPacketString]:: 1\n");
+		//int gpayload = sizeof(gpacket->data.data);
+		int payload = sizeof(gpacket->data.data);
+		int gheader = sizeof(gpacket_t) - payload;
+		int udplen = sizeof(*gpacket) - gheader - sizeof(ip_packet_t);
+		printf("[UDPPacketString]:: 2\n");
+		ip_packet_t *ip_pkt = (ip_packet_t *)gpacket->data.data;
+		printf("[UDPPacketString]:: 3\n");
+		printf("gpayload: %d size of ip_t %d", payload, sizeof(ip_packet_t));
+		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
+	}
+	//helper function for gpacket
+	PyObject* getGPacketString(gpacket_t *gpacket){
+		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
+	}
+	#endif
 
 
 
@@ -3125,6 +3143,50 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_getUDPPacketString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  gpacket_t *arg1 = (gpacket_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:getUDPPacketString",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getUDPPacketString" "', argument " "1"" of type '" "gpacket_t *""'"); 
+  }
+  arg1 = (gpacket_t *)(argp1);
+  result = (PyObject *)getUDPPacketString(arg1);
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getGPacketString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  gpacket_t *arg1 = (gpacket_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:getGPacketString",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getGPacketString" "', argument " "1"" of type '" "gpacket_t *""'"); 
+  }
+  arg1 = (gpacket_t *)(argp1);
+  result = (PyObject *)getGPacketString(arg1);
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_pkt_data_t_data_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_data_t *arg1 = (struct _pkt_data_t *) 0 ;
@@ -4253,6 +4315,8 @@ SWIGINTERN PyObject *gpacket_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"getUDPPacketString", _wrap_getUDPPacketString, METH_VARARGS, NULL},
+	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_set", _wrap_pkt_data_t_data_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_get", _wrap_pkt_data_t_data_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_header_get", _wrap_pkt_data_t_header_get, METH_VARARGS, NULL},
@@ -4307,7 +4371,7 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p__gpacket_t = {"_p__gpacket_t", "struct _gpacket_t *|_gpacket_t *|gpacket_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p__gpacket_t = {"_p__gpacket_t", "struct _gpacket_t *|gpacket_t *|_gpacket_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__label_t = {"_p__label_t", "struct _label_t *|_label_t *|label_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_data_t = {"_p__pkt_data_t", "struct _pkt_data_t *|_pkt_data_t *|pkt_data_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_frame_t = {"_p__pkt_frame_t", "struct _pkt_frame_t *|_pkt_frame_t *|pkt_frame_t *", 0, 0, (void*)0, 0};

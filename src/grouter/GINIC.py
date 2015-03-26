@@ -70,6 +70,14 @@ except AttributeError:
 
 
 MAX_IPREVLENGTH_ICMP = _GINIC.MAX_IPREVLENGTH_ICMP
+
+def getUDPPacketString(*args):
+  return _GINIC.getUDPPacketString(*args)
+getUDPPacketString = _GINIC.getUDPPacketString
+
+def getGPacketString(*args):
+  return _GINIC.getGPacketString(*args)
+getGPacketString = _GINIC.getGPacketString
 class pkt_data_t(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t, name, value)

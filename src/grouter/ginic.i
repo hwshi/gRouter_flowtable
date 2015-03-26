@@ -11,7 +11,25 @@
 	#define uchar unsigned char
 	#define ushort unsigned short
 
-
+	#ifndef __IP__HELPER__
+	#define __IP__HELPER__
+	PyObject* getUDPPacketString(gpacket_t *gpacket){
+		printf("[UDPPacketString]:: 1\n");
+		//int gpayload = sizeof(gpacket->data.data);
+		int payload = sizeof(gpacket->data.data);
+		int gheader = sizeof(gpacket_t) - payload;
+		int udplen = sizeof(*gpacket) - gheader - sizeof(ip_packet_t);
+		printf("[UDPPacketString]:: 2\n");
+		ip_packet_t *ip_pkt = (ip_packet_t *)gpacket->data.data;
+		printf("[UDPPacketString]:: 3\n");
+		printf("gpayload: %d size of ip_t %d", payload, sizeof(ip_packet_t));
+		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
+	}
+	//helper function for gpacket
+	PyObject* getGPacketString(gpacket_t *gpacket){
+		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
+	}
+	#endif
 
 %}
 
