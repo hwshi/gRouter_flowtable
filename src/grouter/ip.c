@@ -415,7 +415,7 @@ int UDPProcess(gpacket_t *in_pkt)
     //Py_Finalize();
  	return EXIT_SUCCESS;
  	*/
- 	printf("!!!!!!!   Invalid UPD Function ! You are not supposed to be here : )\n");
+ 	fatal("!!!!!!!   Abandand UPD Function ! You are not supposed to be here : )\n");
  	return EXIT_FAILURE;
 }
 
@@ -431,22 +431,6 @@ int UDPProcess(gpacket_t *in_pkt)
 int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)
 {
 
-	int i;
-	// for(i = 0; i < 30; i ++)
-	// {
-	// 	printf("[IPOutgoingPacket] Check point 1?!\n");
-	// }
-	// printf("<======================================================>");
-	// for(i = 0; i < 30; i ++)
-	// {
-	// 	if(pcore == NULL)
-	// 		printf("pcore is null!!!!!!!!!!!!!!!!!");
-
-	// }
-	// printf("<------------------------------------------------------>");
-	// printf("<---[IPOutgoingPacket]----pPcore@%d , pcore@%d--------->\n", pPcore, pcore);
-	// //printf("[IPOutgoingPacket]: sending to %u %u %u %u\n", dst_ip[0], dst_ip[1], dst_ip[2], dst_ip[3]);
- //    printf("Size: %d\n", size);
     ip_packet_t *ip_pkt = (ip_packet_t *)pkt->data.data;
 	ushort cksum;
 	char tmpbuf[MAX_TMPBUF_LEN];

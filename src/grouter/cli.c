@@ -1194,7 +1194,7 @@ void addprotCmd()
         //TODO: addProtocol(pcore->flowtable, next_tok);
         //FOR PYTHON
         ushort language = PYTHON_FUNCTION;
-        addProtocol(pcore->flowtable, language, next_tok);
+        
         // PyObject *Py_pMod = PyImport_ImportModule(next_tok);
         // if(Py_pMod != NULL){
         //     Py_pGlobDict = PyModule_GetDict(Py_pMod);
@@ -1209,7 +1209,12 @@ void addprotCmd()
         // {
         // 	printf("[addprotCmd]:: failed to add protocol:  %s\n", next_tok);
         // }
-        verbose(2, "Protocol Added");
+        if(addProtocol(pcore->flowtable, language, next_tok) == EXIT_SUCCESS)
+                verbose(2, "[addprotCmd]Protocol Added");
+            else
+            {
+                verbose(2, "[addprotCmd]Protocol Adding Faild");
+            }
     }
 }
 

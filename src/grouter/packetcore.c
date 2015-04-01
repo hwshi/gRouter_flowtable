@@ -354,7 +354,6 @@ void *packetProcessor(void *pc)
     gpacket_t *in_pkt;
     //flowtable
 
-
     int pktsize;
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     while (1)

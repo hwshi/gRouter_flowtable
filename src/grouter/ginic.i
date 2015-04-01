@@ -26,6 +26,10 @@
 		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
 	}
 	//helper function for gpacket
+	// PyObject* createGPacket(PyObject *pkt){
+	// 	gpacket_t *gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+	// 	gpkt
+	// }
 	PyObject* getGPacketString(gpacket_t *gpacket){
 		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
 	}
@@ -41,7 +45,7 @@
 			uchar src[6];                // source host's MAC address (filled by gnet)
 			ushort prot;                // protocol field
 		} header;
-		uchar data[DEFAULT_MTU];             // payload (limited to maximum MTU)
+		uchar data[DEFAULT_MTU];        //payloadPyObject_CallFunction     // PyObject_CallFunction (limited to maximum MTU)
 	} pkt_data_t;
 
 	typedef struct _label_t
@@ -68,3 +72,5 @@
 		pkt_frame_t frame;
 		pkt_data_t data;
 	} gpacket_t;
+
+	int IPOutgoingPacket(gpacket_t *out_gpkt, uchar *dst_ip, int size, int newflag, int src_prot);

@@ -37,7 +37,7 @@ typedef struct _pkt_data_t
 typedef struct _label_t
 {
     ushort prot;
-    ushort process;//0 un process  1 processed 2 invalid
+    ushort process;//0 unprocessed  1 processed 2 invalid
 } label_t;
 // frame wrapping every packet... GINI specific (GINI metadata)
 typedef struct _pkt_frame_t
@@ -50,6 +50,7 @@ typedef struct _pkt_frame_t
 	int arp_valid;
 	int arp_bcast;
 	label_t label[8];				 // label for flow table; required by packet core, filled by each protoco process
+	uchar dest_ip_addr[4];			 // destination IP address; required for IPOutgoing; filled by protocols above IP layer.
 } pkt_frame_t;
 
 

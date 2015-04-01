@@ -154,7 +154,7 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
     //ftentry_t *entry_res = (ftentry_t *)malloc(sizeof(ftentry_t));
     //verbose(2  , "[checkFlowTable]:: \n");
     //find the protocol label
-    int i, j, prot = NULL_PROTOCOL;
+    int i, j, fromUpper = 0, prot = NULL_PROTOCOL;
     verbose(2  , "[checkFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
     for (i = 0; i < 8; i ++)
     {
@@ -162,6 +162,11 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
         {
             prot = pkt->frame.label[i].prot;
             verbose(2  , "[checkFlowTable]:: Found Next protocol: %hu in pkt: %hu\n", prot, ntohs(pkt->data.header.prot));
+            if(pkt->frame.label[i + 1].prot == 1)
+            {
+                verbose(2  , "[checkFlowTable]:: From Upper Layer of %hu", prot);
+                fromUpper = 1;
+            }
             break;
         }
 
@@ -177,7 +182,6 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
         //verbose(2  , "[checkFlowTable]::Checking for entry");
         if (flowtable->entry[j].protocol == prot)
         {
-
             verbose(2  , "[checkFlowTable]:: Entry found protocol(entry): %#06x\n", flowtable->entry[j].protocol);
             return &(flowtable->entry[j]);
         }

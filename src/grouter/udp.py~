@@ -306,8 +306,10 @@ def assemble(packet, cksum=1):
 	return packet._assemble(cksum)
 	
 def disassemble(buffer, cksum=1):
-	print("[disassemble]")
+	print("DIS")
+	print("DISing")
 	packet = Packet()
+	print("DISing2")
 	packet._disassemble(buffer, cksum)
-	print("[disassemble]DISing done")
+	print("DISing done?")
 	return packet

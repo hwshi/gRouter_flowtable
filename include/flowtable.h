@@ -8,6 +8,7 @@
 #ifndef __FLOW_TABLE_H__
 #define __FLOW_TABLE_H__
 #define MAX_ENTRY_NUMBER 50
+#define MAX_ENTRY_SIZE 4
 #include <slack/std.h>
 #include <slack/map.h>
 #include <slack/list.h>
@@ -19,9 +20,9 @@
 #include "simplequeue.h"
 #include "qdisc.h"
 #include "protocols.h"
- #include "ip.h"
- #include "arp.h"
- #include "icmp.h"
+#include "ip.h"
+#include "arp.h"
+#include "icmp.h"
 //#include "packetcore.h"
 //tpye of entry
 #define CLASSICAL 1
