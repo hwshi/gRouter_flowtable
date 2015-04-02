@@ -6,13 +6,14 @@
 	#include "grouter.h"
 	#include "message.h"
 	#include "ip.h"
+	#include "packetcore.h"
+	#include "routetable.h"
+	#include "mtu.h"
 	#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
 	#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
 	#define uchar unsigned char
 	#define ushort unsigned short
 
-	#ifndef __IP__HELPER__
-	#define __IP__HELPER__
 	PyObject* getUDPPacketString(gpacket_t *gpacket){
 		printf("[UDPPacketString]:: 1\n");
 		//int gpayload = sizeof(gpacket->data.data);
@@ -26,15 +27,21 @@
 		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
 	}
 	//helper function for gpacket
-	// PyObject* createGPacket(PyObject *pkt){
-	// 	gpacket_t *gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
-	// 	gpkt
-	// }
+	gpacket_t* createGPacket(PyObject *pkt){
+		printf("[helpr - createGPacket]\n");
+		gpacket_t *gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+		memcpy(gpkt->data.data, pkt, sizeof(pkt));
+		//gpkt->data.data = (uchar*)pkt;
+		return gpkt;
+
+	}
 	PyObject* getGPacketString(gpacket_t *gpacket){
 		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
 	}
-	#endif
 
+	extern pktcore_t *pcore;
+	extern route_entry_t route_tbl[MAX_ROUTES];       	// routing table
+	extern mtu_entry_t MTU_tbl[MAX_MTU];		        // MTU table
 %}
 
 	typedef struct _pkt_data_t
@@ -72,5 +79,11 @@
 		pkt_frame_t frame;
 		pkt_data_t data;
 	} gpacket_t;
+
+	%typemap(in) uchar * {
+		printf("[typemap-uchar*]\n");
+	    $1 = PyString_AsString($input);
+	}
+
 
 	int IPOutgoingPacket(gpacket_t *out_gpkt, uchar *dst_ip, int size, int newflag, int src_prot);

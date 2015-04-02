@@ -420,7 +420,6 @@ void *packetProcessor(void *pc)
             labelNext(in_pkt, entry_res->protocol, nextlabel);
             verbose(2, "Writing back to work Q...");
             writeQueue(pcore->workQ, in_pkt, sizeof(gpacket_t));
-
             verbose(2, "Wrote back to work Q...");
             printSimpleQueue(pcore->workQ);
 
@@ -438,7 +437,7 @@ void *packetProcessor(void *pc)
             {
                 verbose(2, "Got Pyton obj\n");
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-                //CheckPythonError();
+                CheckPythonError();
                 printf("pResult: %p",Py_pResult);
             }
         }
@@ -704,4 +703,18 @@ int findCurProt(gpacket_t *pkt, int cur_prot)
             return i;
     }
     return EXIT_FAILURE;
+}
+int PythonError(PyObject *pObj)
+{
+    char *Str = PyString_AsString(pObj);
+    return printf("%s", Str);
+}
+
+void CheckPythonError(void)
+{
+    if (PyErr_Occurred() != NULL)
+    {
+        PyErr_Print();
+        PyErr_Clear();
+    }
 }

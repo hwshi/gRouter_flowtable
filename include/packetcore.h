@@ -64,6 +64,9 @@ void modifyQueueDiscipline(pktcore_t *pcore, char *qname, char *qdisc);
 int delPktCoreQueue(pktcore_t *pcore, char *qname);
 //Haowei add
 int enqueuePacket(pktcore_t *pcore, gpacket_t *in_pkt, int pktsize);
+//python error redirect
+int PythonError(PyObject *pObj);
+void CheckPythonError(void);
 
 pthread_t PktCoreSchedulerInit(pktcore_t *pcore);
 int PktCoreWorkerInit(pktcore_t *pcore);

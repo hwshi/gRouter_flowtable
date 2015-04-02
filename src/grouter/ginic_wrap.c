@@ -2915,11 +2915,14 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p__pkt_data_t swig_types[2]
 #define SWIGTYPE_p__pkt_frame_t swig_types[3]
 #define SWIGTYPE_p_char swig_types[4]
-#define SWIGTYPE_p_pkt_data_t_header swig_types[5]
-#define SWIGTYPE_p_uchar swig_types[6]
-#define SWIGTYPE_p_ushort swig_types[7]
-static swig_type_info *swig_types[9];
-static swig_module_info swig_module = {swig_types, 8, 0, 0, 0, 0};
+#define SWIGTYPE_p_mtu_entry_t swig_types[5]
+#define SWIGTYPE_p_pkt_data_t_header swig_types[6]
+#define SWIGTYPE_p_pktcore_t swig_types[7]
+#define SWIGTYPE_p_route_entry_t swig_types[8]
+#define SWIGTYPE_p_uchar swig_types[9]
+#define SWIGTYPE_p_ushort swig_types[10]
+static swig_type_info *swig_types[12];
+static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2955,13 +2958,14 @@ static swig_module_info swig_module = {swig_types, 8, 0, 0, 0, 0};
 	#include "grouter.h"
 	#include "message.h"
 	#include "ip.h"
+	#include "packetcore.h"
+	#include "routetable.h"
+	#include "mtu.h"
 	#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
 	#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
 	#define uchar unsigned char
 	#define ushort unsigned short
 
-	#ifndef __IP__HELPER__
-	#define __IP__HELPER__
 	PyObject* getUDPPacketString(gpacket_t *gpacket){
 		printf("[UDPPacketString]:: 1\n");
 		//int gpayload = sizeof(gpacket->data.data);
@@ -2975,11 +2979,21 @@ static swig_module_info swig_module = {swig_types, 8, 0, 0, 0, 0};
 		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
 	}
 	//helper function for gpacket
+	gpacket_t* createGPacket(PyObject *pkt){
+		printf("[helpr - createGPacket]\n");
+		gpacket_t *gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+		memcpy(gpkt->data.data, pkt, sizeof(pkt));
+		//gpkt->data.data = (uchar*)pkt;
+		return gpkt;
+
+	}
 	PyObject* getGPacketString(gpacket_t *gpacket){
 		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
 	}
-	#endif
 
+	extern pktcore_t *pcore;
+	extern route_entry_t route_tbl[MAX_ROUTES];       	// routing table
+	extern mtu_entry_t MTU_tbl[MAX_MTU];		        // MTU table
 
 
 SWIGINTERNINLINE PyObject*
@@ -3165,6 +3179,22 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_createGPacket(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  gpacket_t *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:createGPacket",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (gpacket_t *)createGPacket(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_getGPacketString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   gpacket_t *arg1 = (gpacket_t *) 0 ;
@@ -3184,6 +3214,83 @@ SWIGINTERN PyObject *_wrap_getGPacketString(PyObject *SWIGUNUSEDPARM(self), PyOb
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN int Swig_var_pcore_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_pktcore_t,  0 );  
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""pcore""' of type '""pktcore_t *""'");
+    }
+    pcore = (pktcore_t *)(argp);
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_pcore_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(pcore), SWIGTYPE_p_pktcore_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_route_tbl_set(PyObject *_val) {
+  {
+    route_entry_t *inp = 0;
+    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_route_entry_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""route_tbl""' of type '""route_entry_t [MAX_ROUTES]""'");
+    } else if (inp) {
+      size_t ii = 0;
+      for (; ii < (size_t)MAX_ROUTES; ++ii) route_tbl[ii] = inp[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""route_tbl""' of type '""route_entry_t [MAX_ROUTES]""'");
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_route_tbl_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(route_tbl), SWIGTYPE_p_route_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_MTU_tbl_set(PyObject *_val) {
+  {
+    mtu_entry_t *inp = 0;
+    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_mtu_entry_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""MTU_tbl""' of type '""mtu_entry_t [MAX_MTU]""'");
+    } else if (inp) {
+      size_t ii = 0;
+      for (; ii < (size_t)MAX_MTU; ++ii) MTU_tbl[ii] = inp[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""MTU_tbl""' of type '""mtu_entry_t [MAX_MTU]""'");
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_MTU_tbl_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(MTU_tbl), SWIGTYPE_p_mtu_entry_t,  0 );
+  return pyobj;
 }
 
 
@@ -4313,9 +4420,65 @@ SWIGINTERN PyObject *gpacket_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  gpacket_t *arg1 = (gpacket_t *) 0 ;
+  uchar *arg2 = (uchar *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:IPOutgoingPacket",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IPOutgoingPacket" "', argument " "1"" of type '" "gpacket_t *""'"); 
+  }
+  arg1 = (gpacket_t *)(argp1);
+  {
+    printf("[typemap-uchar*]\n");
+    arg2 = PyString_AsString(obj1);
+  }
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "IPOutgoingPacket" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = (int)(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "IPOutgoingPacket" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = (int)(val4);
+  ecode5 = SWIG_AsVal_int(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "IPOutgoingPacket" "', argument " "5"" of type '" "int""'");
+  } 
+  arg5 = (int)(val5);
+  result = (int)IPOutgoingPacket(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"getUDPPacketString", _wrap_getUDPPacketString, METH_VARARGS, NULL},
+	 { (char *)"createGPacket", _wrap_createGPacket, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_set", _wrap_pkt_data_t_data_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_get", _wrap_pkt_data_t_data_get, METH_VARARGS, NULL},
@@ -4365,6 +4528,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_gpacket_t", _wrap_new_gpacket_t, METH_VARARGS, NULL},
 	 { (char *)"delete_gpacket_t", _wrap_delete_gpacket_t, METH_VARARGS, NULL},
 	 { (char *)"gpacket_t_swigregister", gpacket_t_swigregister, METH_VARARGS, NULL},
+	 { (char *)"IPOutgoingPacket", _wrap_IPOutgoingPacket, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -4376,7 +4540,10 @@ static swig_type_info _swigt__p__label_t = {"_p__label_t", "struct _label_t *|_l
 static swig_type_info _swigt__p__pkt_data_t = {"_p__pkt_data_t", "struct _pkt_data_t *|_pkt_data_t *|pkt_data_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_frame_t = {"_p__pkt_frame_t", "struct _pkt_frame_t *|_pkt_frame_t *|pkt_frame_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_mtu_entry_t = {"_p_mtu_entry_t", "mtu_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pkt_data_t_header = {"_p_pkt_data_t_header", "pkt_data_t_header *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_pktcore_t = {"_p_pktcore_t", "pktcore_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_route_entry_t = {"_p_route_entry_t", "route_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_uchar = {"_p_uchar", "uchar *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ushort = {"_p_ushort", "ushort *", 0, 0, (void*)0, 0};
 
@@ -4386,7 +4553,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p__pkt_data_t,
   &_swigt__p__pkt_frame_t,
   &_swigt__p_char,
+  &_swigt__p_mtu_entry_t,
   &_swigt__p_pkt_data_t_header,
+  &_swigt__p_pktcore_t,
+  &_swigt__p_route_entry_t,
   &_swigt__p_uchar,
   &_swigt__p_ushort,
 };
@@ -4396,7 +4566,10 @@ static swig_cast_info _swigc__p__label_t[] = {  {&_swigt__p__label_t, 0, 0, 0},{
 static swig_cast_info _swigc__p__pkt_data_t[] = {  {&_swigt__p__pkt_data_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p__pkt_frame_t[] = {  {&_swigt__p__pkt_frame_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_mtu_entry_t[] = {  {&_swigt__p_mtu_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pkt_data_t_header[] = {  {&_swigt__p_pkt_data_t_header, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_pktcore_t[] = {  {&_swigt__p_pktcore_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_route_entry_t[] = {  {&_swigt__p_route_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_uchar[] = {  {&_swigt__p_uchar, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ushort[] = {  {&_swigt__p_ushort, 0, 0, 0},{0, 0, 0, 0}};
 
@@ -4406,7 +4579,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p__pkt_data_t,
   _swigc__p__pkt_frame_t,
   _swigc__p_char,
+  _swigc__p_mtu_entry_t,
   _swigc__p_pkt_data_t_header,
+  _swigc__p_pktcore_t,
+  _swigc__p_route_entry_t,
   _swigc__p_uchar,
   _swigc__p_ushort,
 };
@@ -5094,6 +5270,10 @@ SWIG_init(void) {
   SWIG_InstallConstants(d,swig_const_table);
   
   SWIG_Python_SetConstant(d, "MAX_IPREVLENGTH_ICMP",SWIG_From_int((int)(50)));
+  PyDict_SetItemString(md,(char*)"cvar", SWIG_globals());
+  SWIG_addvarlink(SWIG_globals(),(char*)"pcore",Swig_var_pcore_get, Swig_var_pcore_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"route_tbl",Swig_var_route_tbl_get, Swig_var_route_tbl_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"MTU_tbl",Swig_var_MTU_tbl_get, Swig_var_MTU_tbl_set);
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

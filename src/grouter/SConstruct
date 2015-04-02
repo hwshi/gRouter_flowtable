@@ -22,13 +22,6 @@ grouter_libs = Split ("""readline
 #a filtered glob function
 
 
-
-
-#print(">>Building Library...")
-#   ?????  unnecessary!?
-#env.SharedLibrary('_cli.so',['cli.c', 'cli.i'])
-
-
 env.Append(CFLAGS='-g')
 env.Append(CFLAGS='-DHAVE_PTHREAD_RWLOCK=1')
 env.Append(CFLAGS='-DHAVE_GETOPT_LONG')
@@ -48,6 +41,12 @@ env.AddMethod(filtered_glob, "FilteredGlob");
 # listing provides finer control over the list.
 
 #grouter_src = Glob('*.c')
+
+
+print(">>Building SWIG Library...")
+#   ?????  unnecessary!?
+env.SharedLibrary('_GINIC.so',['ginic.i', 'ip.c'], LIBS=grouter_libs)
+print(">>Building grouter...");
 grouter_src = env.FilteredGlob('*.c',['ginic_wrap.c'])
 # some of the following library dependencies can be removed?
 # may be the termcap is not needed anymore..?

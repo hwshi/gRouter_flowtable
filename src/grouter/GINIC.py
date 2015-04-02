@@ -75,6 +75,10 @@ def getUDPPacketString(*args):
   return _GINIC.getUDPPacketString(*args)
 getUDPPacketString = _GINIC.getUDPPacketString
 
+def createGPacket(*args):
+  return _GINIC.createGPacket(*args)
+createGPacket = _GINIC.createGPacket
+
 def getGPacketString(*args):
   return _GINIC.getGPacketString(*args)
 getGPacketString = _GINIC.getGPacketString
@@ -97,6 +101,7 @@ class pkt_data_t(_object):
     __del__ = lambda self : None;
 pkt_data_t_swigregister = _GINIC.pkt_data_t_swigregister
 pkt_data_t_swigregister(pkt_data_t)
+cvar = _GINIC.cvar
 
 class pkt_data_t_header(_object):
     __swig_setmethods__ = {}
@@ -203,6 +208,10 @@ class gpacket_t(_object):
 gpacket_t_swigregister = _GINIC.gpacket_t_swigregister
 gpacket_t_swigregister(gpacket_t)
 
+
+def IPOutgoingPacket(*args):
+  return _GINIC.IPOutgoingPacket(*args)
+IPOutgoingPacket = _GINIC.IPOutgoingPacket
 # This file is compatible with both classic and new-style classes.
 
 

@@ -168,17 +168,24 @@ def _udp_echo_reply(packet):
 	packet.dport = port_tmp
 	print("get source ip")
 	dest_ip = __find_dest_ip(packet)
-	print("[_udp_echo_reply]dest ip: %d") % (dest_ip)
+ 	print("[_udp_echo_reply]dest ip: %d", dest_ip)
 	newflag = 1
 	prot = 17
 	print("prepare for assembling")
 	pkt = assemble(packet)
 	size = len(pkt)
-	print("[_udp_echo_reply]sending to %s : %d") % (dest_ip, packet.dport)
+	print("[_udp_echo_reply]sending to %s : %d", dest_ip, packet.dport)
 	print("udppkt size: %d") % (len(pkt))
-	udp2gpkt = pkt #process udp2gpkt in typemap
+	udp2gpkt = _GINIC.createGPacket(pkt) #process udp2gpkt in typemap
+	print(udp2gpkt)
+	print("check Arg type:")
+	print(udp2gpkt)
+	print(size)
+	print(newflag)
+	print(prot)
+	print("Done Checking==")
 	print("Start to send back to C")
-	#Cip.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
+	_GINIC.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
 
 
 def _UDPPacketProcess(packet):

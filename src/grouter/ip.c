@@ -430,6 +430,25 @@ int UDPProcess(gpacket_t *in_pkt)
  */
 int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)
 {
+	verbose(2, "[IPOutgoingPacket]::");
+	int check = 0;
+	if(pcore == NULL){
+		check = 1;
+		printf("[IPOutgoingPacket]:: pcore is NULL !!\n");
+	}
+	if(route_tbl == NULL){
+		check = 1;
+		printf("[IPOutgoingPacket]:: route_tbl is NULL !!\n");
+
+	}
+	if(MTU_tbl == NULL){
+		check = 1;
+		printf("[IPOutgoingPacket]:: MTU_tbl is NULL !!\n");
+
+	}	
+	printf("[IPOutgoingPacket]size of flowtable is: %d\n", pcore->flowtable->num);
+	printRouteTable(route_tbl);
+	if(check == 1) return EXIT_FAILURE;
 
     ip_packet_t *ip_pkt = (ip_packet_t *)pkt->data.data;
 	ushort cksum;
