@@ -428,6 +428,16 @@ int UDPProcess(gpacket_t *in_pkt)
  * on the packet type..
  * IMPORTANT: src_prot is the source protocol number.
  */
+void printAsString(void* s)
+{
+    printf("========================================\n");
+    printf("=                Packet                =\n");
+    printf("========================================\n");
+    //while(s)
+        printf("Packet String: %s\n", (char*)s);
+    printf("========================================\n");
+    return;
+}
 int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)
 {
 	verbose(2, "[IPOutgoingPacket]::");
@@ -447,9 +457,9 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
 
 	}	
 	printf("[IPOutgoingPacket]size of flowtable is: %d\n", pcore->flowtable->num);
-	printRouteTable(route_tbl);
+	//printRouteTable(route_tbl);
 	if(check == 1) return EXIT_FAILURE;
-
+        //printAsString(pkt);
     ip_packet_t *ip_pkt = (ip_packet_t *)pkt->data.data;
 	ushort cksum;
 	char tmpbuf[MAX_TMPBUF_LEN];

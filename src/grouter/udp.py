@@ -1,4 +1,4 @@
-#module_name, package_name, ClassName, method_name, 
+#module_name, packaversionCmdge_name, ClassName, method_name, 
 #ExceptionName, function_name, GLOBAL_VAR_NAME, 
 #instance_var_name, function_parameter_name, local_var_name.
 
@@ -114,16 +114,16 @@ class Ncer:
 		PCBCore.pcb_close_socket(self.port)
 			
 
-def ncCmdPy():
-	print("[ncCmdPy]:: UDP sever/client::")
+def giniudp():
+	print("[giniudp]:: UDP sever/client::")
 	print("call with 'nc -u -l port/nc -u ip port'")
 	#print("???")
-	nc = Ncer()
-	print("listening...")
-	#print(PCBCore.MAX_BUFFER_SIZE)
-	PCBCore.get_name()
-	#print(nc)
-	PCBCore.NAME = "ncCmdPyed!"
+	#nc = Ncer()
+	upkt = Packet(7000, 7, 10, 0, "bb")
+	upkt_a = assemble(upkt)
+	dest_ip = ip_ltostr([128, 1, 168, 192])
+	_GINIC.IPOutgoingPacket(upkt_a, dest_ip, len(upkt_a), 1, 17)
+
 	#nc.thread_recv_from()
 def Protocol_Processor(gpkt):
 	print("=====Py#[Packet_Processor]::=====")
@@ -151,7 +151,7 @@ def UDPPacketProcess(gpkt):
 	print(packet)
 	#echo msg
 	if packet.dport == 7:
-		print("recieved an echo packet from %d")
+		print("recieved an echo packet from %d", packet.dport)
 		_udp_echo_reply(packet)
 		# thread_reply_echo = Thread(target = _udp_echo_reply, args = (packet, ))
 		# thread_reply_echo.start()
@@ -166,6 +166,7 @@ def _udp_echo_reply(packet):
 	port_tmp = packet.sport
 	packet.sport = packet.dport
 	packet.dport = port_tmp
+	print(packet)
 	print("get source ip")
 	dest_ip = __find_dest_ip(packet)
  	print("[_udp_echo_reply]dest ip: %d", dest_ip)
@@ -175,9 +176,9 @@ def _udp_echo_reply(packet):
 	pkt = assemble(packet)
 	size = len(pkt)
 	print("[_udp_echo_reply]sending to %s : %d", dest_ip, packet.dport)
-	print("udppkt size: %d") % (len(pkt))
+	print("pkt size: %d") % (len(pkt))
 	udp2gpkt = _GINIC.createGPacket(pkt) #process udp2gpkt in typemap
-	print(udp2gpkt)
+	#print("udppkt size: %d") % (len(udp2gpkt))
 	print("check Arg type:")
 	print(udp2gpkt)
 	print(size)
@@ -185,7 +186,8 @@ def _udp_echo_reply(packet):
 	print(prot)
 	print("Done Checking==")
 	print("Start to send back to C")
-	_GINIC.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
+	#_GINIC.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
+	_GINIC.IPOutgoingPacket(pkt, dest_ip, size, newflag, prot)
 
 
 def _UDPPacketProcess(packet):
@@ -221,7 +223,7 @@ def udph2net(s):
 	return __htons(s[0:2]) + __htons(s[2:4]) + __htons(s[4:6]) + s[6:]
 
 def net2updh(s):
-	print("in net2udph")
+	print("[net2updh]")
 	return __ntohs(s[0:2]) + __ntohs(s[2:4]) + __ntohs(s[4:6]) + s[6:]
 def udpcksum(s):
 	if len(s) & 1:
@@ -275,37 +277,28 @@ class Packet:
 
 
 	def _assemble(self, cksum=1):
+		print("[_assemble]")
 		self.ulen = 8 + len(self.data)
 		begin = struct.pack('HHH', self.sport, self.dport, self.ulen)
 		packet = begin + '\000\000' + self.data
-		print("[_assemble]")
 		if cksum:
-			print("[_assemble] 1")
 			self.sum = udpcksum(packet)
-			print("[_assemble] 2")
 			packet = begin + struct.pack('H', self.sum) + self.data
 		self.__packet = udph2net(packet)
-		print("[_assemble Done]")
 		return self.__packet
 
 	def _disassemble(self, raw_packet, cksum=1):
-		print("dis: 1")
+		print("[_disassemble]")
 		packet = net2updh(raw_packet)
-		print("net2updh>> Done")
-		#print(packet)
 		if cksum and packet[6:8] != '\000\000':
-			print("disa>> if 1")
 			our_cksum = udpcksum(packet)
 			# no check sum
 			# if our_cksum != 0:
-			# 	print("disa>> if 2")
-			# 	raise ValueError, packet
-		print("disa>> upacking")
+			#  	print("[_disassemble]Check sum invalid!!")
+			#  	raise ValueError, packet
 		elts = map(lambda x:x & 0xffff, struct.unpack('HHHH', packet[:8]))
 		[self.sport, self.dport, self.ulen, self.sum] = elts
-		print("set>> Done")
 		#tail = self.ulen# Haowei
-
 		self.data = packet[8:self.ulen]
 
 
@@ -316,5 +309,4 @@ def disassemble(buffer, cksum=1):
 	print("[disassemble]")
 	packet = Packet()
 	packet._disassemble(buffer, cksum)
-	print("[disassemble]DISing done")
 	return packet

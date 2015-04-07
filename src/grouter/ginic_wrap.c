@@ -2954,46 +2954,50 @@ static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-	#include <sys/types.h>
-	#include "grouter.h"
-	#include "message.h"
-	#include "ip.h"
-	#include "packetcore.h"
-	#include "routetable.h"
-	#include "mtu.h"
-	#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
-	#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
-	#define uchar unsigned char
-	#define ushort unsigned short
+#include <sys/types.h>
+#include "grouter.h"
+#include "message.h"
+#include "ip.h"
+#include "packetcore.h"
+#include "routetable.h"
+#include "mtu.h"
+#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
+#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
+#define uchar unsigned char
+#define ushort unsigned short
 
-	PyObject* getUDPPacketString(gpacket_t *gpacket){
-		printf("[UDPPacketString]:: 1\n");
-		//int gpayload = sizeof(gpacket->data.data);
-		int payload = sizeof(gpacket->data.data);
-		int gheader = sizeof(gpacket_t) - payload;
-		int udplen = sizeof(*gpacket) - gheader - sizeof(ip_packet_t);
-		printf("[UDPPacketString]:: 2\n");
-		ip_packet_t *ip_pkt = (ip_packet_t *)gpacket->data.data;
-		printf("[UDPPacketString]:: 3\n");
-		printf("gpayload: %d size of ip_t %d", payload, sizeof(ip_packet_t));
-		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
-	}
-	//helper function for gpacket
-	gpacket_t* createGPacket(PyObject *pkt){
-		printf("[helpr - createGPacket]\n");
-		gpacket_t *gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
-		memcpy(gpkt->data.data, pkt, sizeof(pkt));
-		//gpkt->data.data = (uchar*)pkt;
-		return gpkt;
+    PyObject * getUDPPacketString(gpacket_t * gpacket) {
+        printf("[UDPPacketString]:: 1\n");
+        //int gpayload = sizeof(gpacket->data.data);
+        int payload = sizeof (gpacket->data.data);
+        int gheader = sizeof (gpacket_t) - payload;
+        int udplen = sizeof (*gpacket) - gheader - sizeof (ip_packet_t);
+        printf("[UDPPacketString]:: 2\n");
+        ip_packet_t *ip_pkt = (ip_packet_t *) gpacket->data.data;
+        printf("[UDPPacketString]:: 3\n");
+        printf("gpayload: %d size of ip_t %d", payload, sizeof (ip_packet_t));
+        return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
+    }
+    //helper function for gpacket
 
-	}
-	PyObject* getGPacketString(gpacket_t *gpacket){
-		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
-	}
+    gpacket_t * createGPacket(PyObject * pkt) {
+        void * pktString = PyString_AsString(pkt);
+        printf("[helpr - createGPacket]\n");
+        gpacket_t *gpkt = (gpacket_t *) malloc(sizeof (gpacket_t));
+        memcpy(gpkt->data.data, pktString, sizeof (pktString));
+        //gpkt->data.data = (uchar*)pkt;
+        printf("[createGPacket] coppied %d byte\n", sizeof (pktString));
+        return gpkt;
 
-	extern pktcore_t *pcore;
-	extern route_entry_t route_tbl[MAX_ROUTES];       	// routing table
-	extern mtu_entry_t MTU_tbl[MAX_MTU];		        // MTU table
+    }
+
+    PyObject * getGPacketString(gpacket_t * gpacket) {
+        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
+    }
+
+    extern pktcore_t *pcore;
+    extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
+    extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
 
 
 SWIGINTERNINLINE PyObject*
@@ -3003,9 +3007,9 @@ SWIGINTERNINLINE PyObject*
 }
 
 typedef struct {
-  uchar dst[6];                                                                  
-  uchar src[6];                                                             
-  ushort prot;                                 
+  uchar dst[6];                                                   
+  uchar src[6];                                              
+  ushort prot;                  
 } pkt_data_t_header;
 
 
@@ -4427,8 +4431,6 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   int arg3 ;
   int arg4 ;
   int arg5 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
   int val3 ;
   int ecode3 = 0 ;
   int val4 ;
@@ -4443,11 +4445,13 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   int result;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOOO:IPOutgoingPacket",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IPOutgoingPacket" "', argument " "1"" of type '" "gpacket_t *""'"); 
+  {
+    printf("[typemap-gpacket_t *out_gpkt]\n");
+    int size  = PyString_Size(obj0);
+    gpacket_t* gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+    memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(obj0), size);
+    arg1 = gpkt;
   }
-  arg1 = (gpacket_t *)(argp1);
   {
     printf("[typemap-uchar*]\n");
     arg2 = PyString_AsString(obj1);

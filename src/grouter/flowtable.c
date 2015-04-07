@@ -126,6 +126,7 @@ int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
                 return EXIT_FAILURE;
             }
             addEntry(flowtable, CLASSICAL, language, (void *)pFunc);//add protocol into flow table
+            //registerCLI("giniudp", addprotCmd, NULL, NULL, NULL);
             verbose(2, "[addProtocol]!!!!Python Processor added into flowtable!!!");
             /*            if (pFunc)
                         {

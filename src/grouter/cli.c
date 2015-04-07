@@ -94,7 +94,7 @@ int CLIInit(router_config *rarg)
     //adding commands for protocol importing
     registerCLI("addprot", addprotCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
     registerCLI("flowtable", showftCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
-
+    registerCLI("giniudp", giniUDPCmd, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
 
     if (rarg->config_dir != NULL)
         chdir(rarg->config_dir);                  // change to the configuration directory
@@ -814,7 +814,7 @@ void filterCmd()
  */
 void versionCmd()
 {
-    printf("\n(gRouter_flowtable)GINI Router Version: %s \n\n", prog_version());
+    printf("\n(gRouter_flowtable Netbeans)GINI Router Version: %s \n\n", prog_version());
 }
 
 
@@ -909,7 +909,7 @@ void setCmd()
                 verbose(1, "[setCmd]:: ERROR!! level should be in [0..6] \n");
         }
         else
-            printf("\nVerbose level: %ld \n", prog_verbosity_level());
+            printf("\nVerbose level: %d \n", prog_verbosity_level());
     }
     else if (!strcmp(next_tok, "raw-times"))
     {
@@ -1027,7 +1027,7 @@ void getCmd()
     else if (!strcmp(next_tok, "sched-cycle"))
         printf("\nSchedule cycle length: %d (microseconds) \n", rconfig.schedcycle);
     else if (!strcmp(next_tok, "verbose"))
-        printf("\nVerbose level: %ld \n", prog_verbosity_level());
+        printf("\nVerbose level: %d \n", prog_verbosity_level());
     else if (!strcmp(next_tok, "raw-times"))
         printf("\nRaw time mode: %d  \n", getTimeMode());
     else if (!strcmp(next_tok, "update-delay"))
@@ -1222,4 +1222,12 @@ void showftCmd()
 {
     printFlowTable(pcore->flowtable);
 }
+void giniUDPCmd()
+{
+    PyObject *pProtMod, *pProtGlobalDict, *pFunc;
+    pProtMod = PyImport_ImportModule("udp");//load protocol.py
+    pProtGlobalDict = PyModule_GetDict(pProtMod);   // Get main dictionary
+    pFunc = PyDict_GetItemString(pProtGlobalDict, "giniudp");//TODO: find function of getEntry      
+    PyObject_CallFunction(pFunc, NULL);
 
+}

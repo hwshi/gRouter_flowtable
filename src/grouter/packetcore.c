@@ -411,7 +411,7 @@ void *packetProcessor(void *pc)
             int (*processor)(gpacket_t *);
             processor = entry_res->action;
             int nextlabel = (*processor)(in_pkt);
-            if (nextlabel == EXIT_SUCCESS){
+            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS){
                 verbose(2, "[packetProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
                 continue;
             } 
