@@ -142,8 +142,10 @@ int IPProcessForwardingPacket(gpacket_t *in_pkt)
 	// ICMP network/host unreachable message -- CHECK??
 	if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
 			   in_pkt->frame.nxth_ip_addr,
-			   &(in_pkt->frame.dst_interface)) == EXIT_FAILURE)
+			   &(in_pkt->frame.dst_interface)) == EXIT_FAILURE){
 		return EXIT_FAILURE;
+        }
+        verbose(2, "[IPProcessForwardingPacket]ip_pkt->frame.dst_interface = %d", in_pkt->frame.dst_interface);
 
 	// check for redirection?? -- the output interface is already found
 	// by the previous command.. if needed the following routine sends the
@@ -543,7 +545,7 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
 	// for(i = 0; i < 30; i ++){
 		printf("[IPOutgoingPacket] Check point 4!\n");
 	// }
-	pkt->frame.dst_interface = 1;
+	//pkt->frame.dst_interface = 1;
 
 
 

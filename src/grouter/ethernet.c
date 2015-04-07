@@ -69,6 +69,7 @@ void *toEthernetDev(void *arg)
 		{
 			printf("[toEthernetDev]:: ==DOUBLE FREE !!!!!!!!!==\n");
 		}//Haowei
+                verbose(2, "[toEthernetDev]inpkt->frame.dst_interface = %d", inpkt->frame.dst_interface);
 		free(inpkt);          // finally destroy the memory allocated to the packet..
 	} else
 		error("[toEthernetDev]:: ERROR!! Could not find outgoing interface ...");
