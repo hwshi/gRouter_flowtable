@@ -759,9 +759,11 @@ void *GNETHandler(void *outq)
 			return NULL;
 		verbose(2, "[gnetHandler]:: Recvd message pkt ");
 		pthread_testcancel();
+                verbose(2, "[gnetHandler]:: header.dst after read(MAC) = %s", MAC2Colon(tmpbuf+20, in_pkt->data.header.dst));
 
 		if ((iface = findInterface(in_pkt->frame.dst_interface)) == NULL)
 		{
+                    
 			error("[gnetHandler]:: Packet dropped, interface [%d] is invalid ", in_pkt->frame.dst_interface);
 			continue;
 		} else if (iface->state == INTERFACE_DOWN)
@@ -769,24 +771,38 @@ void *GNETHandler(void *outq)
 			error("[gnetHandler]:: Packet dropped! Interface not up");
 			continue;
 		}
-
+                verbose(2, "[gnetHandler]:: iface.id = %d", iface->interface_id);
+                char tmpbuf[MAX_TMPBUF_LEN];
+                
+                
+                //verbose(2, "[gnetHandler]:: iface.mac = %s",MAC2Colon(tmpbuf+20, iface->mac_addr));
+              
 		// we have a valid interface handle -- iface.
 		COPY_MAC(in_pkt->data.header.src, iface->mac_addr);
-
 		if (in_pkt->frame.arp_valid == TRUE)
+                {
+                    
 			putARPCache(in_pkt->frame.nxth_ip_addr, in_pkt->data.header.dst);
-		else if (in_pkt->frame.arp_bcast != TRUE)
+                        verbose(2, "[gnetHandler]:: header.dst(MAC2) = %s", MAC2Colon(tmpbuf+20, in_pkt->data.header.dst));
+		}
+                else if (in_pkt->frame.arp_bcast != TRUE)
 		{
 			if ((cached = lookupARPCache(in_pkt->frame.nxth_ip_addr,
 						     mac_addr)) == TRUE)
-				COPY_MAC(in_pkt->data.header.dst, mac_addr);
-			else
+                        {
+                            
+                            COPY_MAC(in_pkt->data.header.dst, mac_addr);
+                            verbose(2, "[gnetHandler]:: header.dst in lookup(MAC) = %s", MAC2Colon(tmpbuf+20, in_pkt->data.header.dst));
+                        }
+                        else
 			{
 				ARPResolve(in_pkt);
+                                verbose(2, "[gnetHandler]:: header.dst after ARPres(MAC) = %s", MAC2Colon(tmpbuf+20, in_pkt->data.header.dst));
+                                
 				continue;
 			}
 		}
-
+                verbose(2, "[gnetHandler]:: header.dst before send(MAC) = %s", MAC2Colon(tmpbuf+20, in_pkt->data.header.dst));
 		iface->devdriver->todev((void *)in_pkt);
 
 	}

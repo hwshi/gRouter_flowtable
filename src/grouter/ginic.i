@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include "grouter.h"
 #include "message.h"
+#include "arp.h"
+#include "gnet.h"
 #include "ip.h"
 #include "packetcore.h"
 #include "routetable.h"
@@ -45,6 +47,14 @@
     extern pktcore_t *pcore;
     extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
     extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
+    
+    extern interface_array_t netarray;
+    extern devicearray_t devarray;
+    extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
+    extern arp_entry_t ARPtable[MAX_ARP];		                // ARP table
+    extern arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	// ARP buffer for unresolved packets
+    extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
+    extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
 %}
 
 typedef struct _pkt_data_t {
@@ -87,7 +97,7 @@ typedef struct _gpacket_t {
 %typemap(in) gpacket_t* out_gpkt {
     printf("[typemap-gpacket_t *out_gpkt]\n");
     int size  = PyString_Size($input);
-    gpacket_t* gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+    gpacket_t* gpkt = (gpacket_t *)calloc(1, sizeof(gpacket_t));
     memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString($input), size);
     $1 = gpkt;
 }

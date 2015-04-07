@@ -2914,15 +2914,19 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p__label_t swig_types[1]
 #define SWIGTYPE_p__pkt_data_t swig_types[2]
 #define SWIGTYPE_p__pkt_frame_t swig_types[3]
-#define SWIGTYPE_p_char swig_types[4]
-#define SWIGTYPE_p_mtu_entry_t swig_types[5]
-#define SWIGTYPE_p_pkt_data_t_header swig_types[6]
-#define SWIGTYPE_p_pktcore_t swig_types[7]
-#define SWIGTYPE_p_route_entry_t swig_types[8]
-#define SWIGTYPE_p_uchar swig_types[9]
-#define SWIGTYPE_p_ushort swig_types[10]
-static swig_type_info *swig_types[12];
-static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
+#define SWIGTYPE_p_arp_buffer_entry_t swig_types[4]
+#define SWIGTYPE_p_arp_entry_t swig_types[5]
+#define SWIGTYPE_p_char swig_types[6]
+#define SWIGTYPE_p_devicearray_t swig_types[7]
+#define SWIGTYPE_p_interface_array_t swig_types[8]
+#define SWIGTYPE_p_mtu_entry_t swig_types[9]
+#define SWIGTYPE_p_pkt_data_t_header swig_types[10]
+#define SWIGTYPE_p_pktcore_t swig_types[11]
+#define SWIGTYPE_p_route_entry_t swig_types[12]
+#define SWIGTYPE_p_uchar swig_types[13]
+#define SWIGTYPE_p_ushort swig_types[14]
+static swig_type_info *swig_types[16];
+static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2957,6 +2961,8 @@ static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #include <sys/types.h>
 #include "grouter.h"
 #include "message.h"
+#include "arp.h"
+#include "gnet.h"
 #include "ip.h"
 #include "packetcore.h"
 #include "routetable.h"
@@ -2998,6 +3004,14 @@ static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
     extern pktcore_t *pcore;
     extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
     extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
+    
+    extern interface_array_t netarray;
+    extern devicearray_t devarray;
+    extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
+    extern arp_entry_t ARPtable[MAX_ARP];		                // ARP table
+    extern arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	// ARP buffer for unresolved packets
+    extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
+    extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
 
 
 SWIGINTERNINLINE PyObject*
@@ -3005,13 +3019,6 @@ SWIGINTERNINLINE PyObject*
 {
   return PyInt_FromLong((long) value);
 }
-
-typedef struct {
-  uchar dst[6];                                                   
-  uchar src[6];                                              
-  ushort prot;                  
-} pkt_data_t_header;
-
 
 
 #include <limits.h>
@@ -3158,6 +3165,13 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
+typedef struct {
+  uchar dst[6];                                                   
+  uchar src[6];                                              
+  ushort prot;                  
+} pkt_data_t_header;
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -3294,6 +3308,187 @@ SWIGINTERN PyObject *Swig_var_MTU_tbl_get(void) {
   PyObject *pyobj = 0;
   
   pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(MTU_tbl), SWIGTYPE_p_mtu_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_netarray_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_interface_array_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""netarray""' of type '""interface_array_t""'");
+    }
+    if (!argp) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""netarray""' of type '""interface_array_t""'");
+    } else {
+      netarray = *((interface_array_t *)(argp));
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_netarray_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&netarray), SWIGTYPE_p_interface_array_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_devarray_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_devicearray_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""devarray""' of type '""devicearray_t""'");
+    }
+    if (!argp) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""devarray""' of type '""devicearray_t""'");
+    } else {
+      devarray = *((devicearray_t *)(argp));
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_devarray_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&devarray), SWIGTYPE_p_devicearray_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_arp_cache_set(PyObject *_val) {
+  {
+    arp_entry_t *inp = 0;
+    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_entry_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""arp_cache""' of type '""arp_entry_t [ARP_CACHE_SIZE]""'");
+    } else if (inp) {
+      size_t ii = 0;
+      for (; ii < (size_t)ARP_CACHE_SIZE; ++ii) arp_cache[ii] = inp[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""arp_cache""' of type '""arp_entry_t [ARP_CACHE_SIZE]""'");
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_arp_cache_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(arp_cache), SWIGTYPE_p_arp_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_ARPtable_set(PyObject *_val) {
+  {
+    arp_entry_t *inp = 0;
+    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_entry_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ARPtable""' of type '""arp_entry_t [MAX_ARP]""'");
+    } else if (inp) {
+      size_t ii = 0;
+      for (; ii < (size_t)MAX_ARP; ++ii) ARPtable[ii] = inp[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ARPtable""' of type '""arp_entry_t [MAX_ARP]""'");
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_ARPtable_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(ARPtable), SWIGTYPE_p_arp_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_ARPbuffer_set(PyObject *_val) {
+  {
+    arp_buffer_entry_t *inp = 0;
+    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_buffer_entry_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ARPbuffer""' of type '""arp_buffer_entry_t [MAX_ARP_BUFFERS]""'");
+    } else if (inp) {
+      size_t ii = 0;
+      for (; ii < (size_t)MAX_ARP_BUFFERS; ++ii) ARPbuffer[ii] = inp[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ARPbuffer""' of type '""arp_buffer_entry_t [MAX_ARP_BUFFERS]""'");
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_ARPbuffer_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(ARPbuffer), SWIGTYPE_p_arp_buffer_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_tbl_replace_indx_set(PyObject *_val) {
+  {
+    int val;
+    int res = SWIG_AsVal_int(_val, &val);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""tbl_replace_indx""' of type '""int""'");
+    }
+    tbl_replace_indx = (int)(val);
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_tbl_replace_indx_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_From_int((int)(tbl_replace_indx));
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_buf_replace_indx_set(PyObject *_val) {
+  {
+    int val;
+    int res = SWIG_AsVal_int(_val, &val);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""buf_replace_indx""' of type '""int""'");
+    }
+    buf_replace_indx = (int)(val);
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_buf_replace_indx_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_From_int((int)(buf_replace_indx));
   return pyobj;
 }
 
@@ -4448,7 +4643,7 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   {
     printf("[typemap-gpacket_t *out_gpkt]\n");
     int size  = PyString_Size(obj0);
-    gpacket_t* gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+    gpacket_t* gpkt = (gpacket_t *)calloc(1, sizeof(gpacket_t));
     memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(obj0), size);
     arg1 = gpkt;
   }
@@ -4543,7 +4738,11 @@ static swig_type_info _swigt__p__gpacket_t = {"_p__gpacket_t", "struct _gpacket_
 static swig_type_info _swigt__p__label_t = {"_p__label_t", "struct _label_t *|_label_t *|label_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_data_t = {"_p__pkt_data_t", "struct _pkt_data_t *|_pkt_data_t *|pkt_data_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_frame_t = {"_p__pkt_frame_t", "struct _pkt_frame_t *|_pkt_frame_t *|pkt_frame_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_arp_buffer_entry_t = {"_p_arp_buffer_entry_t", "arp_buffer_entry_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_arp_entry_t = {"_p_arp_entry_t", "arp_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_devicearray_t = {"_p_devicearray_t", "devicearray_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_interface_array_t = {"_p_interface_array_t", "interface_array_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_mtu_entry_t = {"_p_mtu_entry_t", "mtu_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pkt_data_t_header = {"_p_pkt_data_t_header", "pkt_data_t_header *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pktcore_t = {"_p_pktcore_t", "pktcore_t *", 0, 0, (void*)0, 0};
@@ -4556,7 +4755,11 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p__label_t,
   &_swigt__p__pkt_data_t,
   &_swigt__p__pkt_frame_t,
+  &_swigt__p_arp_buffer_entry_t,
+  &_swigt__p_arp_entry_t,
   &_swigt__p_char,
+  &_swigt__p_devicearray_t,
+  &_swigt__p_interface_array_t,
   &_swigt__p_mtu_entry_t,
   &_swigt__p_pkt_data_t_header,
   &_swigt__p_pktcore_t,
@@ -4569,7 +4772,11 @@ static swig_cast_info _swigc__p__gpacket_t[] = {  {&_swigt__p__gpacket_t, 0, 0, 
 static swig_cast_info _swigc__p__label_t[] = {  {&_swigt__p__label_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p__pkt_data_t[] = {  {&_swigt__p__pkt_data_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p__pkt_frame_t[] = {  {&_swigt__p__pkt_frame_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_arp_buffer_entry_t[] = {  {&_swigt__p_arp_buffer_entry_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_arp_entry_t[] = {  {&_swigt__p_arp_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_devicearray_t[] = {  {&_swigt__p_devicearray_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_interface_array_t[] = {  {&_swigt__p_interface_array_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_mtu_entry_t[] = {  {&_swigt__p_mtu_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pkt_data_t_header[] = {  {&_swigt__p_pkt_data_t_header, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pktcore_t[] = {  {&_swigt__p_pktcore_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -4582,7 +4789,11 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p__label_t,
   _swigc__p__pkt_data_t,
   _swigc__p__pkt_frame_t,
+  _swigc__p_arp_buffer_entry_t,
+  _swigc__p_arp_entry_t,
   _swigc__p_char,
+  _swigc__p_devicearray_t,
+  _swigc__p_interface_array_t,
   _swigc__p_mtu_entry_t,
   _swigc__p_pkt_data_t_header,
   _swigc__p_pktcore_t,
@@ -5278,6 +5489,13 @@ SWIG_init(void) {
   SWIG_addvarlink(SWIG_globals(),(char*)"pcore",Swig_var_pcore_get, Swig_var_pcore_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"route_tbl",Swig_var_route_tbl_get, Swig_var_route_tbl_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"MTU_tbl",Swig_var_MTU_tbl_get, Swig_var_MTU_tbl_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"netarray",Swig_var_netarray_get, Swig_var_netarray_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"devarray",Swig_var_devarray_get, Swig_var_devarray_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"arp_cache",Swig_var_arp_cache_get, Swig_var_arp_cache_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"ARPtable",Swig_var_ARPtable_get, Swig_var_ARPtable_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"ARPbuffer",Swig_var_ARPbuffer_get, Swig_var_ARPbuffer_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"tbl_replace_indx",Swig_var_tbl_replace_indx_get, Swig_var_tbl_replace_indx_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"buf_replace_indx",Swig_var_buf_replace_indx_get, Swig_var_buf_replace_indx_set);
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

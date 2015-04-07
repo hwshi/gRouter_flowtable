@@ -119,9 +119,10 @@ def giniudp():
 	print("call with 'nc -u -l port/nc -u ip port'")
 	#print("???")
 	#nc = Ncer()
-	upkt = Packet(7000, 7, 10, 0, "bb")
+	#upkt = Packet(7000, 7, 10, 0, "bb")
+	upkt = Packet(34591, 8889, 10, 0, "bb")
 	upkt_a = assemble(upkt)
-	dest_ip = ip_ltostr([128, 1, 168, 192])
+	dest_ip = ip_ltostr([2, 1, 168, 192])
 	_GINIC.IPOutgoingPacket(upkt_a, dest_ip, len(upkt_a), 1, 17)
 
 	#nc.thread_recv_from()

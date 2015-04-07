@@ -467,6 +467,7 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
 	char tmpbuf[MAX_TMPBUF_LEN];
 	uchar iface_ip_addr[4];
 	int status;
+    verbose(2, "[IPOutgoingPacket]:: header.dst begin IPOut(MAC) = %s", MAC2Colon(tmpbuf+20, pkt->data.header.dst));
 
 
 	ip_pkt->ip_ttl = 64;                        // set TTL to default value
@@ -547,9 +548,9 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
 	// }
 	//pkt->frame.dst_interface = 1;
 
-
-
+        verbose(2, "[IPOutgoingPacket]:: header.dst before send2Out(MAC) = %s", MAC2Colon(tmpbuf+20, pkt->data.header.dst));
 	IPSend2Output(pkt);
+        ARPPrintTable();
 	verbose(2, "[IPOutgoingPacket]:: IP packet sent to output queue.. ");
 	return EXIT_SUCCESS;
 }
@@ -588,6 +589,7 @@ int IPSend2Output(gpacket_t *pkt)
 
 	// }
 	//testSimpleQueue();
+        
 	return writeQueue(pcore->outputQ, (void *)pkt, sizeof(gpacket_t));
 }
 
