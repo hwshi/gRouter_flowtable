@@ -35,6 +35,7 @@
 #include <readline/history.h>
 
 
+
 Map *cli_map;
 Mapper *cli_mapper;
 static char *cur_line = (char *)NULL;       // static variable for holding the line
@@ -74,27 +75,27 @@ int CLIInit(router_config *rarg)
      * function. The function is inserted into the command registary and picked up
      * when the leading string is typed in the CLI.
      */
-    registerCLI("help", helpCmd, SHELP_HELP, USAGE_HELP, LHELP_HELP);  // Check
-    registerCLI("version", versionCmd, SHELP_VERSION, USAGE_VERSION, LHELP_VERSION); // Check
-    registerCLI("set", setCmd, SHELP_SET, USAGE_SET, LHELP_SET); // Check
-    registerCLI("get", getCmd, SHELP_GET, USAGE_GET, LHELP_GET); // Check
-    registerCLI("source", sourceCmd, SHELP_SOURCE, USAGE_SOURCE, LHELP_SOURCE); // Check
-    registerCLI("ifconfig", ifconfigCmd, SHELP_IFCONFIG, USAGE_IFCONFIG, LHELP_IFCONFIG);
-    registerCLI("route", routeCmd, SHELP_ROUTE, USAGE_ROUTE, LHELP_ROUTE);
-    registerCLI("arp", arpCmd, SHELP_ARP, USAGE_ARP, LHELP_ARP);
-    registerCLI("ping", pingCmd, SHELP_PING, USAGE_PING, LHELP_PING); // Check
-    registerCLI("console", consoleCmd, SHELP_CONSOLE, USAGE_CONSOLE, LHELP_CONSOLE); // Check
-    registerCLI("halt", haltCmd, SHELP_HALT, USAGE_HALT, LHELP_HALT); // Check
-    registerCLI("exit", haltCmd, SHELP_EXIT, USAGE_EXIT, LHELP_EXIT); // Check
-    registerCLI("queue", queueCmd, SHELP_QUEUE, USAGE_QUEUE, LHELP_QUEUE); // Check
-    registerCLI("qdisc", qdiscCmd, SHELP_QDISC, USAGE_QDISC, LHELP_QDISC); // Check
-    registerCLI("spolicy", spolicyCmd, SHELP_SPOLICY, USAGE_SPOLICY, LHELP_SPOLICY); // Check
-    registerCLI("class", classCmd, SHELP_CLASS, USAGE_CLASS, LHELP_CLASS);
-    registerCLI("filter", filterCmd, SHELP_FILTER, USAGE_FILTER, LHELP_FILTER);
+    registerCLI("help", helpCmd, C_FUNCTION, SHELP_HELP, USAGE_HELP, LHELP_HELP);  // Check
+    registerCLI("version", versionCmd, C_FUNCTION, SHELP_VERSION, USAGE_VERSION, LHELP_VERSION); // Check
+    registerCLI("set", setCmd, C_FUNCTION, SHELP_SET, USAGE_SET, LHELP_SET); // Check
+    registerCLI("get", getCmd, C_FUNCTION, SHELP_GET, USAGE_GET, LHELP_GET); // Check
+    registerCLI("source", sourceCmd, C_FUNCTION, SHELP_SOURCE, USAGE_SOURCE, LHELP_SOURCE); // Check
+    registerCLI("ifconfig", ifconfigCmd, C_FUNCTION, SHELP_IFCONFIG, USAGE_IFCONFIG, LHELP_IFCONFIG);
+    registerCLI("route", routeCmd, C_FUNCTION, SHELP_ROUTE, USAGE_ROUTE, LHELP_ROUTE);
+    registerCLI("arp", arpCmd, C_FUNCTION, SHELP_ARP, USAGE_ARP, LHELP_ARP);
+    registerCLI("ping", pingCmd, C_FUNCTION, SHELP_PING, USAGE_PING, LHELP_PING); // Check
+    registerCLI("console", consoleCmd, C_FUNCTION, SHELP_CONSOLE, USAGE_CONSOLE, LHELP_CONSOLE); // Check
+    registerCLI("halt", haltCmd, C_FUNCTION, SHELP_HALT, USAGE_HALT, LHELP_HALT); // Check
+    registerCLI("exit", haltCmd, C_FUNCTION, SHELP_EXIT, USAGE_EXIT, LHELP_EXIT); // Check
+    registerCLI("queue", queueCmd, C_FUNCTION, SHELP_QUEUE, USAGE_QUEUE, LHELP_QUEUE); // Check
+    registerCLI("qdisc", qdiscCmd, C_FUNCTION, SHELP_QDISC, USAGE_QDISC, LHELP_QDISC); // Check
+    registerCLI("spolicy", spolicyCmd, C_FUNCTION, SHELP_SPOLICY, USAGE_SPOLICY, LHELP_SPOLICY); // Check
+    registerCLI("class", classCmd, C_FUNCTION, SHELP_CLASS, USAGE_CLASS, LHELP_CLASS);
+    registerCLI("filter", filterCmd, C_FUNCTION, SHELP_FILTER, USAGE_FILTER, LHELP_FILTER);
     //adding commands for protocol importing
-    registerCLI("addprot", addprotCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
-    registerCLI("flowtable", showftCmd, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
-    registerCLI("giniudp", giniUDPCmd, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
+    registerCLI("addprot", addprotCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
+    registerCLI("flowtable", showftCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
+    registerCLI("giniudp", giniUDPCmd, C_FUNCTION, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
 
     if (rarg->config_dir != NULL)
         chdir(rarg->config_dir);                  // change to the configuration directory
@@ -151,7 +152,26 @@ void parseACLICmd(char *str)
     strcpy(orig_str, str);
     token = strtok(str, " \n");
     if ((clie = map_get(cli_map, token)) != NULL)
-        clie->handler((void *)clie);
+    {
+        verbose(2, "found a command for %s\n", token);
+        if(clie->language == C_FUNCTION)
+        {
+            void (*function)();
+            function = clie->handler;
+            (*function)();
+            //clie->handler((void *)clie);  haowei
+        }
+        else if(clie->language == PYTHON_FUNCTION)// for python command
+        {
+           PyObject * Py_pFun, *Py_pArg, *Py_pResult;
+           Py_pFun = clie->handler;
+           Py_pArg = PyString_FromString(orig_str);
+           verbose(2  , "[parseACLICmd]Command <%p> is being called\n", Py_pFun);
+           Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pArg);
+           CheckPythonError();
+        }
+    
+    }
     else
     {
         printf("WARNING: %s not a gRouter command (deferring to Linux)\n", token);
@@ -308,13 +328,14 @@ void CLIDestroy()
     map_destroy(&cli_map);
 }
 
-
-void registerCLI(char *key, void (*handler)(),
+//Haowei void registerCLI(char *key, void (*handler)(), ushort language,
+void registerCLI(char *key, void *handler, ushort language, 
                  char *shelp, char *usage, char *lhelp)
 {
     cli_entry_t *clie = (cli_entry_t *) malloc(sizeof(cli_entry_t));
-
+    
     clie->handler = handler;
+    clie->language = language;
     strcpy(clie->long_helpstr, lhelp);
     strcpy(clie->usagestr, usage);
     strcpy(clie->short_helpstr, shelp);

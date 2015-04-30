@@ -26,6 +26,7 @@
       <in>message.c</in>
       <in>mtu.c</in>
       <in>packetcore.c</in>
+      <in>pythondebug.c</in>
       <in>qdisc.c</in>
       <in>roundrobin.c</in>
       <in>routetable.c</in>

@@ -1,5 +1,5 @@
 /*
- * flowtable.c (the flow table for packet core)
+ * flowtable.c (the flowtable for packet core)
  * AUTHOR: Haowei Shi
  * DATE: October 01, 2014
  *
@@ -22,7 +22,7 @@ int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
         {
             flowtable->entry[flowtable->num].is_empty = 0;
             flowtable->entry[flowtable->num].language = language;
-            flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL;
+            flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL;// TODO: temporary soluction
             flowtable->entry[flowtable->num].action = content;
             flowtable->num++;
             return EXIT_SUCCESS;
@@ -100,7 +100,7 @@ int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append('./')");
 
-    PyObject *pProtMod, *pProtGlobalDict, *pFunc;
+    PyObject *pProtMod, *pProtGlobalDict, *pFuncProcess, *pFuncCommand;
     pProtMod = PyImport_ImportModule(protname);//load protocol.py
     if (!pProtMod)
     {
@@ -119,13 +119,31 @@ int addProtocol(flowtable_t *flowtable, ushort language, char *protname)
         if (pProtGlobalDict != NULL)
         {
             verbose(2  , "[addProtocol]main dictionary got\n");
-            pFunc = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor");//TODO: find function of getEntry
+            pFuncProcess = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor");//TODO: find function of getEntry
+            verbose(2  , "[addProtocol]Protocol_Processor got\n");
+            pFuncCommand = PyDict_GetItemString(pProtGlobalDict, "Command_Line");
+            if(pFuncCommand == NULL) verbose(2  , "[addProtocol]pFuncCommand is NULL!!\n", pFuncCommand);
+            verbose(2  , "[addProtocol]Command_Line got\n");
+            //return a string for command: 
+            PyObject *Py_Config = PyDict_GetItemString(pProtGlobalDict, "Config");
+            verbose(2  , "[addProtocol]Config got\n");
+            PyObject *Py_String = PyObject_CallFunction(Py_Config, NULL);
+            if(Py_String == NULL)
+            {
+                verbose(2  , "[addProtocol]Py_String is NULL !\n");
+            }
+            char *command = PyString_AsString(Py_String);
+            registerCLI(command, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
+            
+            verbose(2  , "[addProtocol]Command < %p >registered\n", pFuncCommand);
+            printf("[addProtocol]Command < %p >registered\n", pFuncCommand);
             //CheckPythonError();
-            if (pFunc == NULL) {
+            if (pFuncProcess == NULL) 
+            {
                 verbose(2, "[addProtocol]pFunc is NULL !!");
                 return EXIT_FAILURE;
             }
-            addEntry(flowtable, CLASSICAL, language, (void *)pFunc);//add protocol into flow table
+            addEntry(flowtable, CLASSICAL, language, (void *)pFuncProcess);//add protocol into flow table
             //registerCLI("giniudp", addprotCmd, NULL, NULL, NULL);
             verbose(2, "[addProtocol]!!!!Python Processor added into flowtable!!!");
             /*            if (pFunc)

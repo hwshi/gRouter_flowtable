@@ -26,7 +26,7 @@
 #include "message.h"
 #include "classifier.h"
 #include "grouter.h"
-
+#include "pythondebug.h"
 #include "ginic_wrap.c"
 
 extern classlist_t *classifier;
@@ -704,17 +704,4 @@ int findCurProt(gpacket_t *pkt, int cur_prot)
     }
     return EXIT_FAILURE;
 }
-int PythonError(PyObject *pObj)
-{
-    char *Str = PyString_AsString(pObj);
-    return printf("%s", Str);
-}
 
-void CheckPythonError(void)
-{
-    if (PyErr_Occurred() != NULL)
-    {
-        PyErr_Print();
-        PyErr_Clear();
-    }
-}

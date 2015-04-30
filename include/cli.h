@@ -19,7 +19,7 @@
 #include <slack/map.h>
 #include "message.h"
 #include "grouter.h"
-
+#include "pythondebug.h"
 
 #define PROGRAM                       10
 #define JOIN                          11
@@ -33,7 +33,9 @@
 #define MAX_LINE_LEN                  1024
 #define MAX_KEY_LEN                   64
 
-
+ //type of language
+ #define C_FUNCTION 0
+ #define PYTHON_FUNCTION 1
 
 typedef struct _cli_entry_t
 {
@@ -41,7 +43,9 @@ typedef struct _cli_entry_t
 	char long_helpstr[MAX_BUF_LEN];
 	char short_helpstr[MAX_BUF_LEN];
 	char usagestr[MAX_BUF_LEN];
-	void (*handler)();
+	//void (*handler)();
+        void *handler;
+        ushort language;                // 0 C 1 PYTHON
 } cli_entry_t;
 
 
@@ -51,7 +55,8 @@ void parseACLICmd(char *str);
 void CLIProcessCmds(FILE *fp, int online);
 void CLIPrintHelpPreamble();
 void *CLIProcessCmdsInteractive(void *arg);
-void registerCLI(char *key, void (*handler)(),
+//void registerCLI(char *key, void (*handler)(), ushort language,
+void registerCLI(char *key, void *handler, ushort language, 
 		 char *shelp, char *usage, char *lhelp);
 void CLIDestroy();
 

@@ -94,10 +94,6 @@ class Ncer:
 		print("Init: NC")
 		self.port = 777
 
-	def ncCmdPy():	
-		# Cip.cvar.PCB = [1, 2]
-		print("[ncCmdPy] UDPPCB: %d, %d") % (UDPPCB.a, UDPPCB.b)
-
 	def _recv_from(self):
 		print("Ncer:[_recv_from] 1")
 		pkt = PCBCore.pcb_get_packet(self.port)
@@ -113,7 +109,13 @@ class Ncer:
 		print("[thread_recv_from] closing socket")
 		PCBCore.pcb_close_socket(self.port)
 			
-
+def Config():
+	print("Py::[Config]")
+	return "nc"
+def Command_Line(str):
+	print("[Command_Line] start!")
+	print(str)
+	print("[Command_Line] end!")
 def giniudp():
 	print("[giniudp]:: UDP sever/client::")
 	print("call with 'nc -u -l port/nc -u ip port'")

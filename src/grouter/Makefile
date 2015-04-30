@@ -3,7 +3,7 @@ CFLAGS = -c -Isrc/grouter -I../../include -I/usr/include/python2.7/ -DHAVE_GETOP
 #CFLAGS+= -g
 LDFLAGS = -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm
 
-SOURCES= arp.c classifier.c cli.c console.c ethernet.c filter.c flowtable.c fragment.c gnet.c grouter.c icmp.c info.c ip.c message.c mtu.c packetcore.c qdisc.c roundrobin.c routetable.c simplequeue.c tap.c tapio.c utils.c vpl.c wfq.c
+SOURCES= arp.c classifier.c cli.c console.c ethernet.c filter.c flowtable.c fragment.c gnet.c grouter.c icmp.c info.c ip.c message.c mtu.c packetcore.c pythondebug.c qdisc.c roundrobin.c routetable.c simplequeue.c tap.c tapio.c utils.c vpl.c wfq.c
 
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=grouter
