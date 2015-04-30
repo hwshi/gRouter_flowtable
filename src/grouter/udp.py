@@ -120,9 +120,11 @@ def giniudp():
 	#print("???")
 	#nc = Ncer()
 	#upkt = Packet(7000, 7, 10, 0, "bb")
-	upkt = Packet(34591, 8889, 10, 0, "bb")
-	upkt_a = assemble(upkt)
+	upkt = Packet(34591, 8889, 5, 0, "1111\n")
+	src_ip = ip_ltostr([128, 1, 168, 192])
 	dest_ip = ip_ltostr([2, 1, 168, 192])
+	#upkt_a = assemble(upkt)
+	upkt_a = assemble(upkt, 0)# no checksum
 	_GINIC.IPOutgoingPacket(upkt_a, dest_ip, len(upkt_a), 1, 17)
 
 	#nc.thread_recv_from()
@@ -227,6 +229,7 @@ def net2updh(s):
 	print("[net2updh]")
 	return __ntohs(s[0:2]) + __ntohs(s[2:4]) + __ntohs(s[4:6]) + s[6:]
 def udpcksum(s):
+	print("[udpcksum]")
 	if len(s) & 1:
 		s = s + '\0'
 	words = array.array('h', s)
@@ -237,6 +240,7 @@ def udpcksum(s):
 	lo = sum & 0xffff
 	sum = hi + lo
 	sum = sum + (sum >> 16)
+	print("checksum is : %s")%((~sum) & 0xffff)
 	#print("chsum>>end")
 	return (~sum) & 0xffff
 
@@ -280,10 +284,21 @@ class Packet:
 	def _assemble(self, cksum=1):
 		print("[_assemble]")
 		self.ulen = 8 + len(self.data)
+		src_ip = ip_ltostr([128, 1, 168, 192])
+		dest_ip = ip_ltostr([2, 1, 168, 192])
+		print("1")
 		begin = struct.pack('HHH', self.sport, self.dport, self.ulen)
-		packet = begin + '\000\000' + self.data
+		print("2")
+		pseudo_header = src_ip + dest_ip + '\000\000' + struct.pack('H', self.ulen)
+		print("3")
+		pseudo_packet = pseudo_header + begin + '\000\000' + self.data
+		print("4")
 		if cksum:
-			self.sum = udpcksum(packet)
+			self.sum = udpcksum(pseudo_packet)
+			#self.sum = udpchecksum(packet)
+			packet = begin + struct.pack('H', self.sum) + self.data
+		else:
+			self.sum = 0
 			packet = begin + struct.pack('H', self.sum) + self.data
 		self.__packet = udph2net(packet)
 		return self.__packet
