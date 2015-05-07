@@ -11,8 +11,12 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/flowtable.c</file>
+            <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/grouter.c</file>
             <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/packetcore.c</file>
             <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/cli.c</file>
+            <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/ethernet.c</file>
+            <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/simplequeue.c</file>
+            <file>file:/home/chi/Dropbox/Gini/gRouters/gRouter_flowtable/src/grouter/arp.c</file>
         </group>
     </open-files>
 </project-private>

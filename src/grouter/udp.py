@@ -1,159 +1,95 @@
-# module_name, packaversionCmdge_name, ClassName, method_name,
-#ExceptionName, function_name, GLOBAL_VAR_NAME, 
-#instance_var_name, function_parameter_name, local_var_name.
+# #
+# udp.py
+# module
+# AUTHOR: Haowei Shi
+# DATE: Jan 01, 2015
+# #
 
-import _GINIC
+from random import randint
 import inspect
 import array
 import struct
-import string
-from socket import htons, ntohs
-import os
-# class PCBCore:
-#     print("PCBCore is initilizing...")
-#     NAME = 'PCB CORE'
-#     MAX_PCB_NUMBER = 20
-#     MAX_PORT_NUMBER = 65536
-#     MAX_BUFFER_SIZE = 1000
-#     socket_count = 0
-#     PCB_dict = {} #{port: (pkt1, pkt2, ...)}
-#     #lock = thread.allocate_lock()
-#     #print(lock)
-#     print("PCBCore is initilaized")
-#     @staticmethod
-#     def pcb_bind_socket(port):
-#         if PCBCore.socket_count == PCBCore.MAX_PCB_NUMBER:
-#             print("Fail! Cannot have more sockets!")
-#             return
-#         if PCBCore.socket_count ==  PCBCore.MAX_PORT_NUMBER:
-#             print("Fail! Port number invalid")
-#             return
-#         if PCBCore.PCB_dict.has_key(port):
-#             print("Fail! Port already binded!")
-#             return
-#         PCBCore.PCB_dict.update({port : []})
-#         print("Socket binded!")
 
-#     @staticmethod
-#     def pcb_close_socket(port):
-#         #PCBCore.lock.acquire()
-#         if PCBCore.PCB_dict.has_key(port):
-#             ##PCBCore.lock.acquire()
-#             del PCBCore.PCB_dict[port]
-#             PCBCore.socket_count = PCBCore.socket_count - 1
-#             #PCBCore.lock.release()
-#         else:
-#             #PCBCore.lock.release()
-#             print("Socket doesn't exist!")
+import _GINIC
 
-#     @staticmethod
-#     def recv_packet(pkt):
-#         print("[recv_packet] 1")
-#         port = pkt.dport
-#         print("[recv_packet] testing PCB_dict")
-#         #PCBCore.lock.acquire()
-#         if PCBCore.PCB_dict.has_key(port):
-#             print("[recv_packet] 2")
-#             new_value = PCBCore.PCB_dict[port].append(pkt)
-#             PCBCore.PCB_dict.update({port: new_value})
-#         print("[recv_packet] Done")
-#         #PCBCore.lock.release()
-
-#     @staticmethod
-#     def pcb_get_packet(port):
-#         print("[pcb_get_packet] 1")
-#         #PCBCore.lock.acquire()
-#         print("[pcb_get_packet] locked")
-#         if len(PCBCore.PCB_dict[port]) > 0:
-#             print("Found pkt")
-#             pkt = PCBCore.PCB_dict[port].pop(0)
-#             print("[pcb_get_packet] Done")
-#             #PCBCore.lock.release()
-#             return pkt
-#         else:
-#             print ""
-#             #PCBCore.lock.release()
-#     @staticmethod
-#     def get_name():
-#         print("[get_name]: %s") % PCBCore.NAME
-
-# PCB
-# class PCB:
-
-#     def __init__(self, gpacket):
-#         self.sport = gpacket.sport
-#         self.dport = gpacket.dport
-#         self.data = gpacket.data
-#
 MAX_PCB_NUMBER = 5
 MAX_BUFFER_SIZE = 5
 
-
 class UDPPcbEntry:
     def __init__(self,
-                 port=-1,
-                 buff=[]):
-        self.port = port
-        self.buff = buff
-
+                 sport=-1,
+                 dport=-1):
+        self.sport = sport
+        self.dport = dport
+        self.buff = []
 
 class UDPPcb:
     def __init__(self,
-                 size=0,
-                 entry=[]):
+                 size=0):
         self.size = size
         self.entry = [UDPPcbEntry() for i in range(5)]
+        self.port_dict = {}
 
-    def pcb_bind(self, port):
-        for check in range(MAX_PCB_NUMBER):
-            if self.entry[check].port == -1:
-                self.entry[check].port == port
-                return True
+    def bind(self, dport):  #done
+        sport = 8888
+        if self.port_dict.has_key(sport):
+            sport = randint(7000, 9000)
+        for id in range(MAX_PCB_NUMBER):
+            if self.entry[id].sport == -1:
+                self.port_dict[sport] = id
+                self.entry[id].sport = sport
+                self.entry[id].dport = dport
+                return id
         gprint("bind failed! Not enough space")
-
-    def pcb_check(self, port):
-        for check in range(MAX_PCB_NUMBER):
-            if self.entry[check].port == port:
-                gprint("check seccessfuly! port :", port)
-                return check
         return -1
 
-    def pcb_unbind(self, port):
+    def check(self, dport):
+        print("[check]dict: ", self.port_dict)
+        if dport in self.port_dict:
+            print("dport in self.port_dict")
+        if self.port_dict.has_key(dport):
+            print("[check]found port", dport, " in port_dict!")
+            return self.port_dict[dport]
+        else:
+            print("[check]Didn't find port", dport, " in port_dict!")
+            return -1
+
+    def unbind(self, port):
         for check in range(MAX_PCB_NUMBER):
             if self.entry[check].port == port:
-                self.entry[check].port == -1
+                self.entry[check].port = -1
                 return True
         gprint("unbind failed! port invalid!")
 
+    def send(self, diph_l, sport, dport):
+        print("[UDPPcb.send] input your msg")
+        dipn = struct.pack('BBBB', int(diph_l[3]), int(diph_l[2]), int(diph_l[1]), int(diph_l[0]))
+        while True:
+            str = raw_input()
+            udp_pkt = Packet(sport, dport, len(str), 0, str)
+            #TODO: read src_ip from rout_tbl(C)
+            src_ip = ip_ltostr([128, 1, 168, 192])
+            upkt_a = assemble(udp_pkt, 0)  # no checksum
+            _GINIC.IPOutgoingPacket(upkt_a, dipn, len(upkt_a), 1, 17)
 
-#class udp:
+    def listen(self, port):
+        if self.port_dict.has_key(port):
+            print("listen failed! port in use!")
+            return
+        else:
+            for id in range(MAX_PCB_NUMBER):
+                if self.entry[id].sport == -1:
+                    self.port_dict[port] = id
+                    print("after add... port_dict: ", self.port_dict, "..")
+                    self.entry[id].sport = port
+                    self.entry[id].dport = -1
+                    return
 
 
-
-
-
-
-
-# class Ncer:
-#
-#     def __init__(self):
-#         print("Init: NC")
-#         self.port = 777
-#
-#     def _recv_from(self):
-#         print("Ncer:[_recv_from] 1")
-#         pkt = PCBCore.pcb_get_packet(self.port)
-#         print(">>>")
-#         print(pkt)
-#     def thread_recv_from(self):
-#         #PCBCore.pcb_close_socket(self.port)
-#         PCBCore.pcb_bind_socket(self.port)
-#         print("creating thread")
-#         while True:
-#             Thread(target = self._recv_from).start()
-#             time.sleep(3)
-#         print("[thread_recv_from] closing socket")
-#         PCBCore.pcb_close_socket(self.port)
+print("****************************   UDP   ****************************")
+print("*               this is the beginning of the module             *")
+pcb = UDPPcb()
+print("pcb created!")
 
 def Config():
     print("Py::[Config]")
@@ -163,83 +99,85 @@ def Config():
 def Command_Line(str):
     print("[Command_Line] start!")
     print(str)
+    global pcb
     if pcb == None:
         pcb = UDPPcb()
-    print("[Command_Line] end!")
-
-
-def giniudp():
-    print("[giniudp]:: UDP sever/client::")
-    print("call with 'nc -u -l port/nc -u ip port'")
-    #print("???")
-    #nc = Ncer()
-    #upkt = Packet(7000, 7, 10, 0, "bb")
-    upkt = Packet(34591, 8889, 5, 0, "1111\n")
-    src_ip = ip_ltostr([128, 1, 168, 192])
-    dest_ip = ip_ltostr([2, 1, 168, 192])
-    #upkt_a = assemble(upkt)
-    upkt_a = assemble(upkt, 0)  # no checksum
-    _GINIC.IPOutgoingPacket(upkt_a, dest_ip, len(upkt_a), 1, 17)
-
-    #nc.thread_recv_from()
+    command_string = str.split(" ")
+    if len(command_string) != 3:
+        print('Command Error! "nc -l [port]" "nc [IP][port]"')
+    elif command_string[1] == "-l":
+        port_listen = int(command_string[2])
+        pcb.listen(port_listen)
+        print("listen to port", command_string[2], "...")
+        pass
+    else:
+        dip_hl = command_string[1].split(".")
+        dport = int(command_string[2])
+        if is_dip_hl(dip_hl) and is_port(dport):
+            id = pcb.bind(dport)
+            pcb.send(dip_hl, pcb.entry[id].sport, dport)
+            pass
+        else:
+            print("invalid IP or PORT!")
+    print("[Command_Line] Done!")
 
 
 def Protocol_Processor(gpkt):
+    global pcb
     print("=====Py#[Packet_Processor]::=====")
-    print("[UDPPacketProcess]Process ID: %d") % os.getpid();
-    print("ready")
-    if (pcb == None):
+    print(pcb.port_dict)
+    if pcb is None:
         pcb = UDPPcb()
-
-    #print(gpkt)
-    #print("dir:")
-    #print(dir(gpkt))
     udpPacketFromC = _GINIC.getUDPPacketString(gpkt)
     packet = disassemble(udpPacketFromC, 1)
     print(packet)
     if packet.dport == 7:
         print("recieved an UDP ECHO packet")
         _udp_echo_reply(packet)
-    else:
+    elif pcb.check(packet.dport) != -1:
+        print("Received Msg: ", packet.data)
         pass
-    print("Done")
+    else:
+        print("Port Unreachable!")
+    print("[UDPPacketProcess]Done")
 
 
 def _udp_echo_reply(packet):
     port_tmp = packet.sport
     packet.sport = packet.dport
     packet.dport = port_tmp
-    dest_ip = __find_dest_ip(packet)
+    dest_ip = __find_dest_ip(packet)  #TODO extract dest_ip from packet
     print("[_udp_echo_reply]dest ip: %d", dest_ip)
     newflag = 1
     prot = 17
     pkt = assemble(packet)
     size = len(pkt)
     print("[_udp_echo_reply]sending to %s : %d", dest_ip, packet.dport)
-    print("pkt size: %d") % (len(pkt))
     udp2gpkt = _GINIC.createGPacket(pkt)  #process udp2gpkt in typemap
-    #print("udppkt size: %d") % (len(udp2gpkt))
-    print("check Arg type:")
-    print(udp2gpkt)
-    print(size)
-    print(newflag)
-    print(prot)
-    print("Done Checking==")
-    print("Start to send back to C")
-    #_GINIC.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)
     _GINIC.IPOutgoingPacket(pkt, dest_ip, size, newflag, prot)
 
 
-# def _UDPPacketProcess(packet):
-#     print("[_UDPPacketProcess] Thread")
-#     PCBCore.recv_packet(packet)
+def is_port(data):
+    return data >= 0
+
+
+def is_dip_hl(data):
+    return len(data) == 4 and \
+           is_uchar(int(data[0])) and \
+           is_uchar(int(data[1])) and \
+           is_uchar(int(data[2])) and \
+           is_uchar(int(data[3]))
+
+def is_uchar(num):
+    return num >= 0 and num <= 255
+
+
 def ip_ltostr(iplist):
     return struct.pack('BBBB', iplist[0], iplist[1], iplist[2], iplist[3])
 
 
 def __find_dest_ip(pkt):
     ip = [2, 1, 168, 192]
-    #return " ".join(str(x) for x in ip)
     ipstr = ip_ltostr(ip)
     print("[__find_dest_ip]len(ipstr) = %d") % len(ipstr)
     print("[__find_dest_ip]lip after ltostr:", ipstr)
@@ -255,11 +193,13 @@ def __htons(s):
     return struct.pack('!H', struct.unpack('H', s)[0])
 
 
-# def iph2net(s):
-#     return s[:2] + __htons(s[2:4]) + __htons(s[4:6]) + __htons(s[6:8]) + s[8:]
+def iph2net(s):
+    return s[:2] + __htons(s[2:4]) + __htons(s[4:6]) + __htons(s[6:8]) + s[8:]
 
-# def net2iph(s):
-#     return s[:2] + __ntohs(s[2:4]) + __ntohs(s[4:6]) + __ntohs(s[6:8]) + s[8:]
+
+def net2iph(s):
+    return s[:2] + __ntohs(s[2:4]) + __ntohs(s[4:6]) + __ntohs(s[6:8]) + s[8:]
+
 
 def udph2net(s):
     print("[udp2net]")
@@ -284,7 +224,6 @@ def udpcksum(s):
     sum = hi + lo
     sum = sum + (sum >> 16)
     print("checksum is : %s") % ((~sum) & 0xffff)
-    #print("chsum>>end")
     return (~sum) & 0xffff
 
 
@@ -377,9 +316,3 @@ def gprint(str):
     print(inspect.stack()[0][3] + "::" + str)
 
 
-print("****************************   UDP   ****************************")
-print("*               this is the beginning of the module             *")
-
-pcb = UDPPcb()
-
-print("pcb created!")
