@@ -38,7 +38,7 @@
 
 Map *cli_map;
 Mapper *cli_mapper;
-static char *cur_line = (char *)NULL;       // static variable for holding the line
+static char *cur_line = (char *) NULL; // static variable for holding the line
 
 extern FILE *rl_instream;
 extern router_config rconfig;
@@ -75,7 +75,7 @@ int CLIInit(router_config *rarg)
      * function. The function is inserted into the command registary and picked up
      * when the leading string is typed in the CLI.
      */
-    registerCLI("help", helpCmd, C_FUNCTION, SHELP_HELP, USAGE_HELP, LHELP_HELP);  // Check
+    registerCLI("help", helpCmd, C_FUNCTION, SHELP_HELP, USAGE_HELP, LHELP_HELP); // Check
     registerCLI("version", versionCmd, C_FUNCTION, SHELP_VERSION, USAGE_VERSION, LHELP_VERSION); // Check
     registerCLI("set", setCmd, C_FUNCTION, SHELP_SET, USAGE_SET, LHELP_SET); // Check
     registerCLI("get", getCmd, C_FUNCTION, SHELP_GET, USAGE_GET, LHELP_GET); // Check
@@ -98,24 +98,22 @@ int CLIInit(router_config *rarg)
     registerCLI("giniudp", giniUDPCmd, C_FUNCTION, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
 
     if (rarg->config_dir != NULL)
-        chdir(rarg->config_dir);                  // change to the configuration directory
+        chdir(rarg->config_dir); // change to the configuration directory
     if (rarg->config_file != NULL)
     {
         FILE *ifile = fopen(rarg->config_file, "r");
-        rl_instream = ifile;              // redirect the input stream
+        rl_instream = ifile; // redirect the input stream
         CLIProcessCmds(ifile, 0);
         rl_instream = stdin;
     }
 
     if (rarg->cli_flag != 0)
-        stat = pthread_create((pthread_t *)(&(rarg->clihandler)), NULL, CLIProcessCmdsInteractive, (void *)stdin);
+        stat = pthread_create((pthread_t *) (&(rarg->clihandler)), NULL, CLIProcessCmdsInteractive, (void *) stdin);
 
-    pthread_join(rarg->clihandler, (void **)&jstat);
+    pthread_join(rarg->clihandler, (void **) &jstat);
     verbose(2, "[cliHandler]:: Destroying the CLI datastructures ");
     CLIDestroy();
 }
-
-
 
 /*
  * This function is called by the thread that is spawned to handle the CLI.
@@ -125,13 +123,11 @@ int CLIInit(router_config *rarg)
 
 void *CLIProcessCmdsInteractive(void *arg)
 {
-    FILE *fp = (FILE *)arg;
+    FILE *fp = (FILE *) arg;
 
     CLIPrintHelpPreamble();
     CLIProcessCmds(fp, 1);
 }
-
-
 
 /*
  * managing the signals: first an ignore function.
@@ -140,8 +136,6 @@ void dummyFunction(int sign)
 {
     printf("Signal [%d] is ignored \n", sign);
 }
-
-
 
 void parseACLICmd(char *str)
 {
@@ -154,23 +148,23 @@ void parseACLICmd(char *str)
     if ((clie = map_get(cli_map, token)) != NULL)
     {
         verbose(2, "found a command for %s\n", token);
-        if(clie->language == C_FUNCTION)
+        if (clie->language == C_FUNCTION)
         {
             void (*function)();
             function = clie->handler;
             (*function)();
             //clie->handler((void *)clie);  haowei
         }
-        else if(clie->language == PYTHON_FUNCTION)// for python command
+        else if (clie->language == PYTHON_FUNCTION)// for python command
         {
-           PyObject * Py_pFun, *Py_pArg, *Py_pResult;
-           Py_pFun = clie->handler;
-           Py_pArg = PyString_FromString(orig_str);
-           verbose(2  , "[parseACLICmd]Command <%p> is being called\n", Py_pFun);
-           Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pArg);
-           CheckPythonError();
+            PyObject * Py_pFun, *Py_pArg, *Py_pResult;
+            Py_pFun = clie->handler;
+            Py_pArg = PyString_FromString(orig_str);
+            verbose(2, "[parseACLICmd]Command <%p> is being called\n", Py_pFun);
+            Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pArg);
+            CheckPythonError();
         }
-    
+
     }
     else
     {
@@ -179,13 +173,11 @@ void parseACLICmd(char *str)
     }
 }
 
-
 void CLIPrintHelpPreamble()
 {
     printf("\nGINI Router Shell, version: %s", prog_version());
     printf("\n%s\n", HELP_PREAMPLE);
 }
-
 
 void CLIPrintHelp()
 {
@@ -209,7 +201,6 @@ void CLIPrintHelp()
 
 }
 
-
 /*
  * Read a string, and return a pointer to it.
  * Returns NULL on EOF.
@@ -220,8 +211,8 @@ char *rlGets(int online)
 
     if (cur_line != NULL)
     {
-        free (cur_line);
-        cur_line = (char *)NULL;
+        free(cur_line);
+        cur_line = (char *) NULL;
     }
 
     sprintf(prompt, "GINI-%s $ ", rconfig.router_name);
@@ -236,12 +227,10 @@ char *rlGets(int online)
     // If the line has any text in it,
     // save it on the history.
     if (cur_line && *cur_line)
-        add_history (cur_line);
+        add_history(cur_line);
 
     return (cur_line);
 }
-
-
 
 /*
  * process CLI. The file pointer fp already points to an open stream. The
@@ -319,9 +308,6 @@ void CLIProcessCmds(FILE *fp, int online)
     }
 }
 
-
-
-
 void CLIDestroy()
 {
     mapper_destroy(&cli_mapper);
@@ -329,11 +315,12 @@ void CLIDestroy()
 }
 
 //Haowei void registerCLI(char *key, void (*handler)(), ushort language,
-void registerCLI(char *key, void *handler, ushort language, 
+
+void registerCLI(char *key, void *handler, ushort language,
                  char *shelp, char *usage, char *lhelp)
 {
-    cli_entry_t *clie = (cli_entry_t *) malloc(sizeof(cli_entry_t));
-    
+    cli_entry_t *clie = (cli_entry_t *) malloc(sizeof (cli_entry_t));
+
     clie->handler = handler;
     clie->language = language;
     strcpy(clie->long_helpstr, lhelp);
@@ -370,7 +357,6 @@ int getDevType(char *str)
     if (strstr(str, "tap") != NULL)
         return TAP_DEV;
 }
-
 
 /*
  * Handler for the interface configuration command:
@@ -513,7 +499,6 @@ void ifconfigCmd()
     return;
 }
 
-
 /*
  * Handler for the connection "route" command
  * route show
@@ -628,8 +613,6 @@ void arpCmd()
     }
 }
 
-
-
 ip_spec_t *parseIPSpec(char *instr)
 {
     ip_spec_t *ips;
@@ -638,8 +621,8 @@ ip_spec_t *parseIPSpec(char *instr)
     char *saveptr, *saveptr2;
     int i = 4;
 
-    ips = (ip_spec_t *) malloc(sizeof(ip_spec_t));
-    bzero(ips, sizeof(ip_spec_t));
+    ips = (ip_spec_t *) malloc(sizeof (ip_spec_t));
+    bzero(ips, sizeof (ip_spec_t));
 
     ipaddr = strtok_r(instr, " /", &saveptr);
     preflen = strtok_r(NULL, " /", &saveptr);
@@ -658,14 +641,13 @@ ip_spec_t *parseIPSpec(char *instr)
     return ips;
 }
 
-
 port_range_t *parsePortRangeSpec(char *instr)
 {
     port_range_t *prs;
     char *savestr, *port;
 
-    prs = (port_range_t *) malloc(sizeof(port_range_t));
-    bzero(prs, sizeof(port_range_t));
+    prs = (port_range_t *) malloc(sizeof (port_range_t));
+    bzero(prs, sizeof (port_range_t));
 
     port = strtok_r(instr, "-", &savestr);
     prs->minport = atoi(port);
@@ -675,8 +657,6 @@ port_range_t *parsePortRangeSpec(char *instr)
 
     return prs;
 }
-
-
 
 /*
  * class add class_name [-src ( packet spec )] [-dst ( packet spec )]
@@ -748,9 +728,6 @@ void classCmd()
     }
     return;
 }
-
-
-
 
 /*
  * filter add ( deny | allow ) class_name
@@ -826,8 +803,6 @@ void filterCmd()
     }
 }
 
-
-
 /*
  * prints the version number of the gRouter.
  * TODO: make this version number globally controlled variable that is
@@ -838,8 +813,6 @@ void versionCmd()
     printf("\n(gRouter_flowtable Netbeans)GINI Router Version: %s \n\n", prog_version());
 }
 
-
-
 /*
  * halts the gRouter.
  * TODO: should we do any specific clean up of state before halting the router?
@@ -849,7 +822,6 @@ void haltCmd()
     verbose(1, "[haltCmd]:: Router %s shutting down.. ", prog_name());
     raise(SIGUSR1);
 }
-
 
 /*
  * send a ping packet...
@@ -891,7 +863,6 @@ void pingCmd()
         pkt_size = 64;
     ICMPDoPing(ip_addr, pkt_size, tries);
 }
-
 
 /*
  * set verbose [value]
@@ -958,8 +929,6 @@ void setCmd()
     }
 }
 
-
-
 void sourceCmd()
 {
     FILE *fp;
@@ -982,7 +951,6 @@ void sourceCmd()
     rl_instream = stdin;
 }
 
-
 void consoleCmd()
 {
     char *next_tok = strtok(NULL, " \n");
@@ -997,7 +965,6 @@ void consoleCmd()
         return;
     }
 }
-
 
 /*
  * helpCmd - this implements the following command line.
@@ -1016,7 +983,7 @@ void helpCmd()
         CLIPrintHelp();
     else
     {
-        n_clie = (cli_entry_t *)map_get(cli_map, next_tok);
+        n_clie = (cli_entry_t *) map_get(cli_map, next_tok);
         if (n_clie == NULL)
             printf("ERROR! No help for command: %s \n", next_tok);
         else
@@ -1055,8 +1022,6 @@ void getCmd()
         printf("Update interval: %d (seconds) \n", getUpdateInterval());
 }
 
-
-
 /*
  * queue add class_name qdisc_name [-size num_slots] [-weight value] [-delay delay_microsec]
  * queue show
@@ -1069,7 +1034,7 @@ void queueCmd()
     char *next_tok;
     char cname[MAX_DNAME_LEN], qdisc[MAX_DNAME_LEN];
     // the following parameters are set to default values which are sometimes overwritten
-    int num_slots = 0;   // means, set to default
+    int num_slots = 0; // means, set to default
     double weight = 1.0, delay = 2.0;
 
 
@@ -1145,8 +1110,6 @@ void queueCmd()
     }
 }
 
-
-
 /*
  * qdisc show
  * qdisc add taildrop
@@ -1190,8 +1153,6 @@ void qdiscCmd()
     }
 }
 
-
-
 /*
  * spolicy show
  */
@@ -1209,33 +1170,33 @@ void spolicyCmd()
 void addprotCmd()
 {
     char *next_tok = strtok(NULL, " \n");
+    char *language_tok;
+    ushort language;
     if (next_tok != NULL)
     {
         printf("[addprotCmd]:: adding %s\n", next_tok);
         //TODO: addProtocol(pcore->flowtable, next_tok);
         //FOR PYTHON
-        ushort language = PYTHON_FUNCTION;
-        
-        // PyObject *Py_pMod = PyImport_ImportModule(next_tok);
-        // if(Py_pMod != NULL){
-        //     Py_pGlobDict = PyModule_GetDict(Py_pMod);
-        //     if(Py_pGlobDict != NULL){
-        //         Py_pFunc = PyDict_GetItemString(Py_pGlobDict, "UDPPacketProcess");
-        //         if(Py_pFunc != NULL){
-        //             addProtocol(pcore->flowtable, );
-        //         }
-        //     }
-        // }
-        // if(!addProtocol(pcore->flowtable, next_tok))
-        // {
-        // 	printf("[addprotCmd]:: failed to add protocol:  %s\n", next_tok);
-        // }
-        if(addProtocol(pcore->flowtable, language, next_tok) == EXIT_SUCCESS)
-                verbose(2, "[addprotCmd]Protocol Added");
+        language_tok = strtok(NULL, " \n");
+        if (strcmp(language_tok, "python") || strcmp(language_tok, "Python") || strcmp(language_tok, "PYTHON"))
+        {
+            language = PYTHON_FUNCTION;
+            if (addModule(pcore->flowtable, PYTHON_FUNCTION, next_tok) == EXIT_SUCCESS)
+                verbose(2, "[addprotCmd]Python Module Added");
             else
             {
-                verbose(2, "[addprotCmd]Protocol Adding Faild");
+                verbose(2, "[addprotCmd]Python Module Adding Faild");
             }
+        }
+        else if(strcmp(language_tok, "c") || strcmp(language_tok, "C"))
+        {
+            if (addModule(pcore->flowtable, C_FUNCTION, next_tok) == EXIT_SUCCESS)
+                verbose(2, "[addprotCmd]C Module Added");
+            else
+            {
+                verbose(2, "[addprotCmd]C Module Adding Faild");
+            }
+        }
     }
 }
 
@@ -1243,12 +1204,13 @@ void showftCmd()
 {
     printFlowTable(pcore->flowtable);
 }
+
 void giniUDPCmd()
 {
     PyObject *pProtMod, *pProtGlobalDict, *pFunc;
-    pProtMod = PyImport_ImportModule("udp");//load protocol.py
-    pProtGlobalDict = PyModule_GetDict(pProtMod);   // Get main dictionary
-    pFunc = PyDict_GetItemString(pProtGlobalDict, "giniudp");//TODO: find function of getEntry      
+    pProtMod = PyImport_ImportModule("udp"); //load protocol.py
+    pProtGlobalDict = PyModule_GetDict(pProtMod); // Get main dictionary
+    pFunc = PyDict_GetItemString(pProtGlobalDict, "giniudp"); //TODO: find function of getEntry      
     PyObject_CallFunction(pFunc, NULL);
 
 }
