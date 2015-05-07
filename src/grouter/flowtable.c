@@ -7,9 +7,126 @@
 
 //Haowei
 //#include "flowtable_wrap.c"
+#include "ginic_wrap.c"
 #include "flowtable.h"
 #include "Python.h"
 //
+void *judgeProcessor(void *pc)
+{
+    pktcore_t *pcore = (pktcore_t *)pc;
+    gpacket_t *in_pkt;
+    //flowtable
+    SWIG_init();// Haowei: should be init here or in packetcore.c???
+    int pktsize;
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    while (1)
+    {
+        verbose(2, "[judgeProcessor]:: Waiting for a packet...");
+        //TODO: Redefine data format in Queue from pkt to frame
+        readQueue(pcore->decisionQ, (void **)&in_pkt, &pktsize);
+        pthread_testcancel();
+        verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
+        //flow table: Haowei
+        //if label is empty, then set it first;
+        // if (in_pkt->frame.label[0].process != 2 && in_pkt->frame.label[0].process != 0 && in_pkt->frame.label[0].process != 1)
+        // {
+        //     labelInit(in_pkt);
+        //     switch (ntohs(in_pkt->data.header.prot))
+        //     {
+        //     case IP_PROTOCOL:
+        //         verbose(2, "[packetProcessor]:: Labeling pkt by IP..");
+        //         labelNext(in_pkt, NULL_PROTOCOL, IP_PROTOCOL);
+        //         writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
+        //         break;
+        //     case ARP_PROTOCOL:
+        //         verbose(2, "[packetProcessor]:: Labeling pkt by ARP..");
+        //         labelNext(in_pkt, NULL_PROTOCOL, ARP_PROTOCOL);
+        //         writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
+        //         break;
+        //     default:
+        //         verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol protocol");
+        //         // TODO: should we generate ICMP errors here.. check router RFCs
+        //         break;
+
+        //     }
+        //     //continue to read next pkt in workq: Haowei
+        //     continue;
+        // }
+        printf("[judgeProcessor]:packet addr:(0x%lx)\n", (unsigned long)in_pkt);
+
+        ftentry_t *entry_res;
+        ushort prot;
+        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
+        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
+        if (entry_res == NULL)
+            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
+        {
+            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
+            return;
+        }
+        //TODO: call function using action(char *):  PyObject_CallFunction(String)
+        printf("[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+
+        if (entry_res->language == C_FUNCTION)
+        {
+
+            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
+            int (*processor)(gpacket_t *);
+            processor = entry_res->action;
+            int nextlabel = (*processor)(in_pkt);
+            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS){
+                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
+                continue;
+            } 
+            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
+            verbose(2, "[Ft]New style round");
+            labelNext(in_pkt, entry_res->protocol, nextlabel);
+            verbose(2, "Writing back to work Q...");
+            writeQueue(pcore->decisionQ, in_pkt, sizeof(gpacket_t));
+            verbose(2, "Wrote back to work Q...");
+            printSimpleQueue(pcore->decisionQ);
+
+        }
+        else if (entry_res->language == PYTHON_FUNCTION)
+        {
+            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long)entry_res->action);
+            //TODO: Python embedding
+            //TODO: ?? Where to declaire!?
+            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+            Py_pFun = entry_res->action;
+            Py_pPkt = SWIG_NewPointerObj((void *)in_pkt, SWIGTYPE_p__gpacket_t, 1);
+            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+            if(Py_pPkt)
+            {
+                verbose(2, "Got Pyton obj\n");
+                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+                CheckPythonError();
+                printf("pResult: %p",Py_pResult);
+            }
+        }
+
+
+        /*
+        // get the protocol field within the packet... and switch it accordingly
+        switch (ntohs(in_pkt->data.header.prot))
+        {
+        case IP_PROTOCOL:
+            verbose(2, "[packetProcessor]:: Packet sent to IP routine for further processing.. ");
+
+            IPIncomingPacket(in_pkt);
+            break;
+        case ARP_PROTOCOL:
+            verbose(2, "[packetProcessor]:: Packet sent to ARP module for further processing.. ");
+            ARPProcess(in_pkt);
+            break;
+        default:
+            verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol protocol");
+            // TODO: should we generate ICMP errors here.. check router RFCs
+            break;
+
+        }*/
+    }
+}
 int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
 {
     verbose(2  , "[addEntry]:: \n");

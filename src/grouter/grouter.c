@@ -20,7 +20,7 @@
 
 
 
-router_config rconfig = {.router_name=NULL, .gini_home=NULL, .cli_flag=0, .config_file=NULL, .config_dir=NULL, .ghandler=0, .clihandler= 0, .scheduler=0, .worker=0, .schedcycle=10000};
+router_config rconfig = {.router_name=NULL, .gini_home=NULL, .cli_flag=0, .config_file=NULL, .config_dir=NULL, .ghandler=0, .clihandler= 0, .scheduler=0, .worker=0, .judge=0, .schedcycle=10000};
 pktcore_t *pcore;
 classlist_t *classifier;
 filtertab_t *filter;
@@ -60,7 +60,7 @@ int main(int ac, char *av[])
 	
 	char rpath[MAX_NAME_LEN];
 	int status, *jstatus;
-	simplequeue_t *outputQ, *workQ, *qtoa;
+	simplequeue_t *outputQ, *workQ, *decisionQ, *qtoa;
 
 	// setup the program properties
 	setupProgram(ac, av);
@@ -72,7 +72,8 @@ int main(int ac, char *av[])
 
 	outputQ = createSimpleQueue("outputQueue", INFINITE_Q_SIZE, 0, 1);
 	workQ = createSimpleQueue("work Queue", INFINITE_Q_SIZE, 0, 1);
-
+        decisionQ = createSimpleQueue("decision Queue", INFINITE_Q_SIZE, 0, 1);
+        
 	GNETInit(&(rconfig.ghandler), rconfig.config_dir, rconfig.router_name, outputQ);
 	ARPInit();
 	IPInit();
@@ -81,14 +82,15 @@ int main(int ac, char *av[])
 	filter = createFilter(classifier, 0);
 	//Haowei for Python
 	Py_Initialize();
-	pcore = createPacketCore(rconfig.router_name, outputQ, workQ);
+	pcore = createPacketCore(rconfig.router_name, outputQ, workQ, decisionQ);
 	printf("[main]:: flowtable size: %d\n", pcore->flowtable->num);
 	// add a default Queue.. the createClassifier has already added a rule with "default" tag
 	// char *qname, char *dqisc, double qweight, double delay_us, int nslots);
 	addPktCoreQueue(pcore, "default", "taildrop", 1.0, 2.0, 0);
 	rconfig.scheduler = PktCoreSchedulerInit(pcore);
 	rconfig.worker = PktCoreWorkerInit(pcore);
-
+        rconfig.judge = PktCoreJudgeInit(pcore);
+        
 	infoInit(rconfig.config_dir, rconfig.router_name);
 	addTarget("Output Queue", outputQ);
 	qtoa = getCoreQueue(pcore, "default");
@@ -105,6 +107,7 @@ int main(int ac, char *av[])
 
 	wait4thread(rconfig.scheduler);
 	wait4thread(rconfig.worker);
+        wait4thread(rconfig.judge);
 	wait4thread(rconfig.ghandler);
 	//Haowei for Python
 	Py_Finalize();

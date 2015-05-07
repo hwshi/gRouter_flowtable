@@ -48,6 +48,7 @@ typedef struct _flowtable_t
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
 
+void *judgeProcessor(void *pc);
 int addEntry(flowtable_t *flowtable, int type, ushort language, void *content);
 int deleteEntry();
 flowtable_t *initFlowTable();

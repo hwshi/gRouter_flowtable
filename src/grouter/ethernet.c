@@ -130,26 +130,7 @@ void* fromEthernetDev(void *arg)
 		}
 
 		verbose(2, "[fromEthernetDev]:: Packet is sent for enqueuing..");
-		//default label: Haowei
-            labelInit(in_pkt);
-            switch (ntohs(in_pkt->data.header.prot))
-            {
-            case IP_PROTOCOL:
-                verbose(2, "[ethernet]:: Labeling pkt by IP..");
-                labelNext(in_pkt, NULL_PROTOCOL, IP_PROTOCOL);
-                //writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
-                break;
-            case ARP_PROTOCOL:
-                verbose(2, "[ethernet]:: Labeling pkt by ARP..");
-                labelNext(in_pkt, NULL_PROTOCOL, ARP_PROTOCOL);
-                //writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
-                break;
-            default:
-                verbose(1, "[ethernet]:: Packet discarded: Unknown protocol protocol");
-                // TODO: should we generate ICMP errors here.. check router RFCs
-                break;
 
-            }
 		enqueuePacket(pcore, in_pkt, sizeof(gpacket_t));
 	}
 }

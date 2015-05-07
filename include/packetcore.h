@@ -37,8 +37,10 @@ typedef struct _pktcore_t
     pthread_cond_t schwaiting;
     pthread_mutex_t qlock;                // lock for the main queue
     pthread_mutex_t wqlock;               // lock for work queue
+    pthread_mutex_t dqlock;               // lock for decision queue
     simplequeue_t *outputQ;
     simplequeue_t *workQ;
+    simplequeue_t *decisionQ;
     Map *queues;
     int lastqid;
     int packetcnt;
@@ -53,7 +55,8 @@ typedef struct _pktcore_t
 
 // Function prototypes
 
-pktcore_t *createPacketCore(char *rname, simplequeue_t *outQ, simplequeue_t *workQ);
+//pktcore_t *createPacketCore(char *rname, simplequeue_t *outQ, simplequeue_t *workQ);
+pktcore_t *createPacketCore(char *rname, simplequeue_t *outQ, simplequeue_t *workQ, simplequeue_t *decisionQ);
 int addPktCoreQueue(pktcore_t *pcore, char *qname, char *dqisc, double qweight, double delay_us, int nslots);
 simplequeue_t *getCoreQueue(pktcore_t *pcore, char *qname);
 void printAllQueues(pktcore_t *pcore);
