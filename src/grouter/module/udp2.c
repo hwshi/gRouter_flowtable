@@ -22,10 +22,10 @@ void printConfigInfo(module_config_t *config)
     printf("command     :       %p\n", config->command);
     printf("----       End of Config    ----\n");
 }
-void udp2Process()
+int udp2Process()
 {
     printf("[udp2Process] start!\n");
-    
+    return EXIT_SUCCESS;
 }
 
 void udp2Command()

@@ -12,7 +12,7 @@ typedef struct _module_config_t
 
 module_config_t *udpConfig();
 
-int udp2Process();
+void udp2Process();
 
 void udp2Command();
 void printConfigInfo(module_config_t *config);

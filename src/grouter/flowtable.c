@@ -81,11 +81,11 @@ void *judgeProcessor(void *pc)
                 continue;
             }
             if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
-            verbose(2, "[Ft]New style round");
+            verbose(2, "[judgeProcessor][Ft]New style round");
             labelNext(in_pkt, entry_res->protocol, nextlabel);
-            verbose(2, "Writing back to work Q...");
+            verbose(2, "[judgeProcessor]Writing back to decision Q...");
             writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
-            verbose(2, "Wrote back to work Q...");
+            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
 //            printSimpleQueue(pcore->decisionQ);
 
         }
