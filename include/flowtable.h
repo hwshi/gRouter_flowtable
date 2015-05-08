@@ -14,6 +14,8 @@
 #include <slack/list.h>
 #include <pthread.h>
 #include <sys/types.h>
+#include <dlfcn.h>
+#include <string.h>
 
 #include "message.h"
 #include "grouter.h"
@@ -32,6 +34,15 @@
  #define C_FUNCTION 0
  #define PYTHON_FUNCTION 1
 
+//config infor
+typedef struct _module_config_t
+{
+    char name[20];
+    ushort protocol;
+    void *processor;
+    void *command;
+    char command_str[20];    
+} module_config_t;
 
 //flow table
 typedef struct _ftentry_t
@@ -56,4 +67,7 @@ int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function);
 int addProtocol(flowtable_t *flowtable,ushort language, char *protname);
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
 void printFlowTable(flowtable_t *flowtable);
+
+char *Name2ConfigName(char *tmpbuff, char *mod_name);
+void printConfigInfo(module_config_t *config);
 #endif

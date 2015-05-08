@@ -99,17 +99,6 @@
 	},
 	"buffers":
 	[
-		{
-			"contents": "#module_name, packaversionCmdge_name, ClassName, method_name, \n#ExceptionName, function_name, GLOBAL_VAR_NAME, \n#instance_var_name, function_parameter_name, local_var_name.\n\nimport _GINIC\nimport inspect\n\nimport struct\nimport string\nfrom socket import htons, ntohs\nimport os\n# class PCBCore:\n# 	print(\"PCBCore is initilizing...\")\n# 	NAME = 'PCB CORE'\n# 	MAX_PCB_NUMBER = 20\n# 	MAX_PORT_NUMBER = 65536\n# 	MAX_BUFFER_SIZE = 1000\n# 	socket_count = 0\n# 	PCB_dict = {} #{port: (pkt1, pkt2, ...)}\n# 	#lock = thread.allocate_lock()\n# 	#print(lock)\n# 	print(\"PCBCore is initilaized\")\n# 	@staticmethod\n# 	def pcb_bind_socket(port):\n# 		if PCBCore.socket_count == PCBCore.MAX_PCB_NUMBER:\n# 			print(\"Fail! Cannot have more sockets!\")\n# 			return\n# 		if PCBCore.socket_count ==  PCBCore.MAX_PORT_NUMBER:\n# 			print(\"Fail! Port number invalid\")\n# 			return\n# 		if PCBCore.PCB_dict.has_key(port):\n# 			print(\"Fail! Port already binded!\")\n# 			return\n# 		PCBCore.PCB_dict.update({port : []})\n# 		print(\"Socket binded!\")\n\n# 	@staticmethod\n# 	def pcb_close_socket(port):\n# 		#PCBCore.lock.acquire()\n# 		if PCBCore.PCB_dict.has_key(port):\n# 			##PCBCore.lock.acquire()\n# 			del PCBCore.PCB_dict[port]\n# 			PCBCore.socket_count = PCBCore.socket_count - 1\n# 			#PCBCore.lock.release()\n# 		else:\n# 			#PCBCore.lock.release()\n# 			print(\"Socket doesn't exist!\")\n\n# 	@staticmethod\n# 	def recv_packet(pkt):\n# 		print(\"[recv_packet] 1\")\n# 		port = pkt.dport\n# 		print(\"[recv_packet] testing PCB_dict\")\n# 		#PCBCore.lock.acquire()\n# 		if PCBCore.PCB_dict.has_key(port):\n# 			print(\"[recv_packet] 2\")\n# 			new_value = PCBCore.PCB_dict[port].append(pkt)\n# 			PCBCore.PCB_dict.update({port: new_value})\n# 		print(\"[recv_packet] Done\")\n# 		#PCBCore.lock.release()\n\n# 	@staticmethod\n# 	def pcb_get_packet(port):\n# 		print(\"[pcb_get_packet] 1\")\n# 		#PCBCore.lock.acquire()\n# 		print(\"[pcb_get_packet] locked\")\n# 		if len(PCBCore.PCB_dict[port]) > 0:\n# 			print(\"Found pkt\")\n# 			pkt = PCBCore.PCB_dict[port].pop(0)\n# 			print(\"[pcb_get_packet] Done\")\n# 			#PCBCore.lock.release()\n# 			return pkt\n# 		else:\n# 			print \"\"\n# 			#PCBCore.lock.release()\n# 	@staticmethod\n# 	def get_name():\n# 		print(\"[get_name]: %s\") % PCBCore.NAME\n		\n# PCB\n# class PCB:\n\n# 	def __init__(self, gpacket):\n# 		self.sport = gpacket.sport\n# 		self.dport = gpacket.dport\n# 		self.data = gpacket.data\nclass UDP_Pcb_entry:\n	MAX_BUFFER_SIZE = 5\n	def __init__(self, \n		port = -1,\n		buff = []):\n	self.port = port\n	self.buff = buff\n\nclass UDP_Pcb:\n	MAX_PCB_NUMBER = 5\n	MAX_BUFFER_SIZE\n	def __init__(self,\n		size = 0,\n		entry = []):\n	self.size = size\n	self.entry = [UDP_Pcb_entry() for i in range(5)]\n\n	def pcb_bind(self, port):\n		for check in range(MAX_PCB_NUMBER):\n			if self.entry[check].port == -1:\n				self.entry[check].port == port\n				return True\n		gprint(\"bind failed! Not enough space\")\n\n	def pcb_check(self, port):\n		for check in range(MAX_PCB_NUMBER):\n			if self.entry[check].port == port:\n				gprint(\"check seccessfuly! port :\", port)\n				return check\n		return -1\n	def pcb_unbind(self, port):\n		for check in range(MAX_PCB_NUMBER):\n			if self.entry[check].port == port:\n				self.entry[check].port == -1\n				return True\n		gprint(\"unbind failed! port invalid!\")\n\n#class udp:\n\n\n\n\n\n\n\nclass Ncer:\n\n	def __init__(self):\n		print(\"Init: NC\")\n		self.port = 777\n\n	def _recv_from(self):\n		print(\"Ncer:[_recv_from] 1\")\n		pkt = PCBCore.pcb_get_packet(self.port)\n		print(\">>>\")\n		print(pkt)\n	def thread_recv_from(self):\n		#PCBCore.pcb_close_socket(self.port)\n		PCBCore.pcb_bind_socket(self.port)\n		print(\"creating thread\")\n		while True:\n			Thread(target = self._recv_from).start()\n			time.sleep(3)\n		print(\"[thread_recv_from] closing socket\")\n		PCBCore.pcb_close_socket(self.port)\n			\ndef Config():\n	print(\"Py::[Config]\")\n	return \"nc\"\ndef Command_Line(str):\n	print(\"[Command_Line] start!\")\n	print(str)\n	if(pcb == None):\n		pcb = UDP_Pcb()\n	print(\"[Command_Line] end!\")\ndef giniudp():\n	print(\"[giniudp]:: UDP sever/client::\")\n	print(\"call with 'nc -u -l port/nc -u ip port'\")\n	#print(\"???\")\n	#nc = Ncer()\n	#upkt = Packet(7000, 7, 10, 0, \"bb\")\n	upkt = Packet(34591, 8889, 5, 0, \"1111\\n\")\n	src_ip = ip_ltostr([128, 1, 168, 192])\n	dest_ip = ip_ltostr([2, 1, 168, 192])\n	#upkt_a = assemble(upkt)\n	upkt_a = assemble(upkt, 0)# no checksum\n	_GINIC.IPOutgoingPacket(upkt_a, dest_ip, len(upkt_a), 1, 17)\n\n	#nc.thread_recv_from()\ndef Protocol_Processor(gpkt):\n	print(\"=====Py#[Packet_Processor]::=====\")\n	print(\"[UDPPacketProcess]Process ID: %d\") % os.getpid();\n	print(\"ready\")\n	if(pcb = None):\n		pcb = UDP_Pcb()\n\n	#print(gpkt)\n	#print(\"dir:\")\n	#print(dir(gpkt))\n	udpPacketFromC = _GINIC.getUDPPacketString(gpkt)\n	packet = disassemble(udpPacketFromC, 1)\n	print(packet)\n	if packet.dport == 7:\n		print(\"recieved an UDP ECHO packet\")\n		_udp_echo_reply(packet)\n	else:\n\n	print(\"Done\")\n\ndef _udp_echo_reply(packet):\n	port_tmp = packet.sport\n	packet.sport = packet.dport\n	packet.dport = port_tmp\n	dest_ip = __find_dest_ip(packet)\n 	print(\"[_udp_echo_reply]dest ip: %d\", dest_ip)\n	newflag = 1\n	prot = 17\n	pkt = assemble(packet)\n	size = len(pkt)\n	print(\"[_udp_echo_reply]sending to %s : %d\", dest_ip, packet.dport)\n	print(\"pkt size: %d\") % (len(pkt))\n	udp2gpkt = _GINIC.createGPacket(pkt) #process udp2gpkt in typemap\n	#print(\"udppkt size: %d\") % (len(udp2gpkt))\n	print(\"check Arg type:\")\n	print(udp2gpkt)\n	print(size)\n	print(newflag)\n	print(prot)\n	print(\"Done Checking==\")\n	print(\"Start to send back to C\")\n	#_GINIC.IPOutgoingPacket(udp2gpkt, dest_ip, size, newflag, prot)\n	_GINIC.IPOutgoingPacket(pkt, dest_ip, size, newflag, prot)\n\n\ndef _UDPPacketProcess(packet):\n	print(\"[_UDPPacketProcess] Thread\")\n	PCBCore.recv_packet(packet)	\ndef ip_ltostr(iplist):\n	return struct.pack('BBBB', iplist[0], iplist[1], iplist[2], iplist[3])\n\ndef __find_dest_ip(pkt):\n	ip = [2, 1, 168, 192]\n	#return \" \".join(str(x) for x in ip)\n	ipstr = ip_ltostr(ip)\n	print(\"[__find_dest_ip]len(ipstr) = %d\") % len(ipstr)\n	print(\"[__find_dest_ip]lip after ltostr:\", ipstr)\n	return ipstr\n\n\n\n\ndef __ntohs(s):\n	print(\"in ntohs\")\n	return struct.pack('H', struct.unpack('!H', s)[0])\ndef __htons(s):\n	return struct.pack('!H', struct.unpack('H', s)[0])\n# def iph2net(s):\n# 	return s[:2] + __htons(s[2:4]) + __htons(s[4:6]) + __htons(s[6:8]) + s[8:]\n\n# def net2iph(s):\n# 	return s[:2] + __ntohs(s[2:4]) + __ntohs(s[4:6]) + __ntohs(s[6:8]) + s[8:]\n\ndef udph2net(s):\n	print(\"[udp2net]\")\n	return __htons(s[0:2]) + __htons(s[2:4]) + __htons(s[4:6]) + s[6:]\n\ndef net2updh(s):\n	print(\"[net2updh]\")\n	return __ntohs(s[0:2]) + __ntohs(s[2:4]) + __ntohs(s[4:6]) + s[6:]\ndef udpcksum(s):\n	print(\"[udpcksum]\")\n	if len(s) & 1:\n		s = s + '\\0'\n	words = array.array('h', s)\n	sum = 0\n	for word in words:\n		sum = sum + (word & 0xffff)\n	hi = sum >> 16\n	lo = sum & 0xffff\n	sum = hi + lo\n	sum = sum + (sum >> 16)\n	print(\"checksum is : %s\")%((~sum) & 0xffff)\n	#print(\"chsum>>end\")\n	return (~sum) & 0xffff\n\nHDR_SIZE_IN_BYTES = 8\n\nclass Packet:\n\n	def __init__(self,\n				 sport = 0,\n				 dport = 0,\n				 ulen = 8,\n				 sum = 0,\n				 data = ''):\n		self.sport = sport\n		self.dport = dport\n		self.ulen = ulen\n		self.sum = sum\n		self.data = data\n\n	def __repr__(self):\n		begin = \"<UDP %d->%d len=%d \" % (self.sport, self.dport, self.ulen)\n		if self.ulen == 8:\n			rep = begin + \"\\'\\'>\"\n		elif self.ulen < 18:\n			rep = begin + \"%s>\" % repr(self.data)\n		else:\n			rep = begin + \"%s>\" % repr(self.data[:10] + '...')\n		return rep\n	\n	def __eq__(self, other):\n		if not isinstance(other, Packet):\n			return 0\n		\n		return self.sport == other.sport and \\\n				self.dport == other.dport and \\\n				self.ulen == other.ulen and \\\n				self.sum == other.sum and \\\n				self.data == other.data\n\n\n	def _assemble(self, cksum=1):\n		print(\"[_assemble]\")\n		self.ulen = 8 + len(self.data)\n		src_ip = ip_ltostr([128, 1, 168, 192])\n		dest_ip = ip_ltostr([2, 1, 168, 192])\n		print(\"1\")\n		begin = struct.pack('HHH', self.sport, self.dport, self.ulen)\n		print(\"2\")\n		pseudo_header = src_ip + dest_ip + '\\000\\000' + struct.pack('H', self.ulen)\n		print(\"3\")\n		pseudo_packet = pseudo_header + begin + '\\000\\000' + self.data\n		print(\"4\")\n		if cksum:\n			self.sum = udpcksum(pseudo_packet)\n			#self.sum = udpchecksum(packet)\n			packet = begin + struct.pack('H', self.sum) + self.data\n		else:\n			self.sum = 0\n			packet = begin + struct.pack('H', self.sum) + self.data\n		self.__packet = udph2net(packet)\n		return self.__packet\n\n	def _disassemble(self, raw_packet, cksum=1):\n		print(\"[_disassemble]\")\n		packet = net2updh(raw_packet)\n		if cksum and packet[6:8] != '\\000\\000':\n			our_cksum = udpcksum(packet)\n			# no check sum\n			# if our_cksum != 0:\n			#  	print(\"[_disassemble]Check sum invalid!!\")\n			#  	raise ValueError, packet\n		elts = map(lambda x:x & 0xffff, struct.unpack('HHHH', packet[:8]))\n		[self.sport, self.dport, self.ulen, self.sum] = elts\n		#tail = self.ulen# Haowei\n		self.data = packet[8:self.ulen]\n\n\ndef assemble(packet, cksum=1):\n	return packet._assemble(cksum)\n	\ndef disassemble(buffer, cksum=1):\n	print(\"[disassemble]\")\n	packet = Packet()\n	packet._disassemble(buffer, cksum)\n	return packet\ndef gprint(str):\n	print(inspect.stack()[0][3] + \"::\" + str)\n",
-			"file": "src/grouter/udp.py",
-			"file_size": 9831,
-			"file_write_time": 130752537103594358,
-			"settings":
-			{
-				"buffer_size": 9077,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -154,6 +143,8 @@
 	"file_history":
 	[
 		"/home/chi/.gini/data/Router_1/screenlog.0",
+		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/udp.py",
+		"/home/chi/Desktop/IntelliJ.desktop.desktop",
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/flowtable.c",
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/cli.c",
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/ginic.i",
@@ -170,8 +161,7 @@
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_udp_quequefail/src/grouter/ip.i",
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/fragment.c",
 		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/udp.py",
-		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/.tags",
-		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/udp.py"
+		"/home/chi/Desktop/Link to Gini/gRouters/gRouter_flowtable/src/grouter/.tags"
 	],
 	"find":
 	{
@@ -229,39 +219,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "src/grouter/udp.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 9077,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3321,
-								3321
-							]
-						],
-						"settings":
-						{
-							"auto_complete": false,
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2295.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],

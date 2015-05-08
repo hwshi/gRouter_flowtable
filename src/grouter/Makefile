@@ -1,7 +1,7 @@
 CFLAGS = -c -Isrc/grouter -I../../include -I/usr/include/python2.7/ -DHAVE_GETOPT_LONG=1 -DHAVE_SNPRINTF=1 -DHAVE_VSSCANF=1 -DHAVE_PTHREAD_RWLOCK=1 -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm
 #CFLAGS+= -Isrc/grouter/ -Iinclude/ -I/usr/include/python2.7/
 #CFLAGS+= -g
-LDFLAGS = -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm
+LDFLAGS = -lpython2.7 -lreadline -ltermcap -lslack -lpthread -lutil -lm -ldl
 
 SOURCES= arp.c classifier.c cli.c console.c ethernet.c filter.c flowtable.c fragment.c gnet.c grouter.c icmp.c info.c ip.c message.c mtu.c packetcore.c pythondebug.c qdisc.c roundrobin.c routetable.c simplequeue.c tap.c tapio.c utils.c vpl.c wfq.c
 
@@ -29,4 +29,4 @@ install:
 	cp grouter /root/bin/grouter
 
 clean:
-	rm -rf *.o *~ 
+	rm -rf *.o *~ *.so

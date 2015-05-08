@@ -27,6 +27,7 @@
       <in>simplequeue.c</in>
       <in>tap.c</in>
       <in>tapio.c</in>
+      <in>udp2.c</in>
       <in>utils.c</in>
       <in>vpl.c</in>
       <in>wfq.c</in>
@@ -446,6 +447,8 @@
             <Elem>HAVE_VSSCANF=1</Elem>
           </preprocessorList>
         </cTool>
+      </item>
+      <item path="udp2.c" ex="false" tool="0" flavor2="0">
       </item>
       <item path="utils.c" ex="false" tool="0" flavor2="2">
         <cTool>

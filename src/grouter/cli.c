@@ -1178,23 +1178,25 @@ void addprotCmd()
         //TODO: addProtocol(pcore->flowtable, next_tok);
         //FOR PYTHON
         language_tok = strtok(NULL, " \n");
-        if (strcmp(language_tok, "python") || strcmp(language_tok, "Python") || strcmp(language_tok, "PYTHON"))
+        printf("language:   %s\n", language_tok);
+        if(!strcmp(language_tok, "c")) printf("CCCC\n");
+        if (strcmp(language_tok, "python") == 0 || strcmp(language_tok, "Python") == 0 || strcmp(language_tok, "PYTHON") == 0)
         {
             language = PYTHON_FUNCTION;
             if (addModule(pcore->flowtable, PYTHON_FUNCTION, next_tok) == EXIT_SUCCESS)
                 verbose(2, "[addprotCmd]Python Module Added");
             else
             {
-                verbose(2, "[addprotCmd]Python Module Adding Faild");
+                verbose(2, "[addprotCmd]Python Module Adding Failed");
             }
         }
-        else if(strcmp(language_tok, "c") || strcmp(language_tok, "C"))
+        else if(strcmp(language_tok, "c") == 0 || strcmp(language_tok, "C") == 0)
         {
             if (addModule(pcore->flowtable, C_FUNCTION, next_tok) == EXIT_SUCCESS)
                 verbose(2, "[addprotCmd]C Module Added");
             else
             {
-                verbose(2, "[addprotCmd]C Module Adding Faild");
+                verbose(2, "[addprotCmd]C Module Adding Failed");
             }
         }
     }

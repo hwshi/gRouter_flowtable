@@ -219,16 +219,16 @@ int addModule(flowtable_t *flowtable, ushort language, char *mod_name)
     //SWIG_init();
     //init_CFT();//TODO: build CFT
     //==
-    verbose(2, "[addProtocol]Start to add protocol");
+    verbose(2, "[addModule]Start to add protocol");
     switch (language)
     {
     case PYTHON_FUNCTION:
         if (addPyModule(flowtable, mod_name))
-            verbose(2, "[addProtocol]Python module: %s added", mod_name);
+            verbose(2, "[addModule]Python module: %s added", mod_name);
         break;
     case C_FUNCTION:
         if (addCModule(flowtable, mod_name))
-            verbose(2, "[addProtocol]C Module: %s added", mod_name);
+            verbose(2, "[addModule]C Module: %s added", mod_name);
         break;
     }
 
@@ -245,43 +245,43 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
     pProtMod = PyImport_ImportModule(mod_name); //load protocol.py
     if (pProtMod)
     {
-        verbose(2, "[addProtocol]-%s- Module loaded\n");
-        //verbose(2, "[addProtocol]module [udp] imported\n");
+        verbose(2, "[addPyModule]-%s- Module loaded\n");
+        //verbose(2, "[addPyModule]module [udp] imported\n");
         pProtGlobalDict = PyModule_GetDict(pProtMod); // Get main dictionary
         //CheckPythonError();
         if (pProtGlobalDict)
         {
-            verbose(2, "[addProtocol]main dictionary got\n");
+            verbose(2, "[addPyModule]main dictionary got\n");
             pFuncProcess = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor"); //TODO: find function of getEntry
-            verbose(2, "[addProtocol]Protocol_Processor got\n");
+            verbose(2, "[addPyModule]Protocol_Processor got\n");
             pFuncCommand = PyDict_GetItemString(pProtGlobalDict, "Command_Line");
-            if (pFuncCommand == NULL) verbose(2, "[addProtocol]pFuncCommand is NULL!!\n", pFuncCommand);
-            verbose(2, "[addProtocol]Command_Line got\n");
+            if (pFuncCommand == NULL) verbose(2, "[addPyModule]pFuncCommand is NULL!!\n", pFuncCommand);
+            verbose(2, "[addPyModule]Command_Line got\n");
             //return a string for command: 
             PyObject *Py_Config = PyDict_GetItemString(pProtGlobalDict, "Config");
-            verbose(2, "[addProtocol]Config got\n");
+            verbose(2, "[addPyModule]Config got\n");
             PyObject *Py_String = PyObject_CallFunction(Py_Config, NULL);
             if (Py_String == NULL)
             {
-                verbose(2, "[addProtocol]Py_String is NULL !\n");
+                verbose(2, "[addPyModule]Py_String is NULL !\n");
             }
             char *command = PyString_AsString(Py_String);
             registerCLI(command, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
 
-            verbose(2, "[addProtocol]Command < %p >registered\n", pFuncCommand);
-            printf("[addProtocol]Command < %p >registered\n", pFuncCommand);
+            verbose(2, "[addPyModule]Command < %p >registered\n", pFuncCommand);
+            printf("[addPyModule]Command < %p >registered\n", pFuncCommand);
             //CheckPythonError();
             if (pFuncProcess == NULL)
             {
-                verbose(2, "[addProtocol]pFunc is NULL !!");
+                verbose(2, "[addPyModule]pFunc is NULL !!");
                 return EXIT_FAILURE;
             }
             addEntry(flowtable, CLASSICAL, PYTHON_FUNCTION, (void *) pFuncProcess); //add protocol into flow table
             //registerCLI("giniudp", addprotCmd, NULL, NULL, NULL);
-            verbose(2, "[addProtocol]!!!!Python Processor added into flowtable!!!");
+            verbose(2, "[addPyModule]!!!!Python Processor added into flowtable!!!");
             return EXIT_SUCCESS;
         }
-        verbose(2, "[addProtocol]loading protocol module failed!\n");
+        verbose(2, "[addPyModule]loading protocol module failed!\n");
         return EXIT_FAILURE;
     }
     //verbose(2  , "Executing Python scritps...\n");
@@ -290,9 +290,42 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
 
 int addCModule(flowtable_t *flowtable, char *mod_name)
 {
-
+    //read config info from mod_nameConfig()
+    //module_config_t *config = (module_config_t)calloc(1, sizeof(module_config_t));
+    module_config_t *config_info;
+    void *library = NULL;
+    module_config_t *(*config_fun)();
+    library = dlopen(mod_name, RTLD_LAZY);//RTLD_LAZY  RTLD_NOW
+    if (!library)
+    {
+        printf("%s \n", dlerror());
+    }
+    dlerror();
+    char tmpbuff[20];
+    //config_fun = dlsym(library, Name2ConfigName(tmpbuff, mod_name));
+    config_fun = dlsym(library, Name2ConfigName(tmpbuff, "udp2"));
+    if(config_fun)
+        config_info = config_fun();
+    printConfigInfo(config_info);
+    return EXIT_SUCCESS;
+    
 }
 
+char *Name2ConfigName(char *tmpbuff, char *mod_name)
+{
+    strcpy(tmpbuff, mod_name);
+    strcat(tmpbuff, "Config");
+    return tmpbuff;
+}
+void printConfigInfo(module_config_t *config)
+{
+    printf("----    Config Information  ----\n");
+    printf("module name :       %s\n", config->name);
+    printf("protocol    :       %#06x\n", config->protocol);
+    printf("processor   :       %p\n", config->processor);
+    printf("command     :       %p\n", config->command);
+    printf("----       End of Config    ----\n");
+}
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     //ftentry_t *entry_res = (ftentry_t *)malloc(sizeof(ftentry_t));
@@ -320,7 +353,6 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
         verbose(2, "[checkFlowTable]::Didn't find any protocol in FT!");
         return NULL;
     }
-    verbose(2, "[checkFlowTable] size of flowtable: %d\n", flowtable->num);
     for (j = 0; j < flowtable->num; j++)
     {
         //verbose(2  , "[checkFlowTable]::Checking for entry");
