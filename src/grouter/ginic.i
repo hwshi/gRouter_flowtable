@@ -16,26 +16,26 @@
 #define ushort unsigned short
 
     PyObject * getUDPPacketString(gpacket_t * gpacket) {
-        printf("[UDPPacketString]:: 1\n");
+//        printf("[UDPPacketString]:: 1\n");
         //int gpayload = sizeof(gpacket->data.data);
         int payload = sizeof (gpacket->data.data);
         int gheader = sizeof (gpacket_t) - payload;
         int udplen = sizeof (*gpacket) - gheader - sizeof (ip_packet_t);
-        printf("[UDPPacketString]:: 2\n");
+//        printf("[UDPPacketString]:: 2\n");
         ip_packet_t *ip_pkt = (ip_packet_t *) gpacket->data.data;
-        printf("[UDPPacketString]:: 3\n");
-        printf("gpayload: %d size of ip_t %d", payload, sizeof (ip_packet_t));
+//        printf("[UDPPacketString]:: 3\n");
+//        printf("gpayload: %d size of ip_t %d", payload, sizeof (ip_packet_t));
         return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
     }
     //helper function for gpacket
 
     gpacket_t * createGPacket(PyObject * pkt) {
         void * pktString = PyString_AsString(pkt);
-        printf("[helpr - createGPacket]\n");
+//        printf("[helpr - createGPacket]\n");
         gpacket_t *gpkt = (gpacket_t *) malloc(sizeof (gpacket_t));
         memcpy(gpkt->data.data, pktString, sizeof (pktString));
         //gpkt->data.data = (uchar*)pkt;
-        printf("[createGPacket] coppied %d byte\n", sizeof (pktString));
+//        printf("[createGPacket] coppied %d byte\n", sizeof (pktString));
         return gpkt;
 
     }
@@ -90,12 +90,12 @@ typedef struct _gpacket_t {
 } gpacket_t;
 
 %typemap(in) uchar * {
-    printf("[typemap-uchar*]\n");
+//    printf("[typemap-uchar*]\n");
     $1 = PyString_AsString($input);
 }
 
 %typemap(in) gpacket_t* out_gpkt {
-    printf("[typemap-gpacket_t *out_gpkt]\n");
+//    printf("[typemap-gpacket_t *out_gpkt]\n");
     int size  = PyString_Size($input);
     gpacket_t* gpkt = (gpacket_t *)calloc(1, sizeof(gpacket_t));
     memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString($input), size);

@@ -109,7 +109,7 @@ int ARPResolve(gpacket_t *in_pkt)
  */
 void ARPProcess(gpacket_t *pkt)
 {
-	printf("[APRProcess]::\n");
+	verbose(2, "[APRProcess]::\n");
 	char tmpbuf[MAX_TMPBUF_LEN];
 
 	arp_packet_t *apkt = (arp_packet_t *) pkt->data.data;

@@ -1174,11 +1174,11 @@ void addprotCmd()
     ushort language;
     if (next_tok != NULL)
     {
-        printf("[addprotCmd]:: adding %s\n", next_tok);
+        verbose(2, "[addprotCmd]:: adding %s\n", next_tok);
         //TODO: addProtocol(pcore->flowtable, next_tok);
         //FOR PYTHON
         language_tok = strtok(NULL, " \n");
-        printf("language:   %s\n", language_tok);
+        verbose(2, "language:   %s\n", language_tok);
         if(!strcmp(language_tok, "c")) printf("CCCC\n");
         if (strcmp(language_tok, "python") == 0 || strcmp(language_tok, "Python") == 0 || strcmp(language_tok, "PYTHON") == 0)
         {

@@ -80,7 +80,7 @@ class UDPPcb:
             for id in range(MAX_PCB_NUMBER):
                 if self.entry[id].sport == -1:
                     self.port_dict[port] = id
-                    print("after add... port_dict: ", self.port_dict, "..")
+                    #print("after add... port_dict: ", self.port_dict, "..")
                     self.entry[id].sport = port
                     self.entry[id].dport = -1
                     return
@@ -92,12 +92,12 @@ pcb = UDPPcb()
 print("pcb created!")
 
 def Config():
-    print("Py::[Config]")
+    # print("Py::[Config]")
     return "nc"
 
 
 def Command_Line(str):
-    print("[Command_Line] start!")
+    # print("[Command_Line] start!")
     print(str)
     global pcb
     if pcb == None:
@@ -119,7 +119,7 @@ def Command_Line(str):
             pass
         else:
             print("invalid IP or PORT!")
-    print("[Command_Line] Done!")
+    # print("[Command_Line] Done!")
 
 
 def Protocol_Processor(gpkt):
@@ -179,13 +179,12 @@ def ip_ltostr(iplist):
 def __find_dest_ip(pkt):
     ip = [2, 1, 168, 192]
     ipstr = ip_ltostr(ip)
-    print("[__find_dest_ip]len(ipstr) = %d") % len(ipstr)
-    print("[__find_dest_ip]lip after ltostr:", ipstr)
+    # print("[__find_dest_ip]len(ipstr) = %d") % len(ipstr)
+    # print("[__find_dest_ip]lip after ltostr:", ipstr)
     return ipstr
 
 
 def __ntohs(s):
-    print("in ntohs")
     return struct.pack('H', struct.unpack('!H', s)[0])
 
 
@@ -202,17 +201,14 @@ def net2iph(s):
 
 
 def udph2net(s):
-    print("[udp2net]")
     return __htons(s[0:2]) + __htons(s[2:4]) + __htons(s[4:6]) + s[6:]
 
 
 def net2updh(s):
-    print("[net2updh]")
     return __ntohs(s[0:2]) + __ntohs(s[2:4]) + __ntohs(s[4:6]) + s[6:]
 
 
 def udpcksum(s):
-    print("[udpcksum]")
     if len(s) & 1:
         s = s + '\0'
     words = array.array('h', s)
@@ -265,17 +261,12 @@ class Packet:
 
 
     def _assemble(self, cksum=1):
-        print("[_assemble]")
         self.ulen = 8 + len(self.data)
         src_ip = ip_ltostr([128, 1, 168, 192])
         dest_ip = ip_ltostr([2, 1, 168, 192])
-        print("1")
         begin = struct.pack('HHH', self.sport, self.dport, self.ulen)
-        print("2")
         pseudo_header = src_ip + dest_ip + '\000\000' + struct.pack('H', self.ulen)
-        print("3")
         pseudo_packet = pseudo_header + begin + '\000\000' + self.data
-        print("4")
         if cksum:
             self.sum = udpcksum(pseudo_packet)
             #self.sum = udpchecksum(packet)
@@ -287,7 +278,6 @@ class Packet:
         return self.__packet
 
     def _disassemble(self, raw_packet, cksum=1):
-        print("[_disassemble]")
         packet = net2updh(raw_packet)
         if cksum and packet[6:8] != '\000\000':
             our_cksum = udpcksum(packet)
@@ -306,7 +296,6 @@ def assemble(packet, cksum=1):
 
 
 def disassemble(buffer, cksum=1):
-    print("[disassemble]")
     packet = Packet()
     packet._disassemble(buffer, cksum)
     return packet

@@ -21,15 +21,15 @@
 //Haowei
 //#include "ip_wrap.c"
 
-route_entry_t route_tbl[MAX_ROUTES];       	// routing table
-mtu_entry_t MTU_tbl[MAX_MTU];		        // MTU table
+route_entry_t route_tbl[MAX_ROUTES]; // routing table
+mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
 
 extern pktcore_t *pcore;
 
 void IPInit()
 {
-	RouteTableInit(route_tbl);
-	MTUTableInit(MTU_tbl);
+    RouteTableInit(route_tbl);
+    MTUTableInit(MTU_tbl);
 }
 
 
@@ -41,34 +41,35 @@ void IPInit()
  * the appropriate function.
  */
 
- //** Modification from void IPIncomingPacket(gpacket_t *in_pkt)
+//** Modification from void IPIncomingPacket(gpacket_t *in_pkt)
+
 int IPIncomingPacket(gpacket_t *in_pkt)
 {
-	char tmpbuf[MAX_TMPBUF_LEN];
-	// get a pointer to the IP packet
-        ip_packet_t *ip_pkt = (ip_packet_t *)&in_pkt->data.data;
-	uchar bcast_ip[] = IP_BCAST_ADDR;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    // get a pointer to the IP packet
+    ip_packet_t *ip_pkt = (ip_packet_t *) & in_pkt->data.data;
+    uchar bcast_ip[] = IP_BCAST_ADDR;
 
-	// Is this IP packet for me??
-	if (IPCheckPacket4Me(in_pkt))
-	{
-		verbose(2, "[IPIncomingPacket]:: got IP packet destined to this router");
-		IPProcessMyPacket(in_pkt);
-	} else if (COMPARE_IP(gNtohl(tmpbuf, ip_pkt->ip_dst), bcast_ip) == 0)
-	{
-		// TODO: rudimentary 'broadcast IP address' check
-		verbose(2, "[IPIncomingPacket]:: not repeat broadcast (final destination %s), packet thrown",
-		       IP2Dot(tmpbuf, gNtohl((tmpbuf+20), ip_pkt->ip_dst)));
-		IPProcessBcastPacket(in_pkt);
-	} else
-	{
-		// Destinated to someone else
-		verbose(2, "[IPIncomingPacket]:: got IP packet destined to someone else");
-		IPProcessForwardingPacket(in_pkt);
-	}
+    // Is this IP packet for me??
+    if (IPCheckPacket4Me(in_pkt))
+    {
+        verbose(2, "[IPIncomingPacket]:: got IP packet destined to this router");
+        IPProcessMyPacket(in_pkt);
+    }
+    else if (COMPARE_IP(gNtohl(tmpbuf, ip_pkt->ip_dst), bcast_ip) == 0)
+    {
+        // TODO: rudimentary 'broadcast IP address' check
+        verbose(2, "[IPIncomingPacket]:: not repeat broadcast (final destination %s), packet thrown",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_dst)));
+        IPProcessBcastPacket(in_pkt);
+    }
+    else
+    {
+        // Destinated to someone else
+        verbose(2, "[IPIncomingPacket]:: got IP packet destined to someone else");
+        IPProcessForwardingPacket(in_pkt);
+    }
 }
-
-
 
 /*
  * IPCheckPacket4Me: Return TRUE if the packet is meant for me. Otherwise return FALSE.
@@ -77,30 +78,29 @@ int IPIncomingPacket(gpacket_t *in_pkt)
  */
 int IPCheckPacket4Me(gpacket_t *in_pkt)
 {
-	ip_packet_t *ip_pkt = (ip_packet_t *)&in_pkt->data.data;
-	char tmpbuf[MAX_TMPBUF_LEN];
-	int count, i;
-	uchar iface_ip[MAX_MTU][4];
-	uchar pkt_ip[4];
+    ip_packet_t *ip_pkt = (ip_packet_t *) & in_pkt->data.data;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    int count, i;
+    uchar iface_ip[MAX_MTU][4];
+    uchar pkt_ip[4];
 
-	COPY_IP(pkt_ip, gNtohl(tmpbuf, ip_pkt->ip_dst));
-	verbose(2, "[IPCheckPacket4Me]:: looking for IP %s ", IP2Dot(tmpbuf, pkt_ip));
-	if ((count = findAllInterfaceIPs(MTU_tbl, iface_ip)) > 0)
-	{
-		for (i = 0; i < count; i++)
-		{
-			if (COMPARE_IP(iface_ip[i], pkt_ip) == 0)
-			{
-				verbose(2, "[IPCheckPacket4Me]:: found a matching IP.. for %s ", IP2Dot(tmpbuf, pkt_ip));
-				return TRUE;
-			}
-		}
-		return FALSE;
-	} else
-		return FALSE;
+    COPY_IP(pkt_ip, gNtohl(tmpbuf, ip_pkt->ip_dst));
+    verbose(2, "[IPCheckPacket4Me]:: looking for IP %s ", IP2Dot(tmpbuf, pkt_ip));
+    if ((count = findAllInterfaceIPs(MTU_tbl, iface_ip)) > 0)
+    {
+        for (i = 0; i < count; i++)
+        {
+            if (COMPARE_IP(iface_ip[i], pkt_ip) == 0)
+            {
+                verbose(2, "[IPCheckPacket4Me]:: found a matching IP.. for %s ", IP2Dot(tmpbuf, pkt_ip));
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+    else
+        return FALSE;
 }
-
-
 
 /*
  * TODO: broadcast not yet implemented.. should be simple to implement.
@@ -108,10 +108,8 @@ int IPCheckPacket4Me(gpacket_t *in_pkt)
  */
 int IPProcessBcastPacket(gpacket_t *in_pkt)
 {
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
-
-
 
 /*
  * process an IP packet destined to someone else...
@@ -127,103 +125,101 @@ int IPProcessBcastPacket(gpacket_t *in_pkt)
  */
 int IPProcessForwardingPacket(gpacket_t *in_pkt)
 {
-	gpacket_t *pkt_frags[MAX_FRAGMENTS];
-	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
-	int num_frags, i, need_frag;
-	char tmpbuf[MAX_TMPBUF_LEN];
+    gpacket_t * pkt_frags[MAX_FRAGMENTS];
+    ip_packet_t *ip_pkt = (ip_packet_t *) in_pkt->data.data;
+    int num_frags, i, need_frag;
+    char tmpbuf[MAX_TMPBUF_LEN];
 
-	verbose(2, "[IPProcessForwardingPacket]:: checking for any IP errors..");
-	// all the validation and ICMP generation, processing is
-	// done in this function...
-	if (IPCheck4Errors(in_pkt) == EXIT_FAILURE)
-		return EXIT_FAILURE;
+    verbose(2, "[IPProcessForwardingPacket]:: checking for any IP errors..");
+    // all the validation and ICMP generation, processing is
+    // done in this function...
+    if (IPCheck4Errors(in_pkt) == EXIT_FAILURE)
+        return EXIT_FAILURE;
 
-	// find the route... if it does not exist, should we send a
-	// ICMP network/host unreachable message -- CHECK??
-	if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
-			   in_pkt->frame.nxth_ip_addr,
-			   &(in_pkt->frame.dst_interface)) == EXIT_FAILURE){
-		return EXIT_FAILURE;
+    // find the route... if it does not exist, should we send a
+    // ICMP network/host unreachable message -- CHECK??
+    if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
+                       in_pkt->frame.nxth_ip_addr,
+                       &(in_pkt->frame.dst_interface)) == EXIT_FAILURE)
+    {
+        return EXIT_FAILURE;
+    }
+    verbose(2, "[IPProcessForwardingPacket]ip_pkt->frame.dst_interface = %d", in_pkt->frame.dst_interface);
+
+    // check for redirection?? -- the output interface is already found
+    // by the previous command.. if needed the following routine sends the
+    // redirects but the packet is sent to destination..
+    // TODO: Check the RFC for conformance??
+    IPCheck4Redirection(in_pkt);
+
+    // check for fragmentation -- this should return three conditions:
+    // FRAGS_NONE, FRAGS_ERROR, MORE_FRAGS
+    need_frag = IPCheck4Fragmentation(in_pkt);
+
+    switch (need_frag)
+    {
+    case FRAGS_NONE:
+        verbose(2, "[IPProcessForwardingPacket]:: sending packet to GNET..");
+        // compute the checksum before sending out.. the fragmentation routine does this inside it.
+        ip_pkt->ip_cksum = 0;
+        ip_pkt->ip_cksum = htons(checksum((uchar *) ip_pkt, ip_pkt->ip_hdr_len * 2));
+        if (IPSend2Output(in_pkt) == EXIT_FAILURE)
+        {
+            verbose(1, "[IPProcessForwardingPacket]:: WARNING: IPProcessForwardingPacket(): Could not forward packets ");
+            return EXIT_FAILURE;
         }
-        verbose(2, "[IPProcessForwardingPacket]ip_pkt->frame.dst_interface = %d", in_pkt->frame.dst_interface);
+        break;
 
-	// check for redirection?? -- the output interface is already found
-	// by the previous command.. if needed the following routine sends the
-	// redirects but the packet is sent to destination..
-	// TODO: Check the RFC for conformance??
-	IPCheck4Redirection(in_pkt);
+    case FRAGS_ERROR:
+        verbose(2, "[IPProcessForwardingPacket]:: unreachable on packet from %s",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
+        ICMPProcessFragNeeded(in_pkt);
+        break;
 
-	// check for fragmentation -- this should return three conditions:
-	// FRAGS_NONE, FRAGS_ERROR, MORE_FRAGS
-	need_frag = IPCheck4Fragmentation(in_pkt);
+    case MORE_FRAGS:
+        // fragment processing...
+        num_frags = fragmentIPPacket(in_pkt, pkt_frags);
 
-	switch (need_frag)
-	{
-	case FRAGS_NONE:
-		verbose(2, "[IPProcessForwardingPacket]:: sending packet to GNET..");
-		// compute the checksum before sending out.. the fragmentation routine does this inside it.
-		ip_pkt->ip_cksum = 0;
-		ip_pkt->ip_cksum = htons(checksum((uchar *)ip_pkt, ip_pkt->ip_hdr_len *2));
-		if (IPSend2Output(in_pkt) == EXIT_FAILURE)
-		{
-			verbose(1, "[IPProcessForwardingPacket]:: WARNING: IPProcessForwardingPacket(): Could not forward packets ");
-			return EXIT_FAILURE;
-		}
-		break;
-
-	case FRAGS_ERROR:
-		verbose(2, "[IPProcessForwardingPacket]:: unreachable on packet from %s",
-			IP2Dot(tmpbuf, gNtohl((tmpbuf+20), ip_pkt->ip_src)));
-		ICMPProcessFragNeeded(in_pkt);
-		break;
-
-	case MORE_FRAGS:
-		// fragment processing...
-		num_frags = fragmentIPPacket(in_pkt, pkt_frags);
-
-		verbose(2, "[IPProcessForwardingPacket]:: IP packet needs fragmentation");
-		// forward each fragment
-		for (i = 0; i < num_frags; i++)
-		{
-			if (IPSend2Output(pkt_frags[i]) == EXIT_FAILURE)
-			{
-				verbose(1, "[IPProcessForwardingPacket]:: processForwardIPPacket(): Could not forward packets ");
-				return EXIT_FAILURE;
-			}
-		}
-		deallocateFragments(pkt_frags, num_frags);
-		break;
-	default:
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
+        verbose(2, "[IPProcessForwardingPacket]:: IP packet needs fragmentation");
+        // forward each fragment
+        for (i = 0; i < num_frags; i++)
+        {
+            if (IPSend2Output(pkt_frags[i]) == EXIT_FAILURE)
+            {
+                verbose(1, "[IPProcessForwardingPacket]:: processForwardIPPacket(): Could not forward packets ");
+                return EXIT_FAILURE;
+            }
+        }
+        deallocateFragments(pkt_frags, num_frags);
+        break;
+    default:
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
-
 
 int IPCheck4Errors(gpacket_t *in_pkt)
 {
-	char tmpbuf[MAX_TMPBUF_LEN];
-	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    ip_packet_t *ip_pkt = (ip_packet_t *) in_pkt->data.data;
 
-	// check for valid version and checksum.. silently drop the packet if not.
-	if (IPVerifyPacket(ip_pkt) == EXIT_FAILURE)
-		return EXIT_FAILURE;
+    // check for valid version and checksum.. silently drop the packet if not.
+    if (IPVerifyPacket(ip_pkt) == EXIT_FAILURE)
+        return EXIT_FAILURE;
 
-	// Decrement TTL, if TTL <= 0, send to ICMP module with TTL-expired command
-	// return EXIT_FAILURE
-	if (--ip_pkt->ip_ttl <= 0)
-	{
-		verbose(2, "[processIPErrors]:: TTL expired on packet from %s",
-		       IP2Dot(tmpbuf, gNtohl((tmpbuf+20), ip_pkt->ip_src)));
+    // Decrement TTL, if TTL <= 0, send to ICMP module with TTL-expired command
+    // return EXIT_FAILURE
+    if (--ip_pkt->ip_ttl <= 0)
+    {
+        verbose(2, "[processIPErrors]:: TTL expired on packet from %s",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
 
-		ICMPProcessTTLExpired(in_pkt);
-		return EXIT_FAILURE;
-	}
+        ICMPProcessTTLExpired(in_pkt);
+        return EXIT_FAILURE;
+    }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
-
-
 
 /*
  * check for MTU sizes and DF flag..
@@ -238,26 +234,25 @@ int IPCheck4Errors(gpacket_t *in_pkt)
  */
 int IPCheck4Fragmentation(gpacket_t *in_pkt)
 {
-	int link_mtu;
-	char tmpbuf[MAX_TMPBUF_LEN];
-	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
+    int link_mtu;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    ip_packet_t *ip_pkt = (ip_packet_t *) in_pkt->data.data;
 
-	verbose(2, "[IPCheck4Fragmentation]:: .. checking mtu for next hop %s and interface %d ",
-		IP2Dot(tmpbuf, in_pkt->frame.nxth_ip_addr), in_pkt->frame.dst_interface);
+    verbose(2, "[IPCheck4Fragmentation]:: .. checking mtu for next hop %s and interface %d ",
+            IP2Dot(tmpbuf, in_pkt->frame.nxth_ip_addr), in_pkt->frame.dst_interface);
 
-	if ((link_mtu = findMTU(MTU_tbl, in_pkt->frame.dst_interface)) < 0)
-		return GENERAL_ERROR;
+    if ((link_mtu = findMTU(MTU_tbl, in_pkt->frame.dst_interface)) < 0)
+        return GENERAL_ERROR;
 
-	if (link_mtu < ntohs(ip_pkt->ip_pkt_len))                 // need fragmentation
-	{
-		if (TEST_DF_BITS(ip_pkt->ip_frag_off))    // DF is set: destination unreachable
-			return FRAGS_ERROR;
-		return MORE_FRAGS;
-	} else
-		return FRAGS_NONE;
+    if (link_mtu < ntohs(ip_pkt->ip_pkt_len)) // need fragmentation
+    {
+        if (TEST_DF_BITS(ip_pkt->ip_frag_off)) // DF is set: destination unreachable
+            return FRAGS_ERROR;
+        return MORE_FRAGS;
+    }
+    else
+        return FRAGS_NONE;
 }
-
-
 
 /*
  * check for redirection condition. This function always returns
@@ -266,28 +261,26 @@ int IPCheck4Fragmentation(gpacket_t *in_pkt)
  */
 int IPCheck4Redirection(gpacket_t *in_pkt)
 {
-	char tmpbuf[MAX_TMPBUF_LEN];
-	gpacket_t *cp_pkt;
-	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    gpacket_t *cp_pkt;
+    ip_packet_t *ip_pkt = (ip_packet_t *) in_pkt->data.data;
 
-	// check for redirect condition and send an ICMP back... let the current packet
-	// go as well (check the specification??)
-	if (isInSameNetwork(gNtohl(tmpbuf, ip_pkt->ip_src), in_pkt->frame.nxth_ip_addr) == EXIT_SUCCESS)
-	{
-		verbose(2, "[processIPErrors]:: redirect message sent on packet from %s",
-		       IP2Dot(tmpbuf, gNtohl((tmpbuf+20), ip_pkt->ip_src)));
+    // check for redirect condition and send an ICMP back... let the current packet
+    // go as well (check the specification??)
+    if (isInSameNetwork(gNtohl(tmpbuf, ip_pkt->ip_src), in_pkt->frame.nxth_ip_addr) == EXIT_SUCCESS)
+    {
+        verbose(2, "[processIPErrors]:: redirect message sent on packet from %s",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
 
-		cp_pkt = duplicatePacket(in_pkt);
+        cp_pkt = duplicatePacket(in_pkt);
 
-		ICMPProcessRedirect(cp_pkt, cp_pkt->frame.nxth_ip_addr);
-	}
+        ICMPProcessRedirect(cp_pkt, cp_pkt->frame.nxth_ip_addr);
+    }
 
-	// IP packet is verified to be good. This packet should be
-	// further processed to carry out forwarding.
-	return EXIT_SUCCESS;
+    // IP packet is verified to be good. This packet should be
+    // further processed to carry out forwarding.
+    return EXIT_SUCCESS;
 }
-
-
 
 /*
  * process an IP packet destined to the router itself
@@ -305,30 +298,32 @@ int IPCheck4Redirection(gpacket_t *in_pkt)
  */
 int IPProcessMyPacket(gpacket_t *in_pkt)
 {
-	verbose(2, "[IPProcessMyPacket]\n");
-	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
+    verbose(2, "[IPProcessMyPacket]\n");
+    ip_packet_t *ip_pkt = (ip_packet_t *) in_pkt->data.data;
 
-	if (IPVerifyPacket(ip_pkt) == EXIT_SUCCESS)
-	{
-		// Is packet ICMP? send it to the ICMP module
-		// further processing with appropriate type code
+    if (IPVerifyPacket(ip_pkt) == EXIT_SUCCESS)
+    {
+        // Is packet ICMP? send it to the ICMP module
+        // further processing with appropriate type code
 
-		if (ip_pkt->ip_prot == ICMP_PROTOCOL) {
-			//ICMPProcessPacket(in_pkt);
-		  	//return EXIT_SUCCESS;
-		  	return ICMP_PROTOCOL;
+        if (ip_pkt->ip_prot == ICMP_PROTOCOL)
+        {
+            //ICMPProcessPacket(in_pkt);
+            //return EXIT_SUCCESS;
+            return ICMP_PROTOCOL;
+        }
+
+        // Is packet UDP/TCP (only UDP implemented now)
+        // May be we can deal with other connectionless protocols as well.
+        if (ip_pkt->ip_prot == UDP_PROTOCOL)
+        {
+            //UDPProcess(in_pkt);
+            //return EXIT_SUCCESS;
+            return UDP_PROTOCOL;
+        }
+
     }
-
-		// Is packet UDP/TCP (only UDP implemented now)
-		// May be we can deal with other connectionless protocols as well.
-		if (ip_pkt->ip_prot == UDP_PROTOCOL){
-			//UDPProcess(in_pkt);
-		  //return EXIT_SUCCESS;
-			return UDP_PROTOCOL;
-    }
-
-	}
-	return EXIT_FAILURE;
+    return EXIT_FAILURE;
 }
 
 
@@ -352,75 +347,13 @@ PyObject *pFunc, *pResult, *pArg, *pPcore;
 // 		PyErr_Clear();
 // 	}
 // }
+
 int UDPProcess(gpacket_t *in_pkt)
 {
-/*	//freopen("PyTest.Log", "w", stdout);
-	printf("Process ID = %d\n", getpid());
-	
-	verbose(2, "[UDPProcess]:: packet received for processing.. IMPLEMENTING!! ");
-    
-    //Py_Initialize();
 
-	SWIG_init();
-	init_Cip();
-
-    PyRun_SimpleString("import sys"); 
-    PyRun_SimpleString("sys.path.append('./')");
-
-	//int Ok = PyRun_SimpleString("import Error\n"
-	//							"Error.Redirection()\n");
-   		int sleep;
-		for(sleep = 0; sleep < 100; sleep ++){
-			printf("[UDPProcess]: Check 1\n");
-		}
-    //udp module not loaded yet!
-    //PyObject *pUDPMod;
-	pUDPMod = PyImport_ImportModule("udp");//load udp.py
-    if(!pUDPMod)
-    {
-    	printf("udp module not loaded yet!");
-    	return 0;
-    }    	
-    verbose(2, "Executing Python scritps...\n");
-   
-    //printf("%s",pUDPMod);
-    printf("udp Module loaded in ip\n");
-    if (pUDPMod)
-    {
-        printf("module [udp] imported\n");
-    	pUDPGlobalDict = PyModule_GetDict(pUDPMod);   // Get main dictionary
-        CheckPythonError();
-        if (pUDPGlobalDict)
-        {
-            printf("main dictionary got\n");
-            pFunc = PyDict_GetItemString(pUDPGlobalDict, "UDPPacketProcess");//find func SetAdd
-            CheckPythonError();
-            if (pFunc)
-            {
-                printf("found function [UDPPacketProcess]\n");
-                //pArg = SWIG_NewPointerObj((void *)&Object, SWIGTYPE_p__gpacket_t, 1);
-                pArg = SWIG_NewPointerObj((void *)in_pkt, SWIGTYPE_p__gpacket_t, 1);
-                pPcore = SWIG_NewPointerObj((void *)pcore, SWIGTYPE_p_pktcore_t, 1);
-                printf("<----[UDPProcess_C]---pPcore@%d , pcore@%d--------->\n", pPcore, pcore);
-                CheckPythonError();
-                if(pArg)
-                {
-                    printf("Got Pyton obj\n");
-                    pResult = PyObject_CallFunction(pFunc, "OO", pArg, pPcore);
-                    CheckPythonError();
-                    printf("pResult: %s",pResult);
-                }
-            }
-
-        }
-    }
-    //Py_Finalize();
- 	return EXIT_SUCCESS;
- 	*/
- 	fatal("!!!!!!!   Abandand UPD Function ! You are not supposed to be here : )\n");
- 	return EXIT_FAILURE;
+    fatal("!!!!!!!   Abandand UPD Function ! You are not supposed to be here : )\n");
+    return EXIT_FAILURE;
 }
-
 
 /*
  * this function processes the IP packets that are reinjected into the
@@ -436,164 +369,142 @@ void printAsString(void* s)
     printf("=                Packet                =\n");
     printf("========================================\n");
     //while(s)
-        printf("Packet String: %s\n", (char*)s);
+    printf("Packet String: %s\n", (char*) s);
     printf("========================================\n");
     return;
 }
+
 int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)
 {
-	verbose(2, "[IPOutgoingPacket]::");
-	int check = 0;
-	if(pcore == NULL){
-		check = 1;
-		printf("[IPOutgoingPacket]:: pcore is NULL !!\n");
-	}
-	if(route_tbl == NULL){
-		check = 1;
-		printf("[IPOutgoingPacket]:: route_tbl is NULL !!\n");
+    verbose(2, "[IPOutgoingPacket]::");
+    int check = 0;
+    if (pcore == NULL)
+    {
+        check = 1;
+        printf("[IPOutgoingPacket]:: pcore is NULL !!\n");
+    }
+    if (route_tbl == NULL)
+    {
+        check = 1;
+        printf("[IPOutgoingPacket]:: route_tbl is NULL !!\n");
 
-	}
-	if(MTU_tbl == NULL){
-		check = 1;
-		printf("[IPOutgoingPacket]:: MTU_tbl is NULL !!\n");
+    }
+    if (MTU_tbl == NULL)
+    {
+        check = 1;
+        printf("[IPOutgoingPacket]:: MTU_tbl is NULL !!\n");
 
-	}	
-	printf("[IPOutgoingPacket]size of flowtable is: %d\n", pcore->flowtable->num);
-	//printRouteTable(route_tbl);
-	if(check == 1) return EXIT_FAILURE;
-        //printAsString(pkt);
-    ip_packet_t *ip_pkt = (ip_packet_t *)pkt->data.data;
-	ushort cksum;
-	char tmpbuf[MAX_TMPBUF_LEN];
-	uchar iface_ip_addr[4];
-	int status;
-    verbose(2, "[IPOutgoingPacket]:: header.dst begin IPOut(MAC) = %s", MAC2Colon(tmpbuf+20, pkt->data.header.dst));
-
-
-	ip_pkt->ip_ttl = 64;                        // set TTL to default value
-	ip_pkt->ip_cksum = 0;                       // reset the checksum field
-	ip_pkt->ip_prot = src_prot;  // set the protocol field
+    }
+    //printf("[IPOutgoingPacket]size of flowtable is: %d\n", pcore->flowtable->num);
+    //printRouteTable(route_tbl);
+    if (check == 1) return EXIT_FAILURE;
+    //printAsString(pkt);
+    ip_packet_t *ip_pkt = (ip_packet_t *) pkt->data.data;
+    ushort cksum;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    uchar iface_ip_addr[4];
+    int status;
+    verbose(2, "[IPOutgoingPacket]:: header.dst begin IPOut(MAC) = %s", MAC2Colon(tmpbuf + 20, pkt->data.header.dst));
 
 
-	if (newflag == 0)
-	{
-		COPY_IP(ip_pkt->ip_dst, ip_pkt->ip_src); 		    // set dst to original src
-		COPY_IP(ip_pkt->ip_src, gHtonl(tmpbuf, pkt->frame.src_ip_addr));    // set src to me
-
-		// find the nexthop and interface and fill them in the "meta" frame
-		// NOTE: the packet itself is not modified by this lookup!
-		if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
-				   pkt->frame.nxth_ip_addr, &(pkt->frame.dst_interface)) == EXIT_FAILURE)
-				   return EXIT_FAILURE;
-
-	} else if (newflag == 1)
-	{
-		// non REPLY PACKET -- this is a new packet; set all fields
-		ip_pkt->ip_version = 4;
-		ip_pkt->ip_hdr_len = 5;
-		ip_pkt->ip_tos = 0;
-		ip_pkt->ip_identifier = IP_OFFMASK & random();
-		RESET_DF_BITS(ip_pkt->ip_frag_off);
-		RESET_MF_BITS(ip_pkt->ip_frag_off);
-		ip_pkt->ip_frag_off = 0;
-
-		COPY_IP(ip_pkt->ip_dst, gHtonl(tmpbuf, dst_ip));
-		ip_pkt->ip_pkt_len = htons(size + ip_pkt->ip_hdr_len * 4);
-
-		verbose(2, "[IPOutgoingPacket]:: lookup next hop ");
-		// find the nexthop and interface and fill them in the "meta" frame
-		// NOTE: the packet itself is not modified by this lookup!
-		// for(i = 0; i < 30; i ++){
-		// 	printf("[IPOutgoingPacket] Check point 11!\n");
-		// }
-		if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
-				   pkt->frame.nxth_ip_addr, &(pkt->frame.dst_interface)) == EXIT_FAILURE)
-				   return EXIT_FAILURE;
-		verbose(2, "[IPOutgoingPacket]:: lookup MTU of nexthop");
-		// lookup the IP address of the destination interface..
-		if(pkt == NULL)
-				printf("pkt is null!!!\n");
-			// for(i = 0; i < 30; i ++){
-			// 	printf("[IPOutgoingPacket] Check point 2!\n");
-			// }
-			printf("=====Packet======");
-			printf("pkt->frame.dst_interface: %d\n", pkt->frame.dst_interface);
+    ip_pkt->ip_ttl = 64; // set TTL to default value
+    ip_pkt->ip_cksum = 0; // reset the checksum field
+    ip_pkt->ip_prot = src_prot; // set the protocol field
 
 
-		if ((status = findInterfaceIP(MTU_tbl, pkt->frame.dst_interface,
-					      iface_ip_addr)) == EXIT_FAILURE)
-					      return EXIT_FAILURE;
-		// the outgoing packet should have the interface IP as source
-		COPY_IP(ip_pkt->ip_src, gHtonl(tmpbuf, iface_ip_addr));
-		verbose(2, "[IPOutgoingPacket]:: almost one processing the IP header.");
-	} else
-	{
-		error("[IPOutgoingPacket]:: unknown outgoing packet action.. packet discarded ");
-		return EXIT_FAILURE;
-	}
-	if(pkt == NULL)
-		printf("pkt is null!!!\n");
-	else
-		// for(i = 0; i < 30; i ++){
-			printf("[IPOutgoingPacket] Check point 3!\n");
+    if (newflag == 0)
+    {
+        COPY_IP(ip_pkt->ip_dst, ip_pkt->ip_src); // set dst to original src
+        COPY_IP(ip_pkt->ip_src, gHtonl(tmpbuf, pkt->frame.src_ip_addr)); // set src to me
 
-		// }
-	//	compute the new checksum
-	cksum = checksum((uchar *)ip_pkt, ip_pkt->ip_hdr_len*2);
-	ip_pkt->ip_cksum = htons(cksum);
-	pkt->data.header.prot = htons(IP_PROTOCOL);
+        // find the nexthop and interface and fill them in the "meta" frame
+        // NOTE: the packet itself is not modified by this lookup!
+        if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
+                           pkt->frame.nxth_ip_addr, &(pkt->frame.dst_interface)) == EXIT_FAILURE)
+            return EXIT_FAILURE;
 
-	// for(i = 0; i < 30; i ++){
-		printf("[IPOutgoingPacket] Check point 4!\n");
-	// }
-	//pkt->frame.dst_interface = 1;
+    }
+    else if (newflag == 1)
+    {
+        // non REPLY PACKET -- this is a new packet; set all fields
+        ip_pkt->ip_version = 4;
+        ip_pkt->ip_hdr_len = 5;
+        ip_pkt->ip_tos = 0;
+        ip_pkt->ip_identifier = IP_OFFMASK & random();
+        RESET_DF_BITS(ip_pkt->ip_frag_off);
+        RESET_MF_BITS(ip_pkt->ip_frag_off);
+        ip_pkt->ip_frag_off = 0;
 
-        verbose(2, "[IPOutgoingPacket]:: header.dst before send2Out(MAC) = %s", MAC2Colon(tmpbuf+20, pkt->data.header.dst));
-	IPSend2Output(pkt);
-        ARPPrintTable();
-	verbose(2, "[IPOutgoingPacket]:: IP packet sent to output queue.. ");
-	return EXIT_SUCCESS;
+        COPY_IP(ip_pkt->ip_dst, gHtonl(tmpbuf, dst_ip));
+        ip_pkt->ip_pkt_len = htons(size + ip_pkt->ip_hdr_len * 4);
+
+        verbose(2, "[IPOutgoingPacket]:: lookup next hop ");
+        // find the nexthop and interface and fill them in the "meta" frame
+        // NOTE: the packet itself is not modified by this lookup!
+        // for(i = 0; i < 30; i ++){
+        // 	printf("[IPOutgoingPacket] Check point 11!\n");
+        // }
+        if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
+                           pkt->frame.nxth_ip_addr, &(pkt->frame.dst_interface)) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        verbose(2, "[IPOutgoingPacket]:: lookup MTU of nexthop");
+        // lookup the IP address of the destination interface..
+        if (pkt == NULL)
+            printf("pkt is null!!!\n");
+
+        //printf("=====Packet======");
+        //printf("pkt->frame.dst_interface: %d\n", pkt->frame.dst_interface);
+
+
+        if ((status = findInterfaceIP(MTU_tbl, pkt->frame.dst_interface,
+                                      iface_ip_addr)) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+        // the outgoing packet should have the interface IP as source
+        COPY_IP(ip_pkt->ip_src, gHtonl(tmpbuf, iface_ip_addr));
+        verbose(2, "[IPOutgoingPacket]:: almost one processing the IP header.");
+    }
+    else
+    {
+        error("[IPOutgoingPacket]:: unknown outgoing packet action.. packet discarded ");
+        return EXIT_FAILURE;
+    }
+    if (pkt == NULL)
+        printf("pkt is null!!!\n");
+    //    else
+    //        printf("[IPOutgoingPacket] Check point 3!\n");
+
+    //	compute the new checksum
+    cksum = checksum((uchar *) ip_pkt, ip_pkt->ip_hdr_len * 2);
+    ip_pkt->ip_cksum = htons(cksum);
+    pkt->data.header.prot = htons(IP_PROTOCOL);
+
+    verbose(2, "[IPOutgoingPacket]:: header.dst before send2Out(MAC) = %s", MAC2Colon(tmpbuf + 20, pkt->data.header.dst));
+    IPSend2Output(pkt);
+    //ARPPrintTable();
+    verbose(2, "[IPOutgoingPacket]:: IP packet sent to output queue.. ");
+    return EXIT_SUCCESS;
 }
-
-
 
 /*
  * IPSend2Output - write to the output Queue..
  */
 int IPSend2Output(gpacket_t *pkt)
 {
-	int vlevel;
-	int i;
-	// for(i = 0; i < 30; i ++){
-	 	printf("[IPSend2Output] Check point 1!\n");
-	// }
+    int vlevel;
+    int i;
 
-	if (pkt == NULL)
-	{
-		verbose(1, "[IPSend2Output]:: NULL pointer error... nothing sent");
-		return EXIT_FAILURE;
-	}
+    if (pkt == NULL)
+    {
+        verbose(1, "[IPSend2Output]:: NULL pointer error... nothing sent");
+        return EXIT_FAILURE;
+    }
 
-	vlevel = prog_verbosity_level();
-	if (vlevel >= 3)
-		printGPacket(pkt, vlevel, "IP_ROUTINE");
-	// for(i = 0; i < 30; i ++){
-	// 	if(pkt == NULL)
-	// 		printf("pkt is null!!!!!!!!!!!!!!!!!");
-	printf("[IPSend2Output] Check point 2! size of pkt : %d\n", sizeof(*pkt));
-	// }
-	// for(i = 0; i < 30; i ++)
-	// {
-	// 	if(pcore == NULL)
-	// 		printf("pcore is null!!!!!!!!!!!!!!!!!");
-
-	// }
-	//testSimpleQueue();
-        
-	return writeQueue(pcore->outputQ, (void *)pkt, sizeof(gpacket_t));
+    vlevel = prog_verbosity_level();
+    if (vlevel >= 3)
+        printGPacket(pkt, vlevel, "IP_ROUTINE");
+    //printf("[IPSend2Output] Check point 2! size of pkt : %d\n", sizeof (*pkt));
+    return writeQueue(pcore->outputQ, (void *) pkt, sizeof (gpacket_t));
 }
-
-
 
 /*
  * check whether the IP packet has correct checksum and
@@ -605,28 +516,27 @@ int IPSend2Output(gpacket_t *pkt)
  */
 int IPVerifyPacket(ip_packet_t *ip_pkt)
 {
-	char tmpbuf[MAX_TMPBUF_LEN];
-	int hdr_len = ip_pkt->ip_hdr_len;
+    char tmpbuf[MAX_TMPBUF_LEN];
+    int hdr_len = ip_pkt->ip_hdr_len;
 
-	// verify the header checksum
-	if (checksum((void *)ip_pkt, hdr_len *2) != 0)
-	{
-		verbose(2, "[IPVerifyPacket]:: packet from %s failed checksum, packet thrown",
-		       IP2Dot(tmpbuf, gNtohl((tmpbuf+20), ip_pkt->ip_src)));
-		return EXIT_FAILURE;
-	}
+    // verify the header checksum
+    if (checksum((void *) ip_pkt, hdr_len * 2) != 0)
+    {
+        verbose(2, "[IPVerifyPacket]:: packet from %s failed checksum, packet thrown",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
+        return EXIT_FAILURE;
+    }
 
-	// Check correct IP version
-	if (ip_pkt->ip_version != 4)
-	{
-		verbose(2, "[IPVerifyPacket]:: from %s failed checksum, packet thrown",
-		       IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
-		return EXIT_FAILURE;
-	}
+    // Check correct IP version
+    if (ip_pkt->ip_version != 4)
+    {
+        verbose(2, "[IPVerifyPacket]:: from %s failed checksum, packet thrown",
+                IP2Dot(tmpbuf, gNtohl((tmpbuf + 20), ip_pkt->ip_src)));
+        return EXIT_FAILURE;
+    }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
-
 
 /*
  * Checks if two IP addresses are on the same network
@@ -634,31 +544,31 @@ int IPVerifyPacket(ip_packet_t *ip_pkt)
  */
 int isInSameNetwork(uchar *ip_addr1, uchar *ip_addr2)
 {
-	char tmpbuf[MAX_TMPBUF_LEN];
-	int i, j;
-	uchar net1[4], net2[4];
+    char tmpbuf[MAX_TMPBUF_LEN];
+    int i, j;
+    uchar net1[4], net2[4];
 
-	for (i = 0; i < MAX_ROUTES; i++)
-	{
-		if (route_tbl[i].is_empty == TRUE) continue;
-		// TODO: Could there be a bug here? What about default routes with 0.0.0.0??
-		for (j = 0; j < 4; j++)
-		{
-			net1[j] = ip_addr1[j] & route_tbl[i].netmask[j];
-			net2[j] = ip_addr2[j] & route_tbl[i].netmask[j];
-		}
-		if (COMPARE_IP(net1, net2) == 0)
-		{
-			verbose(2, "[isInSameNetwork]:: IPs %s and %s are on the same network %s",
-			       IP2Dot(tmpbuf, ip_addr1), IP2Dot((tmpbuf+20), ip_addr2), IP2Dot((tmpbuf+40), route_tbl[i].network));
+    for (i = 0; i < MAX_ROUTES; i++)
+    {
+        if (route_tbl[i].is_empty == TRUE) continue;
+        // TODO: Could there be a bug here? What about default routes with 0.0.0.0??
+        for (j = 0; j < 4; j++)
+        {
+            net1[j] = ip_addr1[j] & route_tbl[i].netmask[j];
+            net2[j] = ip_addr2[j] & route_tbl[i].netmask[j];
+        }
+        if (COMPARE_IP(net1, net2) == 0)
+        {
+            verbose(2, "[isInSameNetwork]:: IPs %s and %s are on the same network %s",
+                    IP2Dot(tmpbuf, ip_addr1), IP2Dot((tmpbuf + 20), ip_addr2), IP2Dot((tmpbuf + 40), route_tbl[i].network));
 
-			return EXIT_SUCCESS;
-		}
-	}
+            return EXIT_SUCCESS;
+        }
+    }
 
-	verbose(2, "[isInSameNetwork]:: IPs %s and %s are not on the same network",
-	       IP2Dot(tmpbuf, ip_addr1), IP2Dot((tmpbuf+20), ip_addr2));
+    verbose(2, "[isInSameNetwork]:: IPs %s and %s are not on the same network",
+            IP2Dot(tmpbuf, ip_addr1), IP2Dot((tmpbuf + 20), ip_addr2));
 
-	return EXIT_FAILURE;
+    return EXIT_FAILURE;
 }
 

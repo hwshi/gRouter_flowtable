@@ -53,11 +53,11 @@ void *judgeProcessor(void *pc)
         //     //continue to read next pkt in workq: Haowei
         //     continue;
         // }
-        printf("[judgeProcessor]:packet addr:(0x%lx)\n", (unsigned long) in_pkt);
+//        printf("[judgeProcessor]:packet addr:(0x%lx)\n", (unsigned long) in_pkt);
 
         ftentry_t *entry_res;
         ushort prot;
-        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
+//        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
         entry_res = checkFlowTable(pcore->flowtable, in_pkt);
         if (entry_res == NULL)
             //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
@@ -66,7 +66,7 @@ void *judgeProcessor(void *pc)
             return;
         }
         //TODO: call function using action(char *):  PyObject_CallFunction(String)
-        printf("[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
 
         if (entry_res->language == C_FUNCTION)
         {
@@ -86,7 +86,7 @@ void *judgeProcessor(void *pc)
             verbose(2, "Writing back to work Q...");
             writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
             verbose(2, "Wrote back to work Q...");
-            printSimpleQueue(pcore->decisionQ);
+//            printSimpleQueue(pcore->decisionQ);
 
         }
         else if (entry_res->language == PYTHON_FUNCTION)
@@ -103,30 +103,9 @@ void *judgeProcessor(void *pc)
                 verbose(2, "Got Pyton obj\n");
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
                 CheckPythonError();
-                printf("pResult: %p", Py_pResult);
+//                printf("pResult: %p", Py_pResult);
             }
         }
-
-
-        /*
-        // get the protocol field within the packet... and switch it accordingly
-        switch (ntohs(in_pkt->data.header.prot))
-        {
-        case IP_PROTOCOL:
-            verbose(2, "[packetProcessor]:: Packet sent to IP routine for further processing.. ");
-
-            IPIncomingPacket(in_pkt);
-            break;
-        case ARP_PROTOCOL:
-            verbose(2, "[packetProcessor]:: Packet sent to ARP module for further processing.. ");
-            ARPProcess(in_pkt);
-            break;
-        default:
-            verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol protocol");
-            // TODO: should we generate ICMP errors here.. check router RFCs
-            break;
-
-        }*/
     }
 }
 
@@ -269,7 +248,6 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
             registerCLI(command, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
 
             verbose(2, "[addPyModule]Command < %p >registered\n", pFuncCommand);
-            printf("[addPyModule]Command < %p >registered\n", pFuncCommand);
             //CheckPythonError();
             if (pFuncProcess == NULL)
             {
@@ -285,7 +263,6 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
         return EXIT_FAILURE;
     }
     //verbose(2  , "Executing Python scritps...\n");
-
 }
 
 int addCModule(flowtable_t *flowtable, char *mod_name)
@@ -307,6 +284,8 @@ int addCModule(flowtable_t *flowtable, char *mod_name)
     if(config_fun)
         config_info = config_fun();
     printConfigInfo(config_info);
+    registerCLI(config_info->command_str, config_info->command, C_FUNCTION, "command_C", "command_C", "command_C");
+    addEntry(flowtable, CLASSICAL, C_FUNCTION, (void *) config_info->processor);//TODO: protocol is not passed..
     return EXIT_SUCCESS;
     
 }
