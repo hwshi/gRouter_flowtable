@@ -65,10 +65,6 @@ void *toEthernetDev(void *arg)
 		pkt_size = findPacketSize(&(inpkt->data));
 		verbose(2, "[toEthernetDev]:: vpl_sendto called for interface %d..%d bytes written ", iface->interface_id, pkt_size);
 		vpl_sendto(iface->vpl_data, &(inpkt->data), pkt_size);
-		if(inpkt == NULL)
-		{
-			printf("[toEthernetDev]:: ==DOUBLE FREE !!!!!!!!!==\n");
-		}//Haowei
                 verbose(2, "[toEthernetDev]inpkt->frame.dst_interface = %d", inpkt->frame.dst_interface);
 		free(inpkt);          // finally destroy the memory allocated to the packet..
 	} else

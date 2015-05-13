@@ -1209,10 +1209,7 @@ void showftCmd()
 
 void giniUDPCmd()
 {
-    PyObject *pProtMod, *pProtGlobalDict, *pFunc;
-    pProtMod = PyImport_ImportModule("udp"); //load protocol.py
-    pProtGlobalDict = PyModule_GetDict(pProtMod); // Get main dictionary
-    pFunc = PyDict_GetItemString(pProtGlobalDict, "giniudp"); //TODO: find function of getEntry      
-    PyObject_CallFunction(pFunc, NULL);
+    int sockid = 0;
+    sockid = socket(AF_INET, SOCK_STREAM, 0);
 
 }
