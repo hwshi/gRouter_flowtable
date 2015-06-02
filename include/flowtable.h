@@ -113,6 +113,10 @@ int deleteEntry();
 flowtable_t *initFlowTable();
 int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function);
 int addProtocol(flowtable_t *flowtable, ushort language, char *protname);
+int addModule(flowtable_t *flowtable, ushort language, char *mod_name);
+int addPyModule(flowtable_t *flowtable, char *mod_name);
+int addCModule(flowtable_t *flowtable, char *mod_name);
+
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
 void printFlowTable(flowtable_t *flowtable);
 

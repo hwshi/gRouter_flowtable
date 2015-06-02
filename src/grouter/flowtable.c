@@ -27,34 +27,6 @@ void *judgeProcessor(void *pc)
         readQueue(pcore->decisionQ, (void **) &in_pkt, &pktsize);
         pthread_testcancel();
         verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
-        //flow table: Haowei
-        //if label is empty, then set it first;
-        // if (in_pkt->frame.label[0].process != 2 && in_pkt->frame.label[0].process != 0 && in_pkt->frame.label[0].process != 1)
-        // {
-        //     labelInit(in_pkt);
-        //     switch (ntohs(in_pkt->data.header.prot))
-        //     {
-        //     case IP_PROTOCOL:
-        //         verbose(2, "[packetProcessor]:: Labeling pkt by IP..");
-        //         labelNext(in_pkt, NULL_PROTOCOL, IP_PROTOCOL);
-        //         writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
-        //         break;
-        //     case ARP_PROTOCOL:
-        //         verbose(2, "[packetProcessor]:: Labeling pkt by ARP..");
-        //         labelNext(in_pkt, NULL_PROTOCOL, ARP_PROTOCOL);
-        //         writeQueue(pcore->workQ, (void *)in_pkt, sizeof(gpacket_t));//write back to work queue
-        //         break;
-        //     default:
-        //         verbose(1, "[packetProcessor]:: Packet discarded: Unknown protocol protocol");
-        //         // TODO: should we generate ICMP errors here.. check router RFCs
-        //         break;
-
-        //     }
-        //     //continue to read next pkt in workq: Haowei
-        //     continue;
-        // }
-//        printf("[judgeProcessor]:packet addr:(0x%lx)\n", (unsigned long) in_pkt);
-
         ftentry_t *entry_res;
         ushort prot;
 //        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
