@@ -29,45 +29,71 @@ void *judgeProcessor(void *pc)
         verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
         ftentry_t *entry_res;
         ushort prot;
-//        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
-        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
-        if (entry_res == NULL)
-            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
-        {
-            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
-            return;
-        }
-        //TODO: call function using action(char *):  PyObject_CallFunction(String)
-        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+        //        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
+        /*
+         * check flow table:    1. classical router
+         *                      2. openflow switch
+         */
 
-        if (entry_res->language == C_FUNCTION)
+        /*
+         * 1. classical router
+         */
+//        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
+//        if (entry_res == NULL)
+//            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
+//        {
+//            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
+//            return;
+//        }
+//        //TODO: call function using action(char *):  PyObject_CallFunction(String)
+//        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+//        if (entry_res->language == C_FUNCTION)
+//        {
+//
+//            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+//            int (*processor)(gpacket_t *);
+//            processor = entry_res->action;
+//            int nextlabel = (*processor)(in_pkt);
+//            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
+//            {
+//                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
+//                continue;
+//            }
+//            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
+//            verbose(2, "[judgeProcessor][Ft]New style round");
+//            labelNext(in_pkt, entry_res->protocol, nextlabel);
+//            verbose(2, "[judgeProcessor]Writing back to decision Q...");
+//            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
+//            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
+//            //            printSimpleQueue(pcore->decisionQ);
+//
+//        }
+//        else if (entry_res->language == PYTHON_FUNCTION)
+//        {
+//            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+//            //TODO: Python embedding
+//            //TODO: ?? Where to declaire!?
+//            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+//            Py_pFun = entry_res->action;
+//            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
+//            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+//            if (Py_pPkt)
+//            {
+//                verbose(2, "Got Pyton obj\n");
+//                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+//                CheckPythonError();
+//                //                printf("pResult: %p", Py_pResult);
+//            }
+//        }
+        /*
+         * 2. openflow switch
+         * tmp: let flowtable[3] have openflow.py (hardcoded)         
+         */
+        //entry_res = checkOFFlowTable(pcore->flowtable, in_pkt);
+        if (entry_res == NULL) // No action in flowtable, send to openflow.py
         {
-
-            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
-            int (*processor)(gpacket_t *);
-            processor = entry_res->action;
-            int nextlabel = (*processor)(in_pkt);
-            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
-            {
-                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
-                continue;
-            }
-            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
-            verbose(2, "[judgeProcessor][Ft]New style round");
-            labelNext(in_pkt, entry_res->protocol, nextlabel);
-            verbose(2, "[judgeProcessor]Writing back to decision Q...");
-            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
-            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
-//            printSimpleQueue(pcore->decisionQ);
-
-        }
-        else if (entry_res->language == PYTHON_FUNCTION)
-        {
-            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
-            //TODO: Python embedding
-            //TODO: ?? Where to declaire!?
             PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-            Py_pFun = entry_res->action;
+            Py_pFun = pcore->flowtable->entry[3].action;
             Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
             //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
             if (Py_pPkt)
@@ -75,9 +101,10 @@ void *judgeProcessor(void *pc)
                 verbose(2, "Got Pyton obj\n");
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
                 CheckPythonError();
-//                printf("pResult: %p", Py_pResult);
+                //                printf("pResult: %p", Py_pResult);
             }
         }
+
     }
 }
 
@@ -130,6 +157,7 @@ flowtable_t *initFlowTable()
     defaultProtocol(flowtable, ARP_PROTOCOL, (void *) ARPProcess);
     defaultProtocol(flowtable, IP_PROTOCOL, (void *) IPIncomingPacket);
     defaultProtocol(flowtable, ICMP_PROTOCOL, (void *) ICMPProcessPacket);
+    
     //default entries IP
     // ftentry_t *entry = (ftentry_t *)malloc(sizeof(ftentry_t));
     // entry->is_empty = 0;
@@ -196,7 +224,7 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
     pProtMod = PyImport_ImportModule(mod_name); //load protocol.py
     if (pProtMod)
     {
-        verbose(2, "[addPyModule]-%s- Module loaded\n");
+        verbose(2, "[addPyModule]-%s- Module loaded\n", mod_name);
         //verbose(2, "[addPyModule]module [udp] imported\n");
         pProtGlobalDict = PyModule_GetDict(pProtMod); // Get main dictionary
         //CheckPythonError();
@@ -243,8 +271,8 @@ int addCModule(flowtable_t *flowtable, char *mod_name)
     //module_config_t *config = (module_config_t)calloc(1, sizeof(module_config_t));
     module_config_t *config_info;
     void *library = NULL;
-    module_config_t *(*config_fun)();
-    library = dlopen(mod_name, RTLD_LAZY);//RTLD_LAZY  RTLD_NOW
+    module_config_t * (*config_fun)();
+    library = dlopen(mod_name, RTLD_LAZY); //RTLD_LAZY  RTLD_NOW
     if (!library)
     {
         printf("%s \n", dlerror());
@@ -253,13 +281,13 @@ int addCModule(flowtable_t *flowtable, char *mod_name)
     char tmpbuff[20];
     //config_fun = dlsym(library, Name2ConfigName(tmpbuff, mod_name));
     config_fun = dlsym(library, Name2ConfigName(tmpbuff, "udp2"));
-    if(config_fun)
+    if (config_fun)
         config_info = config_fun();
     printConfigInfo(config_info);
     registerCLI(config_info->command_str, config_info->command, C_FUNCTION, "command_C", "command_C", "command_C");
-    addEntry(flowtable, CLASSICAL, C_FUNCTION, (void *) config_info->processor);//TODO: protocol is not passed..
+    addEntry(flowtable, CLASSICAL, C_FUNCTION, (void *) config_info->processor); //TODO: protocol is not passed..
     return EXIT_SUCCESS;
-    
+
 }
 
 char *Name2ConfigName(char *tmpbuff, char *mod_name)
@@ -268,6 +296,7 @@ char *Name2ConfigName(char *tmpbuff, char *mod_name)
     strcat(tmpbuff, "Config");
     return tmpbuff;
 }
+
 void printConfigInfo(module_config_t *config)
 {
     printf("----    Config Information  ----\n");
@@ -277,6 +306,7 @@ void printConfigInfo(module_config_t *config)
     printf("command     :       %p\n", config->command);
     printf("----       End of Config    ----\n");
 }
+
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     //ftentry_t *entry_res = (ftentry_t *)malloc(sizeof(ftentry_t));
@@ -314,6 +344,12 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
         }
     }
     verbose(2, "!!!!?????\n");
+    return NULL;
+}
+
+ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
+{
+    verbose(2, "[checkOFFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
     return NULL;
 }
 

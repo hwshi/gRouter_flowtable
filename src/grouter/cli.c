@@ -1209,7 +1209,6 @@ void showftCmd()
 
 void giniUDPCmd()
 {
-    int sockid = 0;
-    sockid = socket(AF_INET, SOCK_STREAM, 0);
+    //addModule(flowtable, PYTHON_FUNCTION, "giniof_01");
 
 }

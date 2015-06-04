@@ -48,8 +48,8 @@ typedef struct _module_config_t {
 typedef struct _ofp_match_t {
     uint32_t wildcards; /* Wildcard fields. */
     uint16_t in_port; /* Input switch port. */
-    uint8_t dl_src[OFP_ETH_ALEN]; /* Ethernet source address. */
-    uint8_t dl_dst[OFP_ETH_ALEN]; /* Ethernet destination address. */
+//    uint8_t dl_src[OFP_ETH_ALEN]; /* Ethernet source address. */
+//    uint8_t dl_dst[OFP_ETH_ALEN]; /* Ethernet destination address. */
     uint16_t dl_vlan; /* Input VLAN id. */
     uint8_t dl_vlan_pcp; /* Input VLAN priority. */
     uint8_t pad1[1]; /* Align to 64-bits */
@@ -63,7 +63,7 @@ typedef struct _ofp_match_t {
     uint16_t tp_src; /* TCP/UDP source port. */
     uint16_t tp_dst; /* TCP/UDP destination port. */
 } ofp_match_t;
-OFP_ASSERT(sizeof (struct ofp_match) == 40);
+//OFP_ASSERT(sizeof (struct ofp_match) == 40);
 
 /* Flow wildcards. */
 enum ofp_flow_wildcards {
@@ -122,4 +122,9 @@ void printFlowTable(flowtable_t *flowtable);
 
 char *Name2ConfigName(char *tmpbuff, char *mod_name);
 void printConfigInfo(module_config_t *config);
+
+
+// function prototyp for openflow protocol
+ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
+
 #endif

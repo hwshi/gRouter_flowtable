@@ -13,6 +13,7 @@ import thread
 # CONSTANT
 
 class gini_of:
+    NAME = "GINI RUNALBE"
     OFPT_HELLO = 0
     OFPT_ECHO_REQUEST = 2
     OFPT_ECHO_REPLY = 3
@@ -85,12 +86,21 @@ class gini_of:
 
 
 gini_of_runable = gini_of()
-gini_of_runable.launch("127.0.0.1", 8899)
+#gini_of_runable.launch("127.0.0.1", 8899)
 print("gini_of_runable lanched!")
 
+def Protocol_Processor(packet):
+    global gini_of_runable
+    print("Process_OpenflowPkt", gini_of_runable.NAME)
+    print("[Process_OpenflowPkt] packet: ", packet)
+    gini_of_runable.launch("127.0.0.1", 8899)
 
 
+def Command_Line(str):
+    print("Command for giniof_01", str)
 
+def Config():
+    return "of"
 #build socket
 # controller_ip_addr = "127.0.0.1"
 # controller_port = 8899
