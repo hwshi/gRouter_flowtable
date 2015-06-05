@@ -38,6 +38,7 @@ void *judgeProcessor(void *pc)
         /*
          * 1. classical router
          */
+/////////// 
 //        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
 //        if (entry_res == NULL)
 //            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
@@ -85,6 +86,7 @@ void *judgeProcessor(void *pc)
 //                //                printf("pResult: %p", Py_pResult);
 //            }
 //        }
+///////////
         /*
          * 2. openflow switch
          * tmp: let flowtable[3] have openflow.py (hardcoded)         
@@ -157,16 +159,6 @@ flowtable_t *initFlowTable()
     defaultProtocol(flowtable, ARP_PROTOCOL, (void *) ARPProcess);
     defaultProtocol(flowtable, IP_PROTOCOL, (void *) IPIncomingPacket);
     defaultProtocol(flowtable, ICMP_PROTOCOL, (void *) ICMPProcessPacket);
-    
-    //default entries IP
-    // ftentry_t *entry = (ftentry_t *)malloc(sizeof(ftentry_t));
-    // entry->is_empty = 0;
-    // entry->language = C_FUNCTION;
-    // entry->protocol = IP_PROTOCOL;
-    // entry->action = (void*)IPIncomingPacket;
-    // flowtable->entry[0] = entry;
-    //default entries ARP
-
     verbose(2, "[initFlowTable]:: finished size: %d\n", flowtable->num);
     return flowtable;
 }
@@ -262,7 +254,6 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
         verbose(2, "[addPyModule]loading protocol module failed!\n");
         return EXIT_FAILURE;
     }
-    //verbose(2  , "Executing Python scritps...\n");
 }
 
 int addCModule(flowtable_t *flowtable, char *mod_name)
@@ -287,7 +278,6 @@ int addCModule(flowtable_t *flowtable, char *mod_name)
     registerCLI(config_info->command_str, config_info->command, C_FUNCTION, "command_C", "command_C", "command_C");
     addEntry(flowtable, CLASSICAL, C_FUNCTION, (void *) config_info->processor); //TODO: protocol is not passed..
     return EXIT_SUCCESS;
-
 }
 
 char *Name2ConfigName(char *tmpbuff, char *mod_name)
