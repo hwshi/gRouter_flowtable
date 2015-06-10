@@ -8,11 +8,6 @@ import threading
 
 # TODO: import POX.openflow.libopenflow_01
 import pox.openflow.libopenflow_01 as of
-
-try:
-    __import__('_GINIC')
-except ImportError:
-    print('Module _GINIC missing!')
 # CONSTANT
 
 class gini_of:
@@ -43,6 +38,7 @@ class gini_of:
     def process_hello(self, pkt):
         print("This is a [Hello packet]")
         pkt_hello = of.ofp_hello()
+        pkt_hello.xid = 9999
         self.s.send(pkt_hello.pack())
         print("hello pkt sent...", pkt_hello.pack())
 
@@ -60,7 +56,6 @@ class gini_of:
         pkt_echo_reply.capabilities = 0
         pkt_echo_reply.actions = 0
         pkt_echo_reply.ports = [] # set the list of ports
-
         self.s.send(pkt_echo_reply.pack())
 
 
@@ -87,11 +82,15 @@ class gini_of:
             else:
                 print("Unknown type!: ", pkt.header_type, "details: ")
                 print(pkt.show())
+
+
     """
     create threads:
         1.process packet from gRouter
         2.check socket which is communicating controller
     """
+
+
     def launch(self, addr="127.0.0.1", port=6633):
         self.connect_contoller(addr, port)
         routine_check_socket = threading.Thread(target=self.check_socket)  # self.check_socket()  Wrong!!!
@@ -105,45 +104,9 @@ gini_of_runable = gini_of()
 gini_of_runable.launch("127.0.0.1", 8899)
 print("gini_of_runable lanched!")
 
-
-def Protocol_Processor(packet):
-    print("receive an Openflow packet from Ginic...")
-    global gini_of_runable
-    print("Process_OpenflowPkt", gini_of_runable.NAME)
-    print("[Process_OpenflowPkt] packet: ", packet)
-    # gini_of_runable.launch("127.0.0.1", 8899)
-    gini_of_runable.process_packet(packet)
-
-
-def Command_Line(str):
-    print("Command for giniof_01", str)
-
-
-def Config():
-    return "of"
-
-
-# --read socket with count
-# count = 1
-# while True:
-# try:
-#         buff = s.recv(32)
-#     except socket.errno, e:
-#         print("exception")
-#         err = e.args[0]
-#         if err == socket.errno.EAGAIN or err == socket.errno.EWOULDBLOCK:
-#             print("No data")
-#             break
-#     print('recved: ', len(buff))
-#     print(buff, "rev hello pkt", count, ": len: ", len(buff))
-#     count += 1
-#         break
+# test area:
 #
-# if buff:
-#     print('recved: ', len(buff))
-#     print(buff, "rev hello pkt", count, ": len: ", len(buff))
-#     count += 1
-# else:
-#     print("socket is empty")
-#     break
+#gini_of_runable.process_features_request(of.ofp_features_request())
+
+
 
