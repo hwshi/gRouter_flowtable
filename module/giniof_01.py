@@ -22,6 +22,9 @@ class gini_of:
     OFPT_ECHO_REPLY = 3
     OFPT_FEATURES_REQUEST = 5
     OFPT_FEATURES_REPLY = 6
+    OFPT_SET_CONFIG = 9
+    OFPT_SET_MOD = 14
+    OFPT_BARRIER_REQUEST = 18
 
     def __init__(self,
                  s=socket.socket(socket.AF_INET, socket.SOCK_STREAM),
@@ -43,26 +46,40 @@ class gini_of:
     def process_hello(self, pkt):
         print("This is a [Hello packet]")
         pkt_hello = of.ofp_hello()
+        pkt_hello.xid = 9999
         self.s.send(pkt_hello.pack())
         print("hello pkt sent...", pkt_hello.pack())
 
     def process_echo_request(self, pkt):
         print("This is a [Echo request packet]")
         pkt_echo_reply = of.ofp_echo_reply()
-        self.s.send(pkt_echo_reply)
+        self.s.send(pkt_echo_reply.pack())
 
     def process_features_request(self, pkt):
         print("This is a [Features reuqest packet]")
-        pkt_echo_reply = of.ofp_features_reply()  # set fields
-        pkt_echo_reply.xid = pkt.xid    # same xid
-        pkt_echo_reply.n_buffers = 0
-        pkt_echo_reply.n_tables = 0
-        pkt_echo_reply.capabilities = 0
-        pkt_echo_reply.actions = 0
-        pkt_echo_reply.ports = [] # set the list of ports
-
+        pkt_features_reply = of.ofp_features_reply()  # set fields
+        pkt_features_reply.xid = pkt.xid  # same xid
+        pkt_features_reply.n_buffers = 0
+        pkt_features_reply.n_tables = 0
+        pkt_features_reply.capabilities = 0
+        pkt_features_reply.actions = 0
+        pkt_features_reply.ports = []  # set the list of ports
+        self.s.send(pkt_features_reply.pack())
+    def process_set_config(self, pkt):
+        print("This is a [set config packet]")
+        pkt_echo_reply = of.ofp_echo_reply()
         self.s.send(pkt_echo_reply.pack())
 
+
+    def process_set_mod(self, pkt):
+        print("This is a [set mod packet]")
+        pkt_echo_reply = of.ofp_echo_reply()
+        self.s.send(pkt_echo_reply.pack())
+
+    def process_barrier_request(self, pkt):
+        print("This is a [barrier request packet]")
+        pkt_barrier_reply = of.ofp_barrier_reply()
+        self.s.send(pkt_barrier_reply.pack())
 
     def test(self, a, b):
         print("this is a test!")
@@ -84,14 +101,27 @@ class gini_of:
             elif pkt.header_type == gini_of.OFPT_FEATURES_REQUEST:
                 print("OFPT_FEATURES_REQUEST msg: ")
                 self.process_features_request(pkt)
+            elif pkt.header_type == gini_of.OFPT_SET_CONFIG:
+                print("OFPT_SET_CONFIG msg: ")
+                self.process_set_config(pkt)
+            elif pkt.header_type == gini_of.OFPT_SET_MOD:
+                print("OFPT_SET_MOD msg: ")
+                self.process_set_mod(pkt)
+            elif pkt.header_type == gini_of.OFPT_BARRIER_REQUEST:
+                print("OFPT_BARRIER_REQUEST msg: ")
+                self.process_barrier_request(pkt)
             else:
                 print("Unknown type!: ", pkt.header_type, "details: ")
                 print(pkt.show())
+
+
     """
     create threads:
         1.process packet from gRouter
         2.check socket which is communicating controller
     """
+
+
     def launch(self, addr="127.0.0.1", port=6633):
         self.connect_contoller(addr, port)
         routine_check_socket = threading.Thread(target=self.check_socket)  # self.check_socket()  Wrong!!!
