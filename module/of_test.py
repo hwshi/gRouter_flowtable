@@ -5,10 +5,15 @@
 
 import socket
 import threading
+import struct
 
 # TODO: import POX.openflow.libopenflow_01
 import pox.openflow.libopenflow_01 as of
 # CONSTANT
+try:
+    __import__('_GINIC')
+except ImportError:
+    print('Module _GINIC missing!')
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -49,17 +54,22 @@ class gini_of:
         print("This is a [Echo request packet]")
         pkt_echo_reply = of.ofp_echo_reply()
         self.s.send(pkt_echo_reply.pack())
-
+    # TODO: 1.get MAC ADDR from gini_c 2.set pkt.ports
     def process_features_request(self, pkt):
         print("This is a [Features reuqest packet]")
         pkt_features_reply = of.ofp_features_reply()  # set fields
         pkt_features_reply.xid = pkt.xid  # same xid
+
+        device_name = gini_get_device_name() #returns a string for name eg. "003de70fc98a"
+        #ports = gini_get_gini_ports()
+        pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
         pkt_features_reply.n_tables = 0
         pkt_features_reply.capabilities = 0
         pkt_features_reply.actions = 0
         pkt_features_reply.ports = []  # set the list of ports
         self.s.send(pkt_features_reply.pack())
+
     def process_set_config(self, pkt):
         print("This is a [set config packet]")
         pkt_echo_reply = of.ofp_echo_reply()
@@ -74,8 +84,8 @@ class gini_of:
     def process_barrier_request(self, pkt):
         print("This is a [barrier request packet]")
         pkt_barrier_reply = of.ofp_barrier_reply()
+        pkt_barrier_reply.xid = pkt.xid
         self.s.send(pkt_barrier_reply.pack())
-
     def test(self, a, b):
         print("this is a test!")
 
@@ -85,7 +95,7 @@ class gini_of:
             buff = self.s.recv(100)
             pkt = of.ofp_header()
             pkt.unpack(buff)
-            print('recved: ', len(buff))
+            print('[check_socket]recved: ', len(buff))
             print(pkt.show())
             if pkt.header_type == gini_of.OFPT_HELLO:  # OFPT_HELLO
                 print("OFPT_HELLO msg: ")
@@ -119,11 +129,12 @@ class gini_of:
 
     def launch(self, addr="127.0.0.1", port=6633):
         self.connect_contoller(addr, port)
-        routine_check_socket = threading.Thread(target=self.check_socket)  # self.check_socket()  Wrong!!!
-        try:
-            routine_check_socket.start()
-        except:
-            print('Cannot start routine_check_socket!')
+        # routine_check_socket = threading.Thread(target=self.check_socket)  # self.check_socket()  Wrong!!!
+        # try:
+        #     routine_check_socket.start()
+        # except:
+        #     print('Cannot start routine_check_socket!')
+        self.check_socket()
 
 
 gini_of_runable = gini_of()
@@ -133,6 +144,11 @@ print("gini_of_runable lanched!")
 # test area:
 #
 # gini_of_runable.process_features_request(of.ofp_features_request())
+
+def gini_get_device_name():
+    name = "Empty"
+    name =_GINIC.getDeviceName()
+    return name
 
 
 

@@ -2911,22 +2911,18 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p__gpacket_t swig_types[0]
-#define SWIGTYPE_p__label_t swig_types[1]
+#define SWIGTYPE_p__ip_packet_t swig_types[1]
 #define SWIGTYPE_p__pkt_data_t swig_types[2]
 #define SWIGTYPE_p__pkt_frame_t swig_types[3]
-#define SWIGTYPE_p_arp_buffer_entry_t swig_types[4]
-#define SWIGTYPE_p_arp_entry_t swig_types[5]
-#define SWIGTYPE_p_char swig_types[6]
-#define SWIGTYPE_p_devicearray_t swig_types[7]
-#define SWIGTYPE_p_interface_array_t swig_types[8]
-#define SWIGTYPE_p_mtu_entry_t swig_types[9]
-#define SWIGTYPE_p_pkt_data_t_header swig_types[10]
-#define SWIGTYPE_p_pktcore_t swig_types[11]
-#define SWIGTYPE_p_route_entry_t swig_types[12]
-#define SWIGTYPE_p_uchar swig_types[13]
-#define SWIGTYPE_p_ushort swig_types[14]
-static swig_type_info *swig_types[16];
-static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
+#define SWIGTYPE_p_char swig_types[4]
+#define SWIGTYPE_p_pkt_data_t_header swig_types[5]
+#define SWIGTYPE_p_pktcore_t swig_types[6]
+#define SWIGTYPE_p_uint16_t swig_types[7]
+#define SWIGTYPE_p_uint8_t swig_types[8]
+#define SWIGTYPE_p_unsigned_char swig_types[9]
+#define SWIGTYPE_p_ushort swig_types[10]
+static swig_type_info *swig_types[12];
+static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2939,16 +2935,16 @@ static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
 #endif
 
 /*-----------------------------------------------
-              @(target):= _GINIC.so
+              @(target):= _Cip.so
   ------------------------------------------------*/
 #if PY_VERSION_HEX >= 0x03000000
-#  define SWIG_init    PyInit__GINIC
+#  define SWIG_init    PyInit__Cip
 
 #else
-#  define SWIG_init    init_GINIC
+#  define SWIG_init    init_Cip
 
 #endif
-#define SWIG_name    "_GINIC"
+#define SWIG_name    "_Cip"
 
 #define SWIGVERSION 0x020011 
 #define SWIG_VERSION SWIGVERSION
@@ -2958,83 +2954,56 @@ static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-#include <sys/types.h>
-#include "grouter.h"
-#include "message.h"
-#include "arp.h"
-#include "gnet.h"
-#include "ip.h"
-#include "packetcore.h"
-#include "routetable.h"
-#include "mtu.h"
-#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
-#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
-#define uchar unsigned char
-#define ushort unsigned short
 
-    
-    extern interface_array_t netarray;  // interface table from gnet.h
-    extern pktcore_t *pcore;
-    extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
-    extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
-    
-    extern interface_array_t netarray;
-    extern devicearray_t devarray;
-    extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
-    extern arp_entry_t ARPtable[MAX_ARP];		                // ARP table
-    extern arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	// ARP buffer for unresolved packets
-    extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
-    extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
-    
-    PyObject * getUDPPacketString(gpacket_t * gpacket) {
-//        printf("[UDPPacketString]:: 1\n");
-        //int gpayload = sizeof(gpacket->data.data);
-        int payload = sizeof (gpacket->data.data);
-        int gheader = sizeof (gpacket_t) - payload;
-        int udplen = sizeof (*gpacket) - gheader - sizeof (ip_packet_t);
-//        printf("[UDPPacketString]:: 2\n");
-        ip_packet_t *ip_pkt = (ip_packet_t *) gpacket->data.data;
-//        printf("[UDPPacketString]:: 3\n");
-//        printf("gpayload: %d size of ip_t %d", payload, sizeof (ip_packet_t));
-        return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
-    }
-    //helper function for gpacket
+	#include "message.h"
+	#include "grouter.h"
+	#include "routetable.h"
+	#include "mtu.h"
+	#include "protocols.h"
+	#include "ip.h"
+	#include "fragment.h"
+	#include "packetcore.h"
+	#include <stdlib.h>
+	#include <slack/err.h>
+	#include <netinet/in.h>
+	#include <string.h>
+	//**Swig Haowei
+	#include <stdint.h>
+	#include <endian.h>
+	#define TEST_DF_BITS(X)                 ( (X & IP_DF) >> 14)
+	#define TEST_MF_BITS(X)                 ( (X & IP_MF) >> 13)
+	#define SET_DF_BITS(X)                  X = ( X | (0x00001 << 14) )
+	#define SET_MF_BITS(X)                  X = ( X | (0x00001 << 13) )
+	#define RESET_DF_BITS(X)                X = ( X & (~(0x00001 << 14)) )
+	#define RESET_MF_BITS(X)                X = ( X & (~(0x00001 << 13)) )
 
-    gpacket_t * createGPacket(PyObject * pkt) {
-        void * pktString = PyString_AsString(pkt);
-//        printf("[helpr - createGPacket]\n");
-        gpacket_t *gpkt = (gpacket_t *) malloc(sizeof (gpacket_t));
-        memcpy(gpkt->data.data, pktString, sizeof (pktString));
-        //gpkt->data.data = (uchar*)pkt;
-//        printf("[createGPacket] coppied %d byte\n", sizeof (pktString));
-        return gpkt;
 
-    }
+	//global
+	extern pktcore_t *pcore;
 
-    PyObject* getGPacketString(gpacket_t * gpacket) {
-        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
-    }
-    
-    PyObject* getDeviceName()
-    {
-        char name[100];
-        printf("[getDevicename]-------------");
-        //printRouteTable(route_tbl);
-        //printInterfaces(11);
-//        int i;
-//        for(i = 0; i < 200; i ++)
-        printf("1");
-        printf("2");
-        MAC2Colon(name, netarray.elem[0]->mac_addr);
-        printf("3");
-        printf("name is : %s", name);
-        printf("[getDeviceName]2");
-        //sprintf(name, "%02x%02x%02x%02x%02x%02x", netarray.elem[0]->mac_addr[0], netarray.elem[0]->mac_addr[1], netarray.elem[0]->mac_addr[2], 
-        //netarray.elem[0]->mac_addr[3], netarray.elem[0]->mac_addr[4], netarray.elem[0]->mac_addr[5]);
-        //printf("[getDeviceName] name is: %s", name);
-        return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
-    }
 
+	//helper function for ippacket
+	#ifndef __IP__HELPER__
+	#define __IP__HELPER__
+	PyObject* getUDPPacketString(gpacket_t *gpacket){
+		printf("[UDPPacketString]:: 1\n");
+		//int gpayload = sizeof(gpacket->data.data);
+		int payload = sizeof(gpacket->data.data);
+		int gheader = sizeof(gpacket_t) - payload;
+		int udplen = sizeof(*gpacket) - gheader - sizeof(ip_packet_t);
+		printf("[UDPPacketString]:: 2\n");
+		ip_packet_t *ip_pkt = (ip_packet_t *)gpacket->data.data;
+		printf("[UDPPacketString]:: 3\n");
+		printf("gpayload: %d size of ip_t %d", payload, sizeof(ip_packet_t));
+		return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
+	}
+	//helper function for gpacket
+	PyObject* getGPacketString(gpacket_t *gpacket){
+		return PyString_FromStringAndSize((char *)(&gpacket->data.data), sizeof(*gpacket));
+	}
+	extern int PythonError(PyObject *pObj);
+	#endif
+	//int IPSend2Output(gpacket_t *pkt);
 
 
 SWIGINTERNINLINE PyObject*
@@ -3042,6 +3011,23 @@ SWIGINTERNINLINE PyObject*
 {
   return PyInt_FromLong((long) value);
 }
+
+
+	#include <sys/types.h>
+	#include "grouter.h"
+	#include "message.h"
+	#include "ip.h"
+	#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
+	#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
+	#define uchar unsigned char
+	#define ushort unsigned short
+
+typedef struct {
+  unsigned char dst[6];                                                                  
+  unsigned char src[6];                                                             
+  ushort prot;                                 
+} pkt_data_t_header;
+
 
 
 #include <limits.h>
@@ -3188,43 +3174,9 @@ SWIG_AsVal_int (PyObject * obj, int *val)
   return res;
 }
 
-typedef struct {
-  uchar dst[6];                                                   
-  uchar src[6];                                              
-  ushort prot;                  
-} pkt_data_t_header;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN int Swig_var_netarray_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_interface_array_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""netarray""' of type '""interface_array_t""'");
-    }
-    if (!argp) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""netarray""' of type '""interface_array_t""'");
-    } else {
-      netarray = *((interface_array_t *)(argp));
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_netarray_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&netarray), SWIGTYPE_p_interface_array_t,  0 );
-  return pyobj;
-}
-
-
 SWIGINTERN int Swig_var_pcore_set(PyObject *_val) {
   {
     void *argp = 0;
@@ -3248,214 +3200,6 @@ SWIGINTERN PyObject *Swig_var_pcore_get(void) {
 }
 
 
-SWIGINTERN int Swig_var_route_tbl_set(PyObject *_val) {
-  {
-    route_entry_t *inp = 0;
-    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_route_entry_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""route_tbl""' of type '""route_entry_t [MAX_ROUTES]""'");
-    } else if (inp) {
-      size_t ii = 0;
-      for (; ii < (size_t)MAX_ROUTES; ++ii) route_tbl[ii] = inp[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""route_tbl""' of type '""route_entry_t [MAX_ROUTES]""'");
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_route_tbl_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(route_tbl), SWIGTYPE_p_route_entry_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_MTU_tbl_set(PyObject *_val) {
-  {
-    mtu_entry_t *inp = 0;
-    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_mtu_entry_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""MTU_tbl""' of type '""mtu_entry_t [MAX_MTU]""'");
-    } else if (inp) {
-      size_t ii = 0;
-      for (; ii < (size_t)MAX_MTU; ++ii) MTU_tbl[ii] = inp[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""MTU_tbl""' of type '""mtu_entry_t [MAX_MTU]""'");
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_MTU_tbl_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(MTU_tbl), SWIGTYPE_p_mtu_entry_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_devarray_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_devicearray_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""devarray""' of type '""devicearray_t""'");
-    }
-    if (!argp) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""devarray""' of type '""devicearray_t""'");
-    } else {
-      devarray = *((devicearray_t *)(argp));
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_devarray_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&devarray), SWIGTYPE_p_devicearray_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_arp_cache_set(PyObject *_val) {
-  {
-    arp_entry_t *inp = 0;
-    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_entry_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""arp_cache""' of type '""arp_entry_t [ARP_CACHE_SIZE]""'");
-    } else if (inp) {
-      size_t ii = 0;
-      for (; ii < (size_t)ARP_CACHE_SIZE; ++ii) arp_cache[ii] = inp[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""arp_cache""' of type '""arp_entry_t [ARP_CACHE_SIZE]""'");
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_arp_cache_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(arp_cache), SWIGTYPE_p_arp_entry_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_ARPtable_set(PyObject *_val) {
-  {
-    arp_entry_t *inp = 0;
-    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_entry_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ARPtable""' of type '""arp_entry_t [MAX_ARP]""'");
-    } else if (inp) {
-      size_t ii = 0;
-      for (; ii < (size_t)MAX_ARP; ++ii) ARPtable[ii] = inp[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ARPtable""' of type '""arp_entry_t [MAX_ARP]""'");
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_ARPtable_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(ARPtable), SWIGTYPE_p_arp_entry_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_ARPbuffer_set(PyObject *_val) {
-  {
-    arp_buffer_entry_t *inp = 0;
-    int res = SWIG_ConvertPtr(_val, SWIG_as_voidptrptr(&inp), SWIGTYPE_p_arp_buffer_entry_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""ARPbuffer""' of type '""arp_buffer_entry_t [MAX_ARP_BUFFERS]""'");
-    } else if (inp) {
-      size_t ii = 0;
-      for (; ii < (size_t)MAX_ARP_BUFFERS; ++ii) ARPbuffer[ii] = inp[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ARPbuffer""' of type '""arp_buffer_entry_t [MAX_ARP_BUFFERS]""'");
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_ARPbuffer_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(ARPbuffer), SWIGTYPE_p_arp_buffer_entry_t,  0 );
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_tbl_replace_indx_set(PyObject *_val) {
-  {
-    int val;
-    int res = SWIG_AsVal_int(_val, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""tbl_replace_indx""' of type '""int""'");
-    }
-    tbl_replace_indx = (int)(val);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_tbl_replace_indx_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_int((int)(tbl_replace_indx));
-  return pyobj;
-}
-
-
-SWIGINTERN int Swig_var_buf_replace_indx_set(PyObject *_val) {
-  {
-    int val;
-    int res = SWIG_AsVal_int(_val, &val);
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""buf_replace_indx""' of type '""int""'");
-    }
-    buf_replace_indx = (int)(val);
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_buf_replace_indx_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_From_int((int)(buf_replace_indx));
-  return pyobj;
-}
-
-
 SWIGINTERN PyObject *_wrap_getUDPPacketString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   gpacket_t *arg1 = (gpacket_t *) 0 ;
@@ -3472,22 +3216,6 @@ SWIGINTERN PyObject *_wrap_getUDPPacketString(PyObject *SWIGUNUSEDPARM(self), Py
   arg1 = (gpacket_t *)(argp1);
   result = (PyObject *)getUDPPacketString(arg1);
   resultobj = result;
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_createGPacket(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PyObject *arg1 = (PyObject *) 0 ;
-  PyObject * obj0 = 0 ;
-  gpacket_t *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:createGPacket",&obj0)) SWIG_fail;
-  arg1 = obj0;
-  result = (gpacket_t *)createGPacket(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3516,13 +3244,16 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_getDeviceName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonError(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PyObject *result = 0 ;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
   
-  if (!PyArg_ParseTuple(args,(char *)":getDeviceName")) SWIG_fail;
-  result = (PyObject *)getDeviceName();
-  resultobj = result;
+  if (!PyArg_ParseTuple(args,(char *)"O:PythonError",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (int)PythonError(arg1);
+  resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
   return NULL;
@@ -3532,7 +3263,7 @@ fail:
 SWIGINTERN PyObject *_wrap_pkt_data_t_data_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_data_t *arg1 = (struct _pkt_data_t *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3546,17 +3277,17 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_data_set(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_data_set" "', argument " "1"" of type '" "struct _pkt_data_t *""'"); 
   }
   arg1 = (struct _pkt_data_t *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_data_set" "', argument " "2"" of type '" "uchar [DEFAULT_MTU]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_data_set" "', argument " "2"" of type '" "unsigned char [DEFAULT_MTU]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)DEFAULT_MTU; ++ii) arg1->data[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""data""' of type '""uchar [DEFAULT_MTU]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""data""' of type '""unsigned char [DEFAULT_MTU]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -3572,7 +3303,7 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_data_get(PyObject *SWIGUNUSEDPARM(self), P
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_data_t_data_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_data_t, 0 |  0 );
@@ -3580,8 +3311,8 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_data_get(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_data_get" "', argument " "1"" of type '" "struct _pkt_data_t *""'"); 
   }
   arg1 = (struct _pkt_data_t *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->data);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->data);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3654,7 +3385,7 @@ SWIGINTERN PyObject *pkt_data_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyO
 SWIGINTERN PyObject *_wrap_pkt_data_t_header_dst_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   pkt_data_t_header *arg1 = (pkt_data_t_header *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3668,17 +3399,17 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_dst_set(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_header_dst_set" "', argument " "1"" of type '" "pkt_data_t_header *""'"); 
   }
   arg1 = (pkt_data_t_header *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_header_dst_set" "', argument " "2"" of type '" "uchar [6]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_header_dst_set" "', argument " "2"" of type '" "unsigned char [6]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)6; ++ii) arg1->dst[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""dst""' of type '""uchar [6]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""dst""' of type '""unsigned char [6]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -3694,7 +3425,7 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_dst_get(PyObject *SWIGUNUSEDPARM(se
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_data_t_header_dst_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_pkt_data_t_header, 0 |  0 );
@@ -3702,8 +3433,8 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_dst_get(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_header_dst_get" "', argument " "1"" of type '" "pkt_data_t_header *""'"); 
   }
   arg1 = (pkt_data_t_header *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->dst);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->dst);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3713,7 +3444,7 @@ fail:
 SWIGINTERN PyObject *_wrap_pkt_data_t_header_src_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   pkt_data_t_header *arg1 = (pkt_data_t_header *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -3727,17 +3458,17 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_src_set(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_header_src_set" "', argument " "1"" of type '" "pkt_data_t_header *""'"); 
   }
   arg1 = (pkt_data_t_header *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_header_src_set" "', argument " "2"" of type '" "uchar [6]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_data_t_header_src_set" "', argument " "2"" of type '" "unsigned char [6]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)6; ++ii) arg1->src[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src""' of type '""uchar [6]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src""' of type '""unsigned char [6]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -3753,7 +3484,7 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_src_get(PyObject *SWIGUNUSEDPARM(se
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_data_t_header_src_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_pkt_data_t_header, 0 |  0 );
@@ -3761,8 +3492,8 @@ SWIGINTERN PyObject *_wrap_pkt_data_t_header_src_get(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_data_t_header_src_get" "', argument " "1"" of type '" "pkt_data_t_header *""'"); 
   }
   arg1 = (pkt_data_t_header *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->src);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->src);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -3868,163 +3599,6 @@ SWIGINTERN PyObject *pkt_data_t_header_swigregister(PyObject *SWIGUNUSEDPARM(sel
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_label_t_prot_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *arg1 = (struct _label_t *) 0 ;
-  ushort arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:label_t_prot_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__label_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "label_t_prot_set" "', argument " "1"" of type '" "struct _label_t *""'"); 
-  }
-  arg1 = (struct _label_t *)(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_ushort,  0 );
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "label_t_prot_set" "', argument " "2"" of type '" "ushort""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "label_t_prot_set" "', argument " "2"" of type '" "ushort""'");
-    } else {
-      arg2 = *((ushort *)(argp2));
-    }
-  }
-  if (arg1) (arg1)->prot = arg2;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_label_t_prot_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *arg1 = (struct _label_t *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  ushort result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:label_t_prot_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__label_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "label_t_prot_get" "', argument " "1"" of type '" "struct _label_t *""'"); 
-  }
-  arg1 = (struct _label_t *)(argp1);
-  result =  ((arg1)->prot);
-  resultobj = SWIG_NewPointerObj((ushort *)memcpy((ushort *)malloc(sizeof(ushort)),&result,sizeof(ushort)), SWIGTYPE_p_ushort, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_label_t_process_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *arg1 = (struct _label_t *) 0 ;
-  ushort arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:label_t_process_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__label_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "label_t_process_set" "', argument " "1"" of type '" "struct _label_t *""'"); 
-  }
-  arg1 = (struct _label_t *)(argp1);
-  {
-    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_ushort,  0 );
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "label_t_process_set" "', argument " "2"" of type '" "ushort""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "label_t_process_set" "', argument " "2"" of type '" "ushort""'");
-    } else {
-      arg2 = *((ushort *)(argp2));
-    }
-  }
-  if (arg1) (arg1)->process = arg2;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_label_t_process_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *arg1 = (struct _label_t *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  ushort result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:label_t_process_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__label_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "label_t_process_get" "', argument " "1"" of type '" "struct _label_t *""'"); 
-  }
-  arg1 = (struct _label_t *)(argp1);
-  result =  ((arg1)->process);
-  resultobj = SWIG_NewPointerObj((ushort *)memcpy((ushort *)malloc(sizeof(ushort)),&result,sizeof(ushort)), SWIGTYPE_p_ushort, SWIG_POINTER_OWN |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_new_label_t(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)":new_label_t")) SWIG_fail;
-  result = (struct _label_t *)calloc(1, sizeof(struct _label_t));
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__label_t, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_label_t(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _label_t *arg1 = (struct _label_t *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_label_t",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__label_t, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_label_t" "', argument " "1"" of type '" "struct _label_t *""'"); 
-  }
-  arg1 = (struct _label_t *)(argp1);
-  free((char *) arg1);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *label_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p__label_t, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
 SWIGINTERN PyObject *_wrap_pkt_frame_t_src_interface_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
@@ -4080,7 +3654,7 @@ fail:
 SWIGINTERN PyObject *_wrap_pkt_frame_t_src_ip_addr_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -4094,17 +3668,17 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_ip_addr_set(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_src_ip_addr_set" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_src_ip_addr_set" "', argument " "2"" of type '" "uchar [4]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_src_ip_addr_set" "', argument " "2"" of type '" "unsigned char [4]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)4; ++ii) arg1->src_ip_addr[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src_ip_addr""' of type '""uchar [4]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src_ip_addr""' of type '""unsigned char [4]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -4120,7 +3694,7 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_ip_addr_get(PyObject *SWIGUNUSEDPARM(
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_frame_t_src_ip_addr_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_frame_t, 0 |  0 );
@@ -4128,8 +3702,8 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_ip_addr_get(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_src_ip_addr_get" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->src_ip_addr);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->src_ip_addr);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4139,7 +3713,7 @@ fail:
 SWIGINTERN PyObject *_wrap_pkt_frame_t_src_hw_addr_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -4153,17 +3727,17 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_hw_addr_set(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_src_hw_addr_set" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_src_hw_addr_set" "', argument " "2"" of type '" "uchar [6]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_src_hw_addr_set" "', argument " "2"" of type '" "unsigned char [6]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)6; ++ii) arg1->src_hw_addr[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src_hw_addr""' of type '""uchar [6]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""src_hw_addr""' of type '""unsigned char [6]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -4179,7 +3753,7 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_hw_addr_get(PyObject *SWIGUNUSEDPARM(
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_frame_t_src_hw_addr_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_frame_t, 0 |  0 );
@@ -4187,8 +3761,8 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_src_hw_addr_get(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_src_hw_addr_get" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->src_hw_addr);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->src_hw_addr);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4250,7 +3824,7 @@ fail:
 SWIGINTERN PyObject *_wrap_pkt_frame_t_nxth_ip_addr_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
-  uchar *arg2 ;
+  unsigned char *arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -4264,17 +3838,17 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_nxth_ip_addr_set(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_nxth_ip_addr_set" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_uchar, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_nxth_ip_addr_set" "', argument " "2"" of type '" "uchar [4]""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_nxth_ip_addr_set" "', argument " "2"" of type '" "unsigned char [4]""'"); 
   } 
-  arg2 = (uchar *)(argp2);
+  arg2 = (unsigned char *)(argp2);
   {
     if (arg2) {
       size_t ii = 0;
       for (; ii < (size_t)4; ++ii) arg1->nxth_ip_addr[ii] = arg2[ii];
     } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""nxth_ip_addr""' of type '""uchar [4]""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""nxth_ip_addr""' of type '""unsigned char [4]""'");
     }
   }
   resultobj = SWIG_Py_Void();
@@ -4290,7 +3864,7 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_nxth_ip_addr_get(PyObject *SWIGUNUSEDPARM
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  uchar *result = 0 ;
+  unsigned char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:pkt_frame_t_nxth_ip_addr_get",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_frame_t, 0 |  0 );
@@ -4298,8 +3872,8 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_nxth_ip_addr_get(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_nxth_ip_addr_get" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
   }
   arg1 = (struct _pkt_frame_t *)(argp1);
-  result = (uchar *)(uchar *) ((arg1)->nxth_ip_addr);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_uchar, 0 |  0 );
+  result = (unsigned char *)(unsigned char *) ((arg1)->nxth_ip_addr);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4404,65 +3978,6 @@ SWIGINTERN PyObject *_wrap_pkt_frame_t_arp_bcast_get(PyObject *SWIGUNUSEDPARM(se
   arg1 = (struct _pkt_frame_t *)(argp1);
   result = (int) ((arg1)->arp_bcast);
   resultobj = SWIG_From_int((int)(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_pkt_frame_t_label_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
-  label_t *arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OO:pkt_frame_t_label_set",&obj0,&obj1)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_frame_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_label_set" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
-  }
-  arg1 = (struct _pkt_frame_t *)(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p__label_t, 0 |  0 );
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pkt_frame_t_label_set" "', argument " "2"" of type '" "label_t [8]""'"); 
-  } 
-  arg2 = (label_t *)(argp2);
-  {
-    if (arg2) {
-      size_t ii = 0;
-      for (; ii < (size_t)8; ++ii) arg1->label[ii] = arg2[ii];
-    } else {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""label""' of type '""label_t [8]""'");
-    }
-  }
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_pkt_frame_t_label_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  struct _pkt_frame_t *arg1 = (struct _pkt_frame_t *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  label_t *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:pkt_frame_t_label_get",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__pkt_frame_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pkt_frame_t_label_get" "', argument " "1"" of type '" "struct _pkt_frame_t *""'"); 
-  }
-  arg1 = (struct _pkt_frame_t *)(argp1);
-  result = (label_t *)(label_t *) ((arg1)->label);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__label_t, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4655,10 +4170,691 @@ SWIGINTERN PyObject *gpacket_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_hdr_len_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint8_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_hdr_len_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_hdr_len_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint8_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_hdr_len_set" "', argument " "2"" of type '" "uint8_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_hdr_len_set" "', argument " "2"" of type '" "uint8_t""'");
+    } else {
+      arg2 = *((uint8_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_hdr_len = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_hdr_len_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint8_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_hdr_len_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_hdr_len_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_hdr_len);
+  resultobj = SWIG_NewPointerObj((uint8_t *)memcpy((uint8_t *)malloc(sizeof(uint8_t)),&result,sizeof(uint8_t)), SWIGTYPE_p_uint8_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_version_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint8_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_version_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_version_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint8_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_version_set" "', argument " "2"" of type '" "uint8_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_version_set" "', argument " "2"" of type '" "uint8_t""'");
+    } else {
+      arg2 = *((uint8_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_version = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_version_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint8_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_version_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_version_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_version);
+  resultobj = SWIG_NewPointerObj((uint8_t *)memcpy((uint8_t *)malloc(sizeof(uint8_t)),&result,sizeof(uint8_t)), SWIGTYPE_p_uint8_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_tos_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint8_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_tos_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_tos_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint8_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_tos_set" "', argument " "2"" of type '" "uint8_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_tos_set" "', argument " "2"" of type '" "uint8_t""'");
+    } else {
+      arg2 = *((uint8_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_tos = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_tos_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint8_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_tos_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_tos_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_tos);
+  resultobj = SWIG_NewPointerObj((uint8_t *)memcpy((uint8_t *)malloc(sizeof(uint8_t)),&result,sizeof(uint8_t)), SWIGTYPE_p_uint8_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_pkt_len_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint16_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_pkt_len_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_pkt_len_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint16_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_pkt_len_set" "', argument " "2"" of type '" "uint16_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_pkt_len_set" "', argument " "2"" of type '" "uint16_t""'");
+    } else {
+      arg2 = *((uint16_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_pkt_len = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_pkt_len_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint16_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_pkt_len_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_pkt_len_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_pkt_len);
+  resultobj = SWIG_NewPointerObj((uint16_t *)memcpy((uint16_t *)malloc(sizeof(uint16_t)),&result,sizeof(uint16_t)), SWIGTYPE_p_uint16_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_identifier_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint16_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_identifier_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_identifier_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint16_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_identifier_set" "', argument " "2"" of type '" "uint16_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_identifier_set" "', argument " "2"" of type '" "uint16_t""'");
+    } else {
+      arg2 = *((uint16_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_identifier = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_identifier_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint16_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_identifier_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_identifier_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_identifier);
+  resultobj = SWIG_NewPointerObj((uint16_t *)memcpy((uint16_t *)malloc(sizeof(uint16_t)),&result,sizeof(uint16_t)), SWIGTYPE_p_uint16_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_frag_off_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint16_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_frag_off_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_frag_off_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint16_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_frag_off_set" "', argument " "2"" of type '" "uint16_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_frag_off_set" "', argument " "2"" of type '" "uint16_t""'");
+    } else {
+      arg2 = *((uint16_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_frag_off = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_frag_off_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint16_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_frag_off_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_frag_off_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_frag_off);
+  resultobj = SWIG_NewPointerObj((uint16_t *)memcpy((uint16_t *)malloc(sizeof(uint16_t)),&result,sizeof(uint16_t)), SWIGTYPE_p_uint16_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_ttl_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint8_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_ttl_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_ttl_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint8_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_ttl_set" "', argument " "2"" of type '" "uint8_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_ttl_set" "', argument " "2"" of type '" "uint8_t""'");
+    } else {
+      arg2 = *((uint8_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_ttl = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_ttl_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint8_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_ttl_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_ttl_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_ttl);
+  resultobj = SWIG_NewPointerObj((uint8_t *)memcpy((uint8_t *)malloc(sizeof(uint8_t)),&result,sizeof(uint8_t)), SWIGTYPE_p_uint8_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_prot_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint8_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_prot_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_prot_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint8_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_prot_set" "', argument " "2"" of type '" "uint8_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_prot_set" "', argument " "2"" of type '" "uint8_t""'");
+    } else {
+      arg2 = *((uint8_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_prot = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_prot_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint8_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_prot_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_prot_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_prot);
+  resultobj = SWIG_NewPointerObj((uint8_t *)memcpy((uint8_t *)malloc(sizeof(uint8_t)),&result,sizeof(uint8_t)), SWIGTYPE_p_uint8_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_cksum_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  uint16_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_cksum_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_cksum_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_uint16_t,  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_cksum_set" "', argument " "2"" of type '" "uint16_t""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ip_packet_t_ip_cksum_set" "', argument " "2"" of type '" "uint16_t""'");
+    } else {
+      arg2 = *((uint16_t *)(argp2));
+    }
+  }
+  if (arg1) (arg1)->ip_cksum = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_cksum_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  uint16_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_cksum_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_cksum_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result =  ((arg1)->ip_cksum);
+  resultobj = SWIG_NewPointerObj((uint16_t *)memcpy((uint16_t *)malloc(sizeof(uint16_t)),&result,sizeof(uint16_t)), SWIGTYPE_p_uint16_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_src_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  unsigned char *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_src_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_src_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_src_set" "', argument " "2"" of type '" "unsigned char [4]""'"); 
+  } 
+  arg2 = (unsigned char *)(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)4; ++ii) arg1->ip_src[ii] = arg2[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ip_src""' of type '""unsigned char [4]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_src_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_src_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_src_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result = (unsigned char *)(unsigned char *) ((arg1)->ip_src);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_dst_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  unsigned char *arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:ip_packet_t_ip_dst_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_dst_set" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_unsigned_char, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ip_packet_t_ip_dst_set" "', argument " "2"" of type '" "unsigned char [4]""'"); 
+  } 
+  arg2 = (unsigned char *)(argp2);
+  {
+    if (arg2) {
+      size_t ii = 0;
+      for (; ii < (size_t)4; ++ii) arg1->ip_dst[ii] = arg2[ii];
+    } else {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""ip_dst""' of type '""unsigned char [4]""'");
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ip_packet_t_ip_dst_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ip_packet_t_ip_dst_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ip_packet_t_ip_dst_get" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  result = (unsigned char *)(unsigned char *) ((arg1)->ip_dst);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_unsigned_char, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_ip_packet_t(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_ip_packet_t")) SWIG_fail;
+  result = (struct _ip_packet_t *)calloc(1, sizeof(struct _ip_packet_t));
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__ip_packet_t, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_ip_packet_t(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  struct _ip_packet_t *arg1 = (struct _ip_packet_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_ip_packet_t",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__ip_packet_t, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_ip_packet_t" "', argument " "1"" of type '" "struct _ip_packet_t *""'"); 
+  }
+  arg1 = (struct _ip_packet_t *)(argp1);
+  free((char *) arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *ip_packet_t_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p__ip_packet_t, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   gpacket_t *arg1 = (gpacket_t *) 0 ;
-  uchar *arg2 = (uchar *) 0 ;
+  unsigned char *arg2 = (unsigned char *) 0 ;
   int arg3 ;
   int arg4 ;
   int arg5 ;
@@ -4677,14 +4873,21 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   
   if (!PyArg_ParseTuple(args,(char *)"OOOOO:IPOutgoingPacket",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
   {
-    //    printf("[typemap-gpacket_t *out_gpkt]\n");
-    int size  = PyString_Size(obj0);
-    gpacket_t* gpkt = (gpacket_t *)calloc(1, sizeof(gpacket_t));
-    memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(obj0), size);
+    printf("[TypeMap:] gpacket_t *pyUDPpkt\n");
+    gpacket_t* gpkt = (gpacket_t *)malloc(sizeof(gpacket_t));
+    ip_packet_t *ippkt = (ip_packet_t *)gpkt->data.data;
+    char * udpkpt = (char *) (ippkt + 1);
+    char * tmpstr = PyString_AsString(obj0);
+    int udplen = PyString_Size(obj0);
+    printf("[TypeMap:]udp size: %d\n", udplen);
+    
+    memcpy(udpkpt, tmpstr, udplen);
+    
     arg1 = gpkt;
+    //free(gpkt);
   }
   {
-    //    printf("[typemap-uchar*]\n");
+    printf("[TypeMap:] uchar *dst_ip\n");
     arg2 = PyString_AsString(obj1);
   }
   ecode3 = SWIG_AsVal_int(obj2, &val3);
@@ -4713,9 +4916,8 @@ fail:
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"getUDPPacketString", _wrap_getUDPPacketString, METH_VARARGS, NULL},
-	 { (char *)"createGPacket", _wrap_createGPacket, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
-	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
+	 { (char *)"PythonError", _wrap_PythonError, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_set", _wrap_pkt_data_t_data_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_get", _wrap_pkt_data_t_data_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_header_get", _wrap_pkt_data_t_header_get, METH_VARARGS, NULL},
@@ -4731,13 +4933,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_pkt_data_t_header", _wrap_new_pkt_data_t_header, METH_VARARGS, NULL},
 	 { (char *)"delete_pkt_data_t_header", _wrap_delete_pkt_data_t_header, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_header_swigregister", pkt_data_t_header_swigregister, METH_VARARGS, NULL},
-	 { (char *)"label_t_prot_set", _wrap_label_t_prot_set, METH_VARARGS, NULL},
-	 { (char *)"label_t_prot_get", _wrap_label_t_prot_get, METH_VARARGS, NULL},
-	 { (char *)"label_t_process_set", _wrap_label_t_process_set, METH_VARARGS, NULL},
-	 { (char *)"label_t_process_get", _wrap_label_t_process_get, METH_VARARGS, NULL},
-	 { (char *)"new_label_t", _wrap_new_label_t, METH_VARARGS, NULL},
-	 { (char *)"delete_label_t", _wrap_delete_label_t, METH_VARARGS, NULL},
-	 { (char *)"label_t_swigregister", label_t_swigregister, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_src_interface_set", _wrap_pkt_frame_t_src_interface_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_src_interface_get", _wrap_pkt_frame_t_src_interface_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_src_ip_addr_set", _wrap_pkt_frame_t_src_ip_addr_set, METH_VARARGS, NULL},
@@ -4752,8 +4947,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"pkt_frame_t_arp_valid_get", _wrap_pkt_frame_t_arp_valid_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_arp_bcast_set", _wrap_pkt_frame_t_arp_bcast_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_arp_bcast_get", _wrap_pkt_frame_t_arp_bcast_get, METH_VARARGS, NULL},
-	 { (char *)"pkt_frame_t_label_set", _wrap_pkt_frame_t_label_set, METH_VARARGS, NULL},
-	 { (char *)"pkt_frame_t_label_get", _wrap_pkt_frame_t_label_get, METH_VARARGS, NULL},
 	 { (char *)"new_pkt_frame_t", _wrap_new_pkt_frame_t, METH_VARARGS, NULL},
 	 { (char *)"delete_pkt_frame_t", _wrap_delete_pkt_frame_t, METH_VARARGS, NULL},
 	 { (char *)"pkt_frame_t_swigregister", pkt_frame_t_swigregister, METH_VARARGS, NULL},
@@ -4764,6 +4957,31 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_gpacket_t", _wrap_new_gpacket_t, METH_VARARGS, NULL},
 	 { (char *)"delete_gpacket_t", _wrap_delete_gpacket_t, METH_VARARGS, NULL},
 	 { (char *)"gpacket_t_swigregister", gpacket_t_swigregister, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_hdr_len_set", _wrap_ip_packet_t_ip_hdr_len_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_hdr_len_get", _wrap_ip_packet_t_ip_hdr_len_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_version_set", _wrap_ip_packet_t_ip_version_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_version_get", _wrap_ip_packet_t_ip_version_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_tos_set", _wrap_ip_packet_t_ip_tos_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_tos_get", _wrap_ip_packet_t_ip_tos_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_pkt_len_set", _wrap_ip_packet_t_ip_pkt_len_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_pkt_len_get", _wrap_ip_packet_t_ip_pkt_len_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_identifier_set", _wrap_ip_packet_t_ip_identifier_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_identifier_get", _wrap_ip_packet_t_ip_identifier_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_frag_off_set", _wrap_ip_packet_t_ip_frag_off_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_frag_off_get", _wrap_ip_packet_t_ip_frag_off_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_ttl_set", _wrap_ip_packet_t_ip_ttl_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_ttl_get", _wrap_ip_packet_t_ip_ttl_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_prot_set", _wrap_ip_packet_t_ip_prot_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_prot_get", _wrap_ip_packet_t_ip_prot_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_cksum_set", _wrap_ip_packet_t_ip_cksum_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_cksum_get", _wrap_ip_packet_t_ip_cksum_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_src_set", _wrap_ip_packet_t_ip_src_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_src_get", _wrap_ip_packet_t_ip_src_get, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_dst_set", _wrap_ip_packet_t_ip_dst_set, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_ip_dst_get", _wrap_ip_packet_t_ip_dst_get, METH_VARARGS, NULL},
+	 { (char *)"new_ip_packet_t", _wrap_new_ip_packet_t, METH_VARARGS, NULL},
+	 { (char *)"delete_ip_packet_t", _wrap_delete_ip_packet_t, METH_VARARGS, NULL},
+	 { (char *)"ip_packet_t_swigregister", ip_packet_t_swigregister, METH_VARARGS, NULL},
 	 { (char *)"IPOutgoingPacket", _wrap_IPOutgoingPacket, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
@@ -4772,70 +4990,54 @@ static PyMethodDef SwigMethods[] = {
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
 static swig_type_info _swigt__p__gpacket_t = {"_p__gpacket_t", "struct _gpacket_t *|gpacket_t *|_gpacket_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p__label_t = {"_p__label_t", "struct _label_t *|_label_t *|label_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p__ip_packet_t = {"_p__ip_packet_t", "struct _ip_packet_t *|_ip_packet_t *|ip_packet_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_data_t = {"_p__pkt_data_t", "struct _pkt_data_t *|_pkt_data_t *|pkt_data_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p__pkt_frame_t = {"_p__pkt_frame_t", "struct _pkt_frame_t *|_pkt_frame_t *|pkt_frame_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_arp_buffer_entry_t = {"_p_arp_buffer_entry_t", "arp_buffer_entry_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_arp_entry_t = {"_p_arp_entry_t", "arp_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_devicearray_t = {"_p_devicearray_t", "devicearray_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_interface_array_t = {"_p_interface_array_t", "interface_array_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_mtu_entry_t = {"_p_mtu_entry_t", "mtu_entry_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pkt_data_t_header = {"_p_pkt_data_t_header", "pkt_data_t_header *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pktcore_t = {"_p_pktcore_t", "pktcore_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_route_entry_t = {"_p_route_entry_t", "route_entry_t *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_uchar = {"_p_uchar", "uchar *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_uint16_t = {"_p_uint16_t", "uint16_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_uint8_t = {"_p_uint8_t", "uint8_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_unsigned_char = {"_p_unsigned_char", "unsigned char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ushort = {"_p_ushort", "ushort *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p__gpacket_t,
-  &_swigt__p__label_t,
+  &_swigt__p__ip_packet_t,
   &_swigt__p__pkt_data_t,
   &_swigt__p__pkt_frame_t,
-  &_swigt__p_arp_buffer_entry_t,
-  &_swigt__p_arp_entry_t,
   &_swigt__p_char,
-  &_swigt__p_devicearray_t,
-  &_swigt__p_interface_array_t,
-  &_swigt__p_mtu_entry_t,
   &_swigt__p_pkt_data_t_header,
   &_swigt__p_pktcore_t,
-  &_swigt__p_route_entry_t,
-  &_swigt__p_uchar,
+  &_swigt__p_uint16_t,
+  &_swigt__p_uint8_t,
+  &_swigt__p_unsigned_char,
   &_swigt__p_ushort,
 };
 
 static swig_cast_info _swigc__p__gpacket_t[] = {  {&_swigt__p__gpacket_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p__label_t[] = {  {&_swigt__p__label_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p__ip_packet_t[] = {  {&_swigt__p__ip_packet_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p__pkt_data_t[] = {  {&_swigt__p__pkt_data_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p__pkt_frame_t[] = {  {&_swigt__p__pkt_frame_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_arp_buffer_entry_t[] = {  {&_swigt__p_arp_buffer_entry_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_arp_entry_t[] = {  {&_swigt__p_arp_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_devicearray_t[] = {  {&_swigt__p_devicearray_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_interface_array_t[] = {  {&_swigt__p_interface_array_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_mtu_entry_t[] = {  {&_swigt__p_mtu_entry_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pkt_data_t_header[] = {  {&_swigt__p_pkt_data_t_header, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pktcore_t[] = {  {&_swigt__p_pktcore_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_route_entry_t[] = {  {&_swigt__p_route_entry_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_uchar[] = {  {&_swigt__p_uchar, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_uint16_t[] = {  {&_swigt__p_uint16_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_uint8_t[] = {  {&_swigt__p_uint8_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_unsigned_char[] = {  {&_swigt__p_unsigned_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ushort[] = {  {&_swigt__p_ushort, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p__gpacket_t,
-  _swigc__p__label_t,
+  _swigc__p__ip_packet_t,
   _swigc__p__pkt_data_t,
   _swigc__p__pkt_frame_t,
-  _swigc__p_arp_buffer_entry_t,
-  _swigc__p_arp_entry_t,
   _swigc__p_char,
-  _swigc__p_devicearray_t,
-  _swigc__p_interface_array_t,
-  _swigc__p_mtu_entry_t,
   _swigc__p_pkt_data_t_header,
   _swigc__p_pktcore_t,
-  _swigc__p_route_entry_t,
-  _swigc__p_uchar,
+  _swigc__p_uint16_t,
+  _swigc__p_uint8_t,
+  _swigc__p_unsigned_char,
   _swigc__p_ushort,
 };
 
@@ -5521,18 +5723,13 @@ SWIG_init(void) {
   
   SWIG_InstallConstants(d,swig_const_table);
   
-  SWIG_Python_SetConstant(d, "MAX_IPREVLENGTH_ICMP",SWIG_From_int((int)(50)));
   PyDict_SetItemString(md,(char*)"cvar", SWIG_globals());
-  SWIG_addvarlink(SWIG_globals(),(char*)"netarray",Swig_var_netarray_get, Swig_var_netarray_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"pcore",Swig_var_pcore_get, Swig_var_pcore_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"route_tbl",Swig_var_route_tbl_get, Swig_var_route_tbl_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"MTU_tbl",Swig_var_MTU_tbl_get, Swig_var_MTU_tbl_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"devarray",Swig_var_devarray_get, Swig_var_devarray_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"arp_cache",Swig_var_arp_cache_get, Swig_var_arp_cache_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"ARPtable",Swig_var_ARPtable_get, Swig_var_ARPtable_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"ARPbuffer",Swig_var_ARPbuffer_get, Swig_var_ARPbuffer_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"tbl_replace_indx",Swig_var_tbl_replace_indx_get, Swig_var_tbl_replace_indx_set);
-  SWIG_addvarlink(SWIG_globals(),(char*)"buf_replace_indx",Swig_var_buf_replace_indx_get, Swig_var_buf_replace_indx_set);
+  SWIG_Python_SetConstant(d, "MAX_IPREVLENGTH_ICMP",SWIG_From_int((int)(50)));
+  SWIG_Python_SetConstant(d, "IP_RF",SWIG_From_int((int)(0x8000)));
+  SWIG_Python_SetConstant(d, "IP_DF",SWIG_From_int((int)(0x4000)));
+  SWIG_Python_SetConstant(d, "IP_MF",SWIG_From_int((int)(0x2000)));
+  SWIG_Python_SetConstant(d, "IP_OFFMASK",SWIG_From_int((int)(0x1fff)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

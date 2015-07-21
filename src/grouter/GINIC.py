@@ -82,6 +82,10 @@ createGPacket = _GINIC.createGPacket
 def getGPacketString(*args):
   return _GINIC.getGPacketString(*args)
 getGPacketString = _GINIC.getGPacketString
+
+def getDeviceName():
+  return _GINIC.getDeviceName()
+getDeviceName = _GINIC.getDeviceName
 class pkt_data_t(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t, name, value)

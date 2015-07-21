@@ -95,7 +95,7 @@ void *judgeProcessor(void *pc)
         if (entry_res == NULL) // No action in flowtable, send to openflow.py
         {
             PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-            Py_pFun = pcore->flowtable->entry[3].action;
+            Py_pFun = pcore->flowtable->entry[3].action; // 3 is now for giniof_01
             Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
             //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
             if (Py_pPkt)
@@ -359,3 +359,4 @@ void printFlowTable(flowtable_t *flowtable)
     }
     printf("-- End of Flow Table --\n");
 }
+

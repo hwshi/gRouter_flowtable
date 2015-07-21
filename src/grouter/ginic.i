@@ -15,6 +15,20 @@
 #define uchar unsigned char
 #define ushort unsigned short
 
+    
+    extern interface_array_t netarray;  // interface table from gnet.h
+    extern pktcore_t *pcore;
+    extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
+    extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
+    
+    extern interface_array_t netarray;
+    extern devicearray_t devarray;
+    extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
+    extern arp_entry_t ARPtable[MAX_ARP];		                // ARP table
+    extern arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	// ARP buffer for unresolved packets
+    extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
+    extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
+    
     PyObject * getUDPPacketString(gpacket_t * gpacket) {
 //        printf("[UDPPacketString]:: 1\n");
         //int gpayload = sizeof(gpacket->data.data);
@@ -40,21 +54,30 @@
 
     }
 
-    PyObject * getGPacketString(gpacket_t * gpacket) {
+    PyObject* getGPacketString(gpacket_t * gpacket) {
         return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
     }
-
-    extern pktcore_t *pcore;
-    extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
-    extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
     
-    extern interface_array_t netarray;
-    extern devicearray_t devarray;
-    extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
-    extern arp_entry_t ARPtable[MAX_ARP];		                // ARP table
-    extern arp_buffer_entry_t ARPbuffer[MAX_ARP_BUFFERS];   	// ARP buffer for unresolved packets
-    extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
-    extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
+    PyObject* getDeviceName()
+    {
+        char name[100];
+        printf("[getDevicename]-------------");
+        //printRouteTable(route_tbl);
+        //printInterfaces(11);
+//        int i;
+//        for(i = 0; i < 200; i ++)
+        printf("1");
+        printf("2");
+        MAC2Colon(name, netarray.elem[0]->mac_addr);
+        printf("3");
+        printf("name is : %s", name);
+        printf("[getDeviceName]2");
+        //sprintf(name, "%02x%02x%02x%02x%02x%02x", netarray.elem[0]->mac_addr[0], netarray.elem[0]->mac_addr[1], netarray.elem[0]->mac_addr[2], 
+        //netarray.elem[0]->mac_addr[3], netarray.elem[0]->mac_addr[4], netarray.elem[0]->mac_addr[5]);
+        //printf("[getDeviceName] name is: %s", name);
+        return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
+    }
+
 %}
 
 typedef struct _pkt_data_t {

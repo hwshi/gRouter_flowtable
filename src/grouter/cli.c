@@ -95,7 +95,7 @@ int CLIInit(router_config *rarg)
     //adding commands for protocol importing
     registerCLI("addprot", addprotCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
     registerCLI("flowtable", showftCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
-    registerCLI("giniudp", giniUDPCmd, C_FUNCTION, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
+    registerCLI("ofconnect", ofconnect, C_FUNCTION, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
 
     if (rarg->config_dir != NULL)
         chdir(rarg->config_dir); // change to the configuration directory
@@ -1205,10 +1205,14 @@ void addprotCmd()
 void showftCmd()
 {
     printFlowTable(pcore->flowtable);
+    CheckPythonError();
 }
 
-void giniUDPCmd()
+extern route_entry_t route_tbl[MAX_ROUTES];
+
+extern interface_array_t netarray;
+void ofconnect()
 {
-    //addModule(flowtable, PYTHON_FUNCTION, "giniof_01");
+    addModule(pcore->flowtable, PYTHON_FUNCTION, "giniof_01");
 
 }
