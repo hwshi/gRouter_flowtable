@@ -60,22 +60,20 @@
     
     PyObject* getDeviceName()
     {
-        char name[100];
-        printf("[getDevicename]-------------");
-        //printRouteTable(route_tbl);
-        //printInterfaces(11);
-//        int i;
-//        for(i = 0; i < 200; i ++)
-        printf("1");
-        printf("2");
-        MAC2Colon(name, netarray.elem[0]->mac_addr);
-        printf("3");
-        printf("name is : %s", name);
-        printf("[getDeviceName]2");
-        //sprintf(name, "%02x%02x%02x%02x%02x%02x", netarray.elem[0]->mac_addr[0], netarray.elem[0]->mac_addr[1], netarray.elem[0]->mac_addr[2], 
-        //netarray.elem[0]->mac_addr[3], netarray.elem[0]->mac_addr[4], netarray.elem[0]->mac_addr[5]);
-        //printf("[getDeviceName] name is: %s", name);
-        return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
+        char name[200];
+        interface_t *ifptr;
+        int i;
+        for(i = 0; i < 20; i ++)
+            if(netarray.elem[i] != NULL)
+                break;
+        verbose(3, "[SWIG - getDeviceName]Index: %d\n", i);
+        ifptr = netarray.elem[i];
+        printf("[getDevicename]---number: %d", netarray.count);
+        sprintf(name, "%02x%02x%02x%02x%02x%02x", ifptr->mac_addr[0], ifptr->mac_addr[1], ifptr->mac_addr[2], 
+               ifptr->mac_addr[3], ifptr->mac_addr[4],ifptr->mac_addr[5]);
+        printf("[getDeviceName] name is: %s\n", name);
+        //return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
+        return PyString_FromStringAndSize(name, 12);
     }
 
 %}
