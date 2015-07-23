@@ -3032,6 +3032,35 @@ static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
         //return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
         return PyString_FromStringAndSize(name, 12);
     }
+    
+    int getPortNumber()
+    {
+        return netarray.count;
+    }
+    
+    PyObject* getPortTuple()
+    {
+        PyObject *port_list = PyTuple_New(netarray.count);
+        int i, tuple_index = 0;
+//        for(i = 0; i < MAX_INTERFACES; i ++)
+//        {
+//            if(netarray.elem[i] != NULL)
+//            {
+//                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
+//                // this function steal a reference to "o"
+//                // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
+//                
+//                if(PyTuple_SetItem(port_list, tuple_index ++, PyTuple_Pack(2, i, netarray.elem[i])) != 0)
+//                    printf("Failed to build port tuple");
+//            }
+//        }
+        //DEBUG:
+        //PyObject* tuple = PyTuple_Pack(1, i);
+        //PyObject* tuple = PyTuple_Pack(2, i, netarray.elem[1]);
+        PyObject* tuple = Py_BuildValue("o", netarray.elem[1]);
+        PyTuple_SetItem(port_list, 0, tuple);
+        return port_list;
+    }
 
 
 
@@ -3520,6 +3549,32 @@ SWIGINTERN PyObject *_wrap_getDeviceName(PyObject *SWIGUNUSEDPARM(self), PyObjec
   
   if (!PyArg_ParseTuple(args,(char *)":getDeviceName")) SWIG_fail;
   result = (PyObject *)getDeviceName();
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getPortNumber(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":getPortNumber")) SWIG_fail;
+  result = (int)getPortNumber();
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getPortTuple(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":getPortTuple")) SWIG_fail;
+  result = (PyObject *)getPortTuple();
   resultobj = result;
   return resultobj;
 fail:
@@ -4714,6 +4769,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"createGPacket", _wrap_createGPacket, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
 	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
+	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
+	 { (char *)"getPortTuple", _wrap_getPortTuple, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_set", _wrap_pkt_data_t_data_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_get", _wrap_pkt_data_t_data_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_header_get", _wrap_pkt_data_t_header_get, METH_VARARGS, NULL},

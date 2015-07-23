@@ -60,8 +60,8 @@ class gini_of:
         pkt_features_reply = of.ofp_features_reply()  # set fields
         pkt_features_reply.xid = pkt.xid  # same xid
 
-        device_name = gini_get_device_name() #returns a string for name eg. "003de70fc98a"
-        #ports = gini_get_gini_ports()
+        device_name = gini_get_device_name() #TODO(DONE): returns a string for name eg. "003de70fc98a"
+        ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
         pkt_features_reply.n_tables = 0
@@ -150,5 +150,11 @@ def gini_get_device_name():
     name =_GINIC.getDeviceName()
     return name
 
+def gini_get_device_ports():
+    port_list = []
+    port_num = _GINIC.getPortNumber()
+    print("This device has %d ports", port_num)
+    print(list(_GINIC.getPortTuple()))
+    return port_list
 
 

@@ -86,6 +86,14 @@ getGPacketString = _GINIC.getGPacketString
 def getDeviceName():
   return _GINIC.getDeviceName()
 getDeviceName = _GINIC.getDeviceName
+
+def getPortNumber():
+  return _GINIC.getPortNumber()
+getPortNumber = _GINIC.getPortNumber
+
+def getPortTuple():
+  return _GINIC.getPortTuple()
+getPortTuple = _GINIC.getPortTuple
 class pkt_data_t(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t, name, value)

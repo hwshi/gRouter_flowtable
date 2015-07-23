@@ -75,6 +75,35 @@
         //return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
         return PyString_FromStringAndSize(name, 12);
     }
+    
+    int getPortNumber()
+    {
+        return netarray.count;
+    }
+    
+    PyObject* getPortTuple()
+    {
+        PyObject *port_list = PyTuple_New(netarray.count);
+        int i, tuple_index = 0;
+//        for(i = 0; i < MAX_INTERFACES; i ++)
+//        {
+//            if(netarray.elem[i] != NULL)
+//            {
+//                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
+//                // this function steal a reference to "o"
+//                // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
+//                
+//                if(PyTuple_SetItem(port_list, tuple_index ++, PyTuple_Pack(2, i, netarray.elem[i])) != 0)
+//                    printf("Failed to build port tuple");
+//            }
+//        }
+        //DEBUG:
+        //PyObject* tuple = PyTuple_Pack(1, i);
+        //PyObject* tuple = PyTuple_Pack(2, i, netarray.elem[1]);
+        PyObject* tuple = Py_BuildValue("o", netarray.elem[1]);
+        PyTuple_SetItem(port_list, 0, tuple);
+        return port_list;
+    }
 
 %}
 
