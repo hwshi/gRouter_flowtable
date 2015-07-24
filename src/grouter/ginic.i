@@ -85,23 +85,28 @@
     {
         PyObject *port_list = PyTuple_New(netarray.count);
         int i, tuple_index = 0;
-//        for(i = 0; i < MAX_INTERFACES; i ++)
-//        {
-//            if(netarray.elem[i] != NULL)
-//            {
-//                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
-//                // this function steal a reference to "o"
-//                // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
-//                
-//                if(PyTuple_SetItem(port_list, tuple_index ++, PyTuple_Pack(2, i, netarray.elem[i])) != 0)
-//                    printf("Failed to build port tuple");
-//            }
-//        }
-        //DEBUG:
-        //PyObject* tuple = PyTuple_Pack(1, i);
-        //PyObject* tuple = PyTuple_Pack(2, i, netarray.elem[1]);
-        PyObject* tuple = Py_BuildValue("o", netarray.elem[1]);
-        PyTuple_SetItem(port_list, 0, tuple);
+        interface_t *ifptr;
+        for(i = 0; i < MAX_INTERFACES; i ++)
+        {
+            if(netarray.elem[i] != NULL)
+            {
+                ifptr = netarray.elem[i];
+                  //1. port no. 2. MAC 3. name
+                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
+                // this function steal a reference to "o"
+                // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
+                char mac_str[12];
+                sprintf(mac_str, "%02x%02x%02x%02x%02x%02x", ifptr->mac_addr[0], ifptr->mac_addr[1], 
+                        ifptr->mac_addr[2], ifptr->mac_addr[3], ifptr->mac_addr[4],ifptr->mac_addr[5]);
+                PyTuple_SetItem(port_list, tuple_index ++, 
+                                Py_BuildValue("(i,s,s)", ifptr->interface_id, ifptr->device_name, mac_str));
+                   
+                //if(PyTuple_SetItem(port_list, tuple_index ++, PyTuple_Pack(2, i, netarray.elem[i])) != 0)
+                //    printf("Failed to build port tuple");
+            }
+        }
+      
+        
         return port_list;
     }
 

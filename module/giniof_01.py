@@ -26,10 +26,16 @@ def gini_get_device_ports():
     port_list = []
     port_num = _GINIC.getPortNumber()
     print("[gini_get_device_ports]This device has %d ports", port_num)
-    port_tuple = _GINIC.getPortTuple()
+    port_tuple_list = _GINIC.getPortTuple()
     print("[gini_get_device_ports]Done!!")
-    print(port_tuple)
-    print(list(port_tuple))
+    for tp in port_tuple_list:
+        print("tuple: ", tp)
+        port = of.ofp_phy_port()
+        port.port_no = tp[0]
+        port.hw_addr = tp[1]
+        port.name = tp[2]
+        port_list.append(port)
+    print("port list is: ", port_list)
     return port_list
 
 class gini_of:
