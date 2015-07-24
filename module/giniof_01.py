@@ -6,6 +6,9 @@
 import socket
 import threading
 
+# utils
+import copy
+
 # TODO: import POX.openflow.libopenflow_01
 import pox.openflow.libopenflow_01 as of
 import _GINIC
@@ -34,7 +37,7 @@ def gini_get_device_ports():
         port.port_no = tp[0]
         port.hw_addr = tp[1]
         port.name = tp[2]
-        port_list.append(port)
+        port_list.append(copy.deepcopy(port)) # stupid way??
     print("port list is: ", port_list)
     return port_list
 
