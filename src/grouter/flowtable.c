@@ -38,55 +38,55 @@ void *judgeProcessor(void *pc)
         /*
          * 1. classical router
          */
-/////////// 
-//        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
-//        if (entry_res == NULL)
-//            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
-//        {
-//            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
-//            return;
-//        }
-//        //TODO: call function using action(char *):  PyObject_CallFunction(String)
-//        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
-//        if (entry_res->language == C_FUNCTION)
-//        {
-//
-//            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
-//            int (*processor)(gpacket_t *);
-//            processor = entry_res->action;
-//            int nextlabel = (*processor)(in_pkt);
-//            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
-//            {
-//                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
-//                continue;
-//            }
-//            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
-//            verbose(2, "[judgeProcessor][Ft]New style round");
-//            labelNext(in_pkt, entry_res->protocol, nextlabel);
-//            verbose(2, "[judgeProcessor]Writing back to decision Q...");
-//            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
-//            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
-//            //            printSimpleQueue(pcore->decisionQ);
-//
-//        }
-//        else if (entry_res->language == PYTHON_FUNCTION)
-//        {
-//            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
-//            //TODO: Python embedding
-//            //TODO: ?? Where to declaire!?
-//            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-//            Py_pFun = entry_res->action;
-//            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
-//            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
-//            if (Py_pPkt)
-//            {
-//                verbose(2, "Got Pyton obj\n");
-//                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-//                CheckPythonError();
-//                //                printf("pResult: %p", Py_pResult);
-//            }
-//        }
-///////////
+        /////////// 
+        //        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
+        //        if (entry_res == NULL)
+        //            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
+        //        {
+        //            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
+        //            return;
+        //        }
+        //        //TODO: call function using action(char *):  PyObject_CallFunction(String)
+        //        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+        //        if (entry_res->language == C_FUNCTION)
+        //        {
+        //
+        //            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+        //            int (*processor)(gpacket_t *);
+        //            processor = entry_res->action;
+        //            int nextlabel = (*processor)(in_pkt);
+        //            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
+        //            {
+        //                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
+        //                continue;
+        //            }
+        //            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
+        //            verbose(2, "[judgeProcessor][Ft]New style round");
+        //            labelNext(in_pkt, entry_res->protocol, nextlabel);
+        //            verbose(2, "[judgeProcessor]Writing back to decision Q...");
+        //            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
+        //            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
+        //            //            printSimpleQueue(pcore->decisionQ);
+        //
+        //        }
+        //        else if (entry_res->language == PYTHON_FUNCTION)
+        //        {
+        //            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+        //            //TODO: Python embedding
+        //            //TODO: ?? Where to declaire!?
+        //            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+        //            Py_pFun = entry_res->action;
+        //            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
+        //            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+        //            if (Py_pPkt)
+        //            {
+        //                verbose(2, "Got Pyton obj\n");
+        //                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+        //                CheckPythonError();
+        //                //                printf("pResult: %p", Py_pResult);
+        //            }
+        //        }
+        ///////////
         /*
          * 2. openflow switch
          * tmp: let flowtable[3] have openflow.py (hardcoded)         

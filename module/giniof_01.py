@@ -40,6 +40,10 @@ def gini_get_device_ports():
         port_list.append(copy.deepcopy(port)) # stupid way??
     print("port list is: ", port_list)
     return port_list
+def gini_ofp_flow_mod(pkt):
+
+    return 0
+
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -85,12 +89,8 @@ class gini_of:
         print("This is a [Features reuqest packet]")
         pkt_features_reply = of.ofp_features_reply()  # set fields
         pkt_features_reply.xid = pkt.xid  # same xid
-        if _gini_error == 1:
-            device_name = "cccccccccccc"
-            ports = []
-        else:
-            device_name = gini_get_device_name() #TODO(DONE): returns a string for name eg. "003de70fc98a"
-            ports = gini_get_device_ports()
+        device_name = gini_get_device_name() # returns a string for name eg. "003de70fc98a"
+        ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
         pkt_features_reply.n_tables = 0
@@ -101,13 +101,16 @@ class gini_of:
 
     def process_set_config(self, pkt):
         print("This is a [set config packet]")
-        of.ofp_switch_features
         print(pkt.show())
-        print('miss_len is: {0}'.format(pkt.miss_send_len))
+        #TODO: miss_send_len is received
+        pkt_echo_rep = of.ofp_echo_reply()
+        self.s.send(pkt_echo_rep.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
 
+    # TODO: huge work here ...
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
+        print(pkt.show())
         pkt_echo_reply = of.ofp_echo_reply()
         self.s.send(pkt_echo_reply.pack())
         print("[process_set_mod] sent")

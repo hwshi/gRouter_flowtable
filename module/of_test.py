@@ -7,15 +7,49 @@ import socket
 import threading
 import struct
 
-# TODO: import POX.openflow.libopenflow_01
+#utilities
+import copy
+
+# pox libraries
 import pox.openflow.libopenflow_01 as of
-# CONSTANT
 try:
     __import__('_GINIC')
     _gini_error = 0
 except ImportError:
     _gini_error = 1
     print('Module _GINIC missing!')
+
+
+def gini_get_device_name():
+    print("[gini_get_device_name]")
+    name = ""
+    print("got name before: ", name)
+    name =_GINIC.getDeviceName()
+    print("got name done: ", name)
+    return name
+
+def gini_get_device_ports():
+    port_list = []
+    port_num = _GINIC.getPortNumber()
+    print("[gini_get_device_ports]This device has %d ports", port_num)
+    port_tuple_list = _GINIC.getPortTuple()
+    print("[gini_get_device_ports]Done!!")
+    for tp in port_tuple_list:
+        print("tuple: ", tp)
+        port = of.ofp_phy_port()
+        port.port_no = tp[0]
+        port.hw_addr = tp[1]
+        port.name = tp[2]
+        port_list.append(copy.deepcopy(port)) # stupid way??
+    print("port list is: ", port_list)
+    return port_list
+
+def gini_ofp_flow_mod(pkt):
+    #TODO: parse the pkt and send modification command to flow table(in GINI)
+
+    return True
+
+
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -65,7 +99,7 @@ class gini_of:
             device_name = "cccccccccccc"
             ports = []
         else:
-            device_name = gini_get_device_name() #TODO(DONE): returns a string for name eg. "003de70fc98a"
+            device_name = gini_get_device_name() # returns a string for name eg. "003de70fc98a"
             ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
@@ -77,15 +111,21 @@ class gini_of:
 
     def process_set_config(self, pkt):
         print("This is a [set config packet]")
-        of.ofp_switch_features
         print(pkt.show())
-        print('miss_len is: {0}'.format(pkt.miss_send_len))
+        #TODO: miss_send_len is received
+        pkt_echo_rep = of.ofp_echo_reply()
+        self.s.send(pkt_echo_rep.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
 
+    # TODO: huge work here ...
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
-        pkt_echo_reply = of.ofp_echo_reply()
-        self.s.send(pkt_echo_reply.pack())
+        print(pkt.show())
+        pkt_echo_reply = of.ofp_echo_reply() #???
+        self.s.send(pkt_echo_reply.pack())  #???
+
+        if gini_ofp_flow_mod(pkt) == True:
+            print('flow mod succesful!')
         print("[process_set_mod] sent")
 
     def process_barrier_request(self, pkt):
@@ -168,28 +208,4 @@ print("gini_of_runable lanched!")
 # test area:
 #
 # gini_of_runable.process_features_request(of.ofp_features_request())
-
-def gini_get_device_name():
-    print("[gini_get_device_name]")
-    name = ""
-    print("got name before: ", name)
-    name =_GINIC.getDeviceName()
-    print("got name done: ", name)
-    return name
-
-def gini_get_device_ports():
-    port_list = []
-    port_num = _GINIC.getPortNumber()
-    print("[gini_get_device_ports]This device has %d ports", port_num)
-    port_tuple_list = _GINIC.getPortTuple()
-    print("[gini_get_device_ports]Done!!")
-    for tp in port_tuple_list:
-        print("tuple: ", tp)
-        port = of.ofp_phy_port()
-        port.port_no = tp[0]
-        port.hw_addr = tp[1]
-        port.name = tp[2]
-        port_list.append(copy.deepcopy(port)) # stupid way??
-    print("port list is: ", port_list)
-    return port_list
 
