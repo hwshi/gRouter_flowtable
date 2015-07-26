@@ -49,7 +49,7 @@ class gini_of:
     OFPT_FEATURES_REQUEST = 5
     OFPT_FEATURES_REPLY = 6
     OFPT_SET_CONFIG = 9
-    OFPT_SET_MOD = 14
+    OFPT_FLOW_MOD = 14
     OFPT_BARRIER_REQUEST = 18
 
     def __init__(self,
@@ -85,8 +85,12 @@ class gini_of:
         print("This is a [Features reuqest packet]")
         pkt_features_reply = of.ofp_features_reply()  # set fields
         pkt_features_reply.xid = pkt.xid  # same xid
-        device_name = gini_get_device_name() #TODO(DONE): returns a string for name eg. "003de70fc98a"
-        ports = gini_get_device_ports()
+        if _gini_error == 1:
+            device_name = "cccccccccccc"
+            ports = []
+        else:
+            device_name = gini_get_device_name() #TODO(DONE): returns a string for name eg. "003de70fc98a"
+            ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
         pkt_features_reply.n_tables = 0
@@ -97,52 +101,72 @@ class gini_of:
 
     def process_set_config(self, pkt):
         print("This is a [set config packet]")
+        of.ofp_switch_features
+        print(pkt.show())
+        print('miss_len is: {0}'.format(pkt.miss_send_len))
+        print("[process_set_config] done")
+
+    def process_flow_mod(self, pkt):
+        print("This is a [flow mod packet]")
         pkt_echo_reply = of.ofp_echo_reply()
         self.s.send(pkt_echo_reply.pack())
-
-
-    def process_set_mod(self, pkt):
-        print("This is a [set mod packet]")
-        pkt_echo_reply = of.ofp_echo_reply()
-        self.s.send(pkt_echo_reply.pack())
+        print("[process_set_mod] sent")
 
     def process_barrier_request(self, pkt):
         print("This is a [barrier request packet]")
         pkt_barrier_reply = of.ofp_barrier_reply()
         pkt_barrier_reply.xid = pkt.xid
         self.s.send(pkt_barrier_reply.pack())
+        print("[process_barrier_request] sent")
+
     def test(self, a, b):
         print("this is a test!")
 
 
     def check_socket(self):
+        pkt_count = 0
         while True:
+            pkt_count += 1
             buff = self.s.recv(100)
             pkt = of.ofp_header()
             pkt.unpack(buff)
-            print('[check_socket]recved: ', len(buff))
+            #print('[{}][check_socket]recved: ', len(buff))
+            print('\n[{0}] received [{1}]byte data.'.format(pkt_count, len(buff)))
             print(pkt.show())
             if pkt.header_type == gini_of.OFPT_HELLO:  # OFPT_HELLO
                 print("OFPT_HELLO msg: ")
+                pkt = of.ofp_hello()
+                pkt.unpack(buff)
                 self.process_hello(pkt)
             elif pkt.header_type == gini_of.OFPT_ECHO_REQUEST:
                 print("OFPT_ECHO_REPLY msg: ")
+                pkt = of.ofp_echo_request()
+                pkt.unpack(buff)
                 self.process_echo_request(pkt)
             elif pkt.header_type == gini_of.OFPT_FEATURES_REQUEST:
                 print("OFPT_FEATURES_REQUEST msg: ")
+                pkt = of.ofp_features_request()
+                pkt.unpack(buff)
                 self.process_features_request(pkt)
             elif pkt.header_type == gini_of.OFPT_SET_CONFIG:
                 print("OFPT_SET_CONFIG msg: ")
+                pkt = of.ofp_set_config()
+                pkt.unpack(buff)
                 self.process_set_config(pkt)
-            elif pkt.header_type == gini_of.OFPT_SET_MOD:
-                print("OFPT_SET_MOD msg: ")
-                self.process_set_mod(pkt)
+            elif pkt.header_type == gini_of.OFPT_FLOW_MOD:
+                print("OFPT_FLOW_MOD msg: ")
+                pkt = of.ofp_flow_mod()
+                pkt.unpack(buff)
+                self.process_flow_mod(pkt)
             elif pkt.header_type == gini_of.OFPT_BARRIER_REQUEST:
                 print("OFPT_BARRIER_REQUEST msg: ")
+                pkt = of.ofp_barrier_request()
+                pkt.unpack(buff)
                 self.process_barrier_request(pkt)
             else:
                 print("Unknown type!: ", pkt.header_type, "details: ")
                 print(pkt.show())
+
 
     """
     create threads:
