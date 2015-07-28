@@ -36,7 +36,8 @@
 
 //config infor
 
-typedef struct _module_config_t {
+typedef struct _module_config_t
+{
     char name[20];
     ushort protocol;
     void *processor;
@@ -45,11 +46,12 @@ typedef struct _module_config_t {
 } module_config_t;
 
 /* Fields to match against flows */
-typedef struct _ofp_match_t {
+typedef struct _ofp_match_t
+{
     uint32_t wildcards; /* Wildcard fields. */
     uint16_t in_port; /* Input switch port. */
-//    uint8_t dl_src[OFP_ETH_ALEN]; /* Ethernet source address. */
-//    uint8_t dl_dst[OFP_ETH_ALEN]; /* Ethernet destination address. */
+    uint8_t dl_src[OFP_ETH_ALEN]; /* Ethernet source address. */
+    uint8_t dl_dst[OFP_ETH_ALEN]; /* Ethernet destination address. */
     uint16_t dl_vlan; /* Input VLAN id. */
     uint8_t dl_vlan_pcp; /* Input VLAN priority. */
     uint8_t pad1[1]; /* Align to 64-bits */
@@ -66,7 +68,8 @@ typedef struct _ofp_match_t {
 //OFP_ASSERT(sizeof (struct ofp_match) == 40);
 
 /* Flow wildcards. */
-enum ofp_flow_wildcards {
+typedef enum _ofp_flow_wildcards
+{
     OFPFW_IN_PORT = 1 << 0, /* Switch input port. */
     OFPFW_DL_VLAN = 1 << 1, /* VLAN id. */
     OFPFW_DL_SRC = 1 << 2, /* Ethernet source address. */
@@ -92,17 +95,48 @@ enum ofp_flow_wildcards {
     OFPFW_NW_TOS = 1 << 21, /* IP ToS (DSCP field, 6 bits). */
     /* Wildcard all fields. */
     OFPFW_ALL = ((1 << 22) - 1)
-};
-//flow table
+} ofp_flow_wildcards;
 
-typedef struct _ftentry_t {
+typedef enum _ofp_action_type
+{
+    OFPAT_OUTPUT, /*Output to switch port. */
+    OFPAT_SET_VLAN_VID, /*Set the 802.1q VLAN id. */
+    OFPAT_SET_VLAN_PCP, /*Set the 802.1q priority. */
+    OFPAT_STRIP_VLAN, /*Strip the 802.1q header. */
+    OFPAT_SET_DL_SRC, /*Ethernet source address. */
+    OFPAT_SET_DL_DST, /*Ethernet destination address. */
+    OFPAT_SET_NW_SRC, /*IP source address. */
+    OFPAT_SET_NW_DST, /*IP destination address. */
+    OFPAT_SET_NW_TOS, /*IP ToS (DSCP field, 6 bits). */
+    OFPAT_SET_TP_SRC, /*TCP/UDP source port. */
+    OFPAT_SET_TP_DST, /*TCP/UDP destination port. */
+    OFPAT_ENQUEUE, /*Output to queue. */
+    OFPAT_VENDOR = 0xffff
+} ofp_action_type;
+//flow table
+// TODO: an new flow table entry need to be designed.
+
+typedef struct _ftentry_of_t
+{
+    // for gini 
+    ushort is_empty;
+    ushort language;
+    ofp_match_t match;
+    int count;
+    ofp_action_type action;
+    void *action_c;
+} ftentry_of_t;
+
+typedef struct _ftentry_t
+{
     ushort is_empty; // 1 empty 0 occupied
     ushort language; // 0 C 1 PYTHON
     ushort protocol;
     void *action;
 } ftentry_t;
 
-typedef struct _flowtable_t {
+typedef struct _flowtable_t
+{
     int num;
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
