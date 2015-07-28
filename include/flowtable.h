@@ -51,22 +51,22 @@ typedef struct _module_config_t
 /* Fields to match against flows */
 typedef struct _ofp_match_t
 {
-    uint32_t wildcards; /* Wildcard fields. */
-    uint16_t in_port; /* Input switch port. */
-    uint8_t dl_src[OFP_ETH_ALEN]; /* Ethernet source address. */
-    uint8_t dl_dst[OFP_ETH_ALEN]; /* Ethernet destination address. */
-    uint16_t dl_vlan; /* Input VLAN id. */
-    uint8_t dl_vlan_pcp; /* Input VLAN priority. */
-    uint8_t pad1[1]; /* Align to 64-bits */
-    uint16_t dl_type; /* Ethernet frame type. */
-    uint8_t nw_tos; /* IP ToS (actually DSCP field, 6 bits). */
-    uint8_t nw_proto; /* IP protocol or lower 8 bits of
-                       * ARP opcode. */
-    uint8_t pad2[2]; /* Align to 64-bits */
-    uint32_t nw_src; /* IP source address. */
-    uint32_t nw_dst; /* IP destination address. */
-    uint16_t tp_src; /* TCP/UDP source port. */
-    uint16_t tp_dst; /* TCP/UDP destination port. */
+    uint32_t wildcards;                 /* Wildcard fields. */
+    uint16_t in_port;                   /* Input switch port. */
+    uint8_t dl_src[OFP_ETH_ALEN];       /* Ethernet source address. */
+    uint8_t dl_dst[OFP_ETH_ALEN];       /* Ethernet destination address. */
+    uint16_t dl_vlan;                   /* Input VLAN id. */
+    uint8_t dl_vlan_pcp;                /* Input VLAN priority. */
+    uint8_t pad1[1];                    /* Align to 64-bits */
+    uint16_t dl_type;                   /* Ethernet frame type. */
+    uint8_t nw_tos;                     /* IP ToS (actually DSCP field, 6 bits). */
+    uint8_t nw_proto;                   /* IP protocol or lower 8 bits of
+                                         * ARP opcode. */
+    uint8_t pad2[2];                    /* Align to 64-bits */
+    uint32_t nw_src;                    /* IP source address. */
+    uint32_t nw_dst;                    /* IP destination address. */
+    uint16_t tp_src;                    /* TCP/UDP source port. */
+    uint16_t tp_dst;                    /* TCP/UDP destination port. */
 } ofp_match_t;
 //OFP_ASSERT(sizeof (struct ofp_match) == 40);
 
@@ -120,28 +120,33 @@ typedef enum _ofp_action_type
 //flow table
 // TODO: an new flow table entry need to be designed.
 
-typedef struct _ftentry_of_t
+//TODO: change it into struct of unions? (classical and openflow...)
+typedef struct _ftentry_t
 {
-    // for gini 
+    // for gini_classic
     ushort is_empty;
     ushort language;
+    ushort ip_protocol_type;
+    // for of
     ofp_match_t match;
     int count;
     ofp_action_type action;
+    //for gini_classic
     void *action_c;
-} ftentry_of_t;
-
-typedef struct _ftentry_t
-{
-    ushort is_empty; // 1 empty 0 occupied
-    ushort language; // 0 C 1 PYTHON
-    ushort protocol;
-    void *action;
 } ftentry_t;
+
+//typedef struct _ftentry_t
+//{
+//    ushort is_empty; // 1 empty 0 occupied
+//    ushort language; // 0 C 1 PYTHON
+//    ushort protocol;
+//    void *action;
+//} ftentry_t;
 
 typedef struct _flowtable_t
 {
     int num;
+    //ftentry_t entry[MAX_ENTRY_NUMBER];
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
 

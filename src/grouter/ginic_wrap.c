@@ -3054,17 +3054,10 @@ static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
                 // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
                 char mac_str[256];
                 MAC2Colon(mac_str, ifptr->mac_addr);
-                //sprintf(mac_str, "%02x%02x%02x%02x%02x%02x", ifptr->mac_addr[0], ifptr->mac_addr[1], 
-                        //ifptr->mac_addr[2], ifptr->mac_addr[3], ifptr->mac_addr[4],ifptr->mac_addr[5]);
                 PyTuple_SetItem(port_list, tuple_index ++, 
                                 Py_BuildValue("(i,s,s)", ifptr->interface_id, mac_str, ifptr->device_name));
-                   
-                //if(PyTuple_SetItem(port_list, tuple_index ++, PyTuple_Pack(2, i, netarray.elem[i])) != 0)
-                //    printf("Failed to build port tuple");
             }
         }
-      
-        
         return port_list;
     }
 

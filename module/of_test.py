@@ -100,7 +100,7 @@ class gini_of:
             ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
-        pkt_features_reply.n_tables = 0
+        pkt_features_reply.n_tables = 1 # number of tables supported
         pkt_features_reply.capabilities = 0
         pkt_features_reply.actions = 0
         pkt_features_reply.ports = []  # set the list of ports

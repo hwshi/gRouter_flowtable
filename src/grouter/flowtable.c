@@ -41,28 +41,28 @@ void *judgeProcessor(void *pc)
         /////////// 
         //        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
         //        if (entry_res == NULL)
-        //            //if (!checkFlowTable(pcore->flowtable, in_pkt, action, &prot))
+        //            //if (!checkFlowTable(pcore->flowtable, in_pkt, action_c, &prot))
         //        {
         //            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
         //            return;
         //        }
         //        //TODO: call function using action(char *):  PyObject_CallFunction(String)
-        //        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->protocol);
+        //        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->ip_protocol_type);
         //        if (entry_res->language == C_FUNCTION)
         //        {
         //
-        //            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+        //            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
         //            int (*processor)(gpacket_t *);
-        //            processor = entry_res->action;
+        //            processor = entry_res->action_c;
         //            int nextlabel = (*processor)(in_pkt);
-        //            if (entry_res->protocol == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
+        //            if (entry_res->ip_protocol_type == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
         //            {
         //                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
         //                continue;
         //            }
         //            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
         //            verbose(2, "[judgeProcessor][Ft]New style round");
-        //            labelNext(in_pkt, entry_res->protocol, nextlabel);
+        //            labelNext(in_pkt, entry_res->ip_protocol_type, nextlabel);
         //            verbose(2, "[judgeProcessor]Writing back to decision Q...");
         //            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
         //            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
@@ -71,11 +71,11 @@ void *judgeProcessor(void *pc)
         //        }
         //        else if (entry_res->language == PYTHON_FUNCTION)
         //        {
-        //            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action);
+        //            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
         //            //TODO: Python embedding
         //            //TODO: ?? Where to declaire!?
         //            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-        //            Py_pFun = entry_res->action;
+        //            Py_pFun = entry_res->action_c;
         //            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
         //            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
         //            if (Py_pPkt)
@@ -95,15 +95,13 @@ void *judgeProcessor(void *pc)
         if (entry_res == NULL) // No action in flowtable, send to openflow.py
         {
             PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-            Py_pFun = pcore->flowtable->entry[3].action; // 3 is now for giniof_01
+            Py_pFun = pcore->flowtable->entry[3].action_c; // 3 is now for giniof_01
             Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
-            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
             if (Py_pPkt)
             {
                 verbose(2, "Got Pyton obj\n");
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
                 CheckPythonError();
-                //                printf("pResult: %p", Py_pResult);
             }
         }
 
@@ -122,8 +120,8 @@ int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
         {
             flowtable->entry[flowtable->num].is_empty = 0;
             flowtable->entry[flowtable->num].language = language;
-            flowtable->entry[flowtable->num].protocol = UDP_PROTOCOL; // TODO: temporary soluction
-            flowtable->entry[flowtable->num].action = content;
+            flowtable->entry[flowtable->num].ip_protocol_type = UDP_PROTOCOL; // TODO: temporary soluction
+            flowtable->entry[flowtable->num].action_c = content;
             flowtable->num++;
             return EXIT_SUCCESS;
         }
@@ -170,8 +168,8 @@ int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function)
     {
         flowtable->entry[flowtable->num].is_empty = 0;
         flowtable->entry[flowtable->num].language = C_FUNCTION;
-        flowtable->entry[flowtable->num].protocol = prot;
-        flowtable->entry[flowtable->num].action = function;
+        flowtable->entry[flowtable->num].ip_protocol_type = prot;
+        flowtable->entry[flowtable->num].action_c = function;
         flowtable->num++;
     }
     else
@@ -327,9 +325,9 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
     for (j = 0; j < flowtable->num; j++)
     {
         //verbose(2  , "[checkFlowTable]::Checking for entry");
-        if (flowtable->entry[j].protocol == prot)
+        if (flowtable->entry[j].ip_protocol_type == prot)
         {
-            verbose(2, "[checkFlowTable]:: Entry found protocol(entry): %#06x\n", flowtable->entry[j].protocol);
+            verbose(2, "[checkFlowTable]:: Entry found protocol(entry): %#06x\n", flowtable->entry[j].ip_protocol_type);
             return &(flowtable->entry[j]);
         }
     }
@@ -353,9 +351,9 @@ void printFlowTable(flowtable_t *flowtable)
     {
         printf("\t[%d]protocol: %d language: %d :: action %p\n",
                i,
-               flowtable->entry[i].protocol,
+               flowtable->entry[i].ip_protocol_type,
                flowtable->entry[i].language,
-               flowtable->entry[i].action);
+               flowtable->entry[i].action_c);
     }
     printf("-- End of Flow Table --\n");
 }
