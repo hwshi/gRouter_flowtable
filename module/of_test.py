@@ -19,7 +19,6 @@ except ImportError:
     _gini_error = 1
     print('Module _GINIC missing!')
 
-
 def gini_get_device_name():
     print("[gini_get_device_name]")
     name = ""
@@ -77,8 +76,6 @@ class gini_of:
             print('Failed connection to %s : %d') % (addr, port)
             exit(1)
             # TODO: except? timeout?
-
-
     def process_hello(self, pkt):
         print("This is a [Hello packet]")
         pkt_hello = of.ofp_hello()
@@ -113,14 +110,15 @@ class gini_of:
         print("This is a [set config packet]")
         print(pkt.show())
         #TODO: miss_send_len is received
-        pkt_echo_rep = of.ofp_echo_reply()
-        self.s.send(pkt_echo_rep.pack()) # TODO: not need. But cant connect when missing....
+        pkt_get_config_reply = of.ofp_get_config_reply()
+        self.s.send(pkt_get_config_reply.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
 
     # TODO: huge work here ...
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
         print(pkt.show())
+
         pkt_echo_reply = of.ofp_echo_reply() #???
         self.s.send(pkt_echo_reply.pack())  #???
 

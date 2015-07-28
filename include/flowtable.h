@@ -26,6 +26,9 @@
 #include "arp.h"
 #include "icmp.h"
 //#include "packetcore.h"
+
+#define OFP_ETH_ALEN 6
+
 //tpye of entry
 #define CLASSICAL 1
 #define OPENFLOW 2
@@ -70,14 +73,15 @@ typedef struct _ofp_match_t
 /* Flow wildcards. */
 typedef enum _ofp_flow_wildcards
 {
-    OFPFW_IN_PORT = 1 << 0, /* Switch input port. */
-    OFPFW_DL_VLAN = 1 << 1, /* VLAN id. */
-    OFPFW_DL_SRC = 1 << 2, /* Ethernet source address. */
-    OFPFW_DL_DST = 1 << 3, /* Ethernet destination address. */
-    OFPFW_DL_TYPE = 1 << 4, /* Ethernet frame type. */
-    OFPFW_NW_PROTO = 1 << 5, /* IP protocol. */
-    OFPFW_TP_SRC = 1 << 6, /* TCP/UDP source port. */
-    OFPFW_TP_DST = 1 << 7, /* TCP/UDP destination port. */
+    OFPFW_IN_PORT = 1 << 0,             /* Switch input port. */
+    OFPFW_DL_VLAN = 1 << 1,             /* VLAN id. */
+    OFPFW_DL_SRC = 1 << 2,              /* Ethernet source address. */
+    OFPFW_DL_DST = 1 << 3,              /* Ethernet destination address. */
+    OFPFW_DL_TYPE = 1 << 4,             /* Ethernet frame type. */
+    OFPFW_NW_PROTO = 1 << 5,            /* IP protocol. */
+    OFPFW_TP_SRC = 1 << 6,              /* TCP/UDP source port. */
+    OFPFW_TP_DST = 1 << 7,              /* TCP/UDP destination port. */
+    
     /* IP source address wildcard bit count. 0 is exact match, 1 ignores the
      * LSB, 2 ignores the 2 least-significant bits, ..., 32 and higher wildcard
      * the entire field. This is the *opposite* of the usual convention where
@@ -99,18 +103,18 @@ typedef enum _ofp_flow_wildcards
 
 typedef enum _ofp_action_type
 {
-    OFPAT_OUTPUT, /*Output to switch port. */
-    OFPAT_SET_VLAN_VID, /*Set the 802.1q VLAN id. */
-    OFPAT_SET_VLAN_PCP, /*Set the 802.1q priority. */
-    OFPAT_STRIP_VLAN, /*Strip the 802.1q header. */
-    OFPAT_SET_DL_SRC, /*Ethernet source address. */
-    OFPAT_SET_DL_DST, /*Ethernet destination address. */
-    OFPAT_SET_NW_SRC, /*IP source address. */
-    OFPAT_SET_NW_DST, /*IP destination address. */
-    OFPAT_SET_NW_TOS, /*IP ToS (DSCP field, 6 bits). */
-    OFPAT_SET_TP_SRC, /*TCP/UDP source port. */
-    OFPAT_SET_TP_DST, /*TCP/UDP destination port. */
-    OFPAT_ENQUEUE, /*Output to queue. */
+    OFPAT_OUTPUT,                       /*Output to switch port. */
+    OFPAT_SET_VLAN_VID,                 /*Set the 802.1q VLAN id. */
+    OFPAT_SET_VLAN_PCP,                 /*Set the 802.1q priority. */
+    OFPAT_STRIP_VLAN,                   /*Strip the 802.1q header. */
+    OFPAT_SET_DL_SRC,                   /*Ethernet source address. */
+    OFPAT_SET_DL_DST,                   /*Ethernet destination address. */
+    OFPAT_SET_NW_SRC,                   /*IP source address. */
+    OFPAT_SET_NW_DST,                   /*IP destination address. */
+    OFPAT_SET_NW_TOS,                   /*IP ToS (DSCP field, 6 bits). */
+    OFPAT_SET_TP_SRC,                   /*TCP/UDP source port. */
+    OFPAT_SET_TP_DST,                   /*TCP/UDP destination port. */
+    OFPAT_ENQUEUE,                      /*Output to queue. */
     OFPAT_VENDOR = 0xffff
 } ofp_action_type;
 //flow table
