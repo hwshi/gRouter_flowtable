@@ -45,7 +45,7 @@ def gini_get_device_ports():
 
 def gini_ofp_flow_mod(pkt):
     #TODO: parse the pkt and send modification command to flow table(in GINI)
-
+    #_GINIC.ofpFlowMod()
     return True
 
 
@@ -111,6 +111,9 @@ class gini_of:
         print(pkt.show())
         #TODO: miss_send_len is received
         pkt_get_config_reply = of.ofp_get_config_reply()
+        pkt_get_config_reply.xid = pkt.xid
+        pkt_get_config_reply.flags = 0
+        pkt_get_config_reply.miss_send_len = pkt.miss_send_len
         self.s.send(pkt_get_config_reply.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
 
