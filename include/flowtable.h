@@ -169,5 +169,5 @@ void printConfigInfo(module_config_t *config);
 
 // function prototyp for openflow protocol
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
-
+int ofpFlowMod(flowtable_t *flowtable, );
 #endif
