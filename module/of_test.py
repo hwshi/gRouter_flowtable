@@ -47,8 +47,23 @@ def gini_ofp_flow_mod(pkt):
     #TODO: parse the pkt and send modification command to flow table(in GINI)
     #_GINIC.ofpFlowMod()
     print(pkt.match.__str__())
+
     return True
 
+def gini_ofp_flow_mod_ADD(flow_mod_pkt):
+    pass
+
+def gini_ofp_flow_mod_MODIFY(flow_mod_pkt):
+    pass
+
+def gini_ofp_flow_mod_MODIFY_STRICT(flow_mod_pkt):
+    pass
+
+def gini_ofp_flow_mod_DELETE(flow_mod_pkt):
+    pass
+
+def gini_ofp_flow_mod_DELETE_STRICT(flow_mod_pkt):
+    pass
 
 
 class gini_of:
@@ -127,7 +142,21 @@ class gini_of:
 
         pkt_echo_reply = of.ofp_echo_reply() #???
         self.s.send(pkt_echo_reply.pack())  #???
-
+        if pkt.command == 0:
+            # OFPFC_ADD
+            gini_ofp_flow_mod_ADD(pkt)
+        if pkt.command == 1:
+            # OFPFC_MODIFY
+            gini_ofp_flow_mod_MODIFY(pkt)
+        if pkt.command == 2:
+            # OFPFC_MODIFY_STRICT
+            gini_ofp_flow_mod_MODIFY_STRICT(pkt)
+        if pkt.command == 3:
+            # OFPFC_DELETE
+            gini_ofp_flow_mod_DELETE(pkt)
+        if pkt.command == 4:
+            # OFPFC_DELETE_STRICT
+            gini_ofp_flow_mod_DELETE_STRICT()
         if gini_ofp_flow_mod(pkt) == True:
             print('flow mod succesful!')
         print("[process_set_mod] sent")

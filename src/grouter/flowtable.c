@@ -358,7 +358,26 @@ void printFlowTable(flowtable_t *flowtable)
     printf("-- End of Flow Table --\n");
 }
 
-int ofpFlowMod()
+int ofpFlowModAdd()
 {
-    
+    return EXIT_SUCCESS;
+}
+
+int ofpFlowModModify()
+{
+    return EXIT_SUCCESS;
+}
+
+int ofpFLowModModifyStrict()
+{
+    return EXIT_SUCCESS;
+}
+
+int ofpFlowModDelete()
+{
+    return EXIT_SUCCESS;
+}
+int ofpFlowModDleteStrict()
+{
+    return EXIT_SUCCESS;
 }

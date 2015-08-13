@@ -150,6 +150,48 @@ typedef struct _flowtable_t
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
 
+typedef struct _ofp_header_t
+{
+    uint8_t version;
+    uint8_t type;
+    uint16_t length;
+    uint32_t xid;
+} ofp_header_t;
+typedef struct _ofp_action_header_t
+{
+    uint16_t type;                      /* One of OFPAT_*. */
+    uint16_t len;                       /* Length of action, including this
+                                        header. This is the length of action,
+                                        including any padding to make it
+                                        64-bit aligned. */
+    uint8_t pad[4];
+} ofp_action_header_t;
+typedef struct _ofp_flow_mod_pkt_t
+{
+    ofp_header_t header;
+    ofp_match_t match;                  /* Fields to match */
+   
+    uint64_t cookie;                    /* Opaque controller-issued identifier. */
+
+    /* Flow actions. */
+    uint16_t command;                   /*One of OFPFC_*. */
+    uint16_t idle_timeout;              /*Idle time before discarding (seconds). */
+    uint16_t hard_timeout;              /*Max time before discarding (seconds). */
+    uint16_t priority;                  /*Priority level of flow entry. */
+    uint32_t buffer_id;                 /*Buffered packet to apply to (or -1).
+                                        Not meaningful for OFPFC_DELETE*. */
+    uint16_t out_port;                  /* For OFPFC_DELETE* commands, require
+                                        matching entries to include this as an
+                                        output port. A value of OFPP_NONE
+                                        indicates no restriction. */
+
+    uint16_t flags;                     /* One of OFPFF_*. */
+// TODO: define....
+    ofp_action_header_t actions[0];/* The action length is inferred
+                                        from the length field in the
+                                        header. */
+} ofp_flow_mod_pkt_t;
+
 void *judgeProcessor(void *pc);
 int addEntry(flowtable_t *flowtable, int type, ushort language, void *content);
 int deleteEntry();
@@ -169,5 +211,9 @@ void printConfigInfo(module_config_t *config);
 
 // function prototyp for openflow protocol
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
-int ofpFlowMod(flowtable_t *flowtable, );
+int ofpFlowModAdd();
+int ofpFlowModModify();
+int ofpFLowModModifyStrict();
+int ofpFlowModDelete();
+int ofpFlowModDleteStrict();
 #endif
