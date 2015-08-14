@@ -111,7 +111,6 @@ class gini_of:
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
         print(pkt.show())
-
         # if pkt.command == 0:
         #     # OFPFC_ADD
         #     _GINIC.gini_ofp_flow_mod_ADD(pkt.pack())

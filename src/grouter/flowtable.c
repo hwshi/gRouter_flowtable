@@ -363,6 +363,13 @@ int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
     printOFPFlowModPkt(flow_mod_pkt);
     return EXIT_SUCCESS;
 }
+int ofpFlowMod2(flowtable_t *flowtable, void *msg)
+{
+    printf("[ofpFlowMod2] Receive FLOW MOD pkt!\n");
+    ofp_flow_mod_pkt_t *flow_mod_pkt = msg;
+    printOFPFlowModPkt(flow_mod_pkt);
+    return EXIT_SUCCESS;
+}
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
@@ -390,8 +397,14 @@ int ofpFlowModDleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_p
 void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     printf("--  Flow_Mod packet --\n");
+    printf("Version: %" PRIu8 "\n", flow_mod_pkt->header.version);
+    printf("Type: %" PRIu8 "\n", flow_mod_pkt->header.type);
+    printf("Length: %" PRIu16 "\n", flow_mod_pkt->header.length);
+    printf("Xid: %" PRIu32 "\n", flow_mod_pkt->header.xid);
     printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
-    printf("Command: %d\n", flow_mod_pkt->command);
-    printf("BufferId: %d\n", flow_mod_pkt->buffer_id);
+    printf("Command: %" PRIu16 "\n", flow_mod_pkt->command);
+    printf("Priority: %" PRIu16 "\n", flow_mod_pkt->priority);
+    printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
+    printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
     printf("--  End of packet  --\n");
 }

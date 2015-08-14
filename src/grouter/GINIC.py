@@ -99,6 +99,10 @@ def gini_ofp_flow_mod(*args):
   return _GINIC.gini_ofp_flow_mod(*args)
 gini_ofp_flow_mod = _GINIC.gini_ofp_flow_mod
 
+def gini_ofp_flow_mod2(*args):
+  return _GINIC.gini_ofp_flow_mod2(*args)
+gini_ofp_flow_mod2 = _GINIC.gini_ofp_flow_mod2
+
 def gini_ofp_flow_mod_ADD(*args):
   return _GINIC.gini_ofp_flow_mod_ADD(*args)
 gini_ofp_flow_mod_ADD = _GINIC.gini_ofp_flow_mod_ADD

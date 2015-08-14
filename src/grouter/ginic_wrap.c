@@ -3061,10 +3061,20 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         }
         return port_list;
     }
-    int gini_ofp_flow_mod(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
-        ofpFlowMod(pcore->flowtable, flow_mod_pkt);
+        ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)calloc(1, sizeof(ofp_flow_mod_pkt_t));
+        //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
+        memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
+        printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
+        ofpFlowMod(pcore->flowtable, pkt);
+        return EXIT_SUCCESS;
+    }
+    int gini_ofp_flow_mod2(void * msg)
+    {
+        printf("[gini_ofp_flow_mod2]\n");
+        ofpFlowMod2(pcore->flowtable, msg);
         return EXIT_SUCCESS;
     }
     ///////////////////////////////////////////////////////////
@@ -3619,19 +3629,33 @@ fail:
 
 SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
+  PyObject *arg1 = (PyObject *) 0 ;
   PyObject * obj0 = 0 ;
   int result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
-  }
-  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  arg1 = obj0;
   result = (int)gini_ofp_flow_mod(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  int res1 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod2",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0,SWIG_as_voidptrptr(&arg1), 0, 0);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod2" "', argument " "1"" of type '" "void *""'"); 
+  }
+  result = (int)gini_ofp_flow_mod2(arg1);
   resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
@@ -4939,6 +4963,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
 	 { (char *)"getPortTuple", _wrap_getPortTuple, METH_VARARGS, NULL},
 	 { (char *)"gini_ofp_flow_mod", _wrap_gini_ofp_flow_mod, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod2", _wrap_gini_ofp_flow_mod2, METH_VARARGS, NULL},
 	 { (char *)"gini_ofp_flow_mod_ADD", _wrap_gini_ofp_flow_mod_ADD, METH_VARARGS, NULL},
 	 { (char *)"gini_ofp_flow_mod_MODIFY", _wrap_gini_ofp_flow_mod_MODIFY, METH_VARARGS, NULL},
 	 { (char *)"gini_ofp_flow_mod_MODIFY_STRICT", _wrap_gini_ofp_flow_mod_MODIFY_STRICT, METH_VARARGS, NULL},

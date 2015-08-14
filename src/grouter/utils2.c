@@ -11,9 +11,8 @@
 #include <signal.h>
 #include <time.h>
 #include <slack/err.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+
 
 /*
  * determine whether the given IP address is in the network given the
@@ -22,39 +21,41 @@
  */
 int compareIPUsingMask(uchar *ip_addr, uchar *network, uchar *netmask)
 {
-	int ip, mask, net_addr, net;
-        
-	COPY_IP((char*)&ip, ip_addr);
-        COPY_IP((char*)&mask, netmask);
-        COPY_IP((char*)&net, network);
-        
-        net_addr = htonl(ip) & htonl(mask);
-        
-        return net_addr ^ htonl(net);
+	uchar bnet[4];
+	int i;
+	char tmpbuf[64];
+
+	COPY_IP(bnet, ip_addr);
+	for (i = 0; i < 4; i++)
+		bnet[i] = ip_addr[i] & netmask[i];
+
+	if (COMPARE_IP(network, bnet) == 0)
+		return 0;
+	else
+		return -1;
 }
 
 
+// This should be using the host-byte-order of x386. The x386 uses the least significant
+// byte first. For ip_addr, ip_addr[3] is the least significant byte, it should be stored
+// first in the representation.
 char *IP2Dot(char *buf, uchar ip_addr[])
 {
-    struct in_addr ip;
-    
-    COPY_IP(&ip, ip_addr);
-	 ip.s_addr = htonl(ip.s_addr);
-    strcpy(buf, inet_ntoa(ip));
-    
-    return buf;
+	sprintf(buf, "%u.%u.%u.%u", ip_addr[3], ip_addr[2], ip_addr[1], ip_addr[0]);
+	return buf;
 }
 
 
 
 int Dot2IP(char *buf, uchar ip_addr[])
 {
-    in_addr_t ip;
-    
-    ip = ntohl(inet_addr(buf)); 
-    COPY_IP(ip_addr, &ip);
-    
-    return EXIT_SUCCESS;
+        unsigned int iip_addr[4];
+        int i;
+
+        sscanf(buf, "%u.%u.%u.%u", &(iip_addr[3]), &(iip_addr[2]), &(iip_addr[1]), &(iip_addr[0]));
+
+        for (i=0; i < 4; i++) ip_addr[i] = iip_addr[i];
+        return EXIT_SUCCESS;
 }
 
 
@@ -187,6 +188,12 @@ void printTimeVal(struct timeval *v)
 {
 	printf("Time val = %d sec, %d usec \n", (int)v->tv_sec, (int)v->tv_usec);
 }
+
+
+
+
+
+
 
 
 

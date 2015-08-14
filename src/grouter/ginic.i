@@ -103,10 +103,20 @@
         }
         return port_list;
     }
-    int gini_ofp_flow_mod(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
-        ofpFlowMod(pcore->flowtable, flow_mod_pkt);
+        ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)calloc(1, sizeof(ofp_flow_mod_pkt_t));
+        //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
+        memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
+        printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
+        ofpFlowMod(pcore->flowtable, pkt);
+        return EXIT_SUCCESS;
+    }
+    int gini_ofp_flow_mod2(void * msg)
+    {
+        printf("[gini_ofp_flow_mod2]\n");
+        ofpFlowMod2(pcore->flowtable, msg);
         return EXIT_SUCCESS;
     }
     ///////////////////////////////////////////////////////////
@@ -185,10 +195,11 @@ typedef struct _gpacket_t {
     memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString($input), size);
     $1 = gpkt;
 }
-%typemap(in) ofp_flow_mod_pkt_t *flow_mod_pkt{
+%typemap(in) ofp_flow_mod_pkt_t *flow_mod_pkt {
+    int size = PyString_Size($input);
     printf("[typemap(out) ofp_flow_mod_pkt_t flow_mod_pkt]\n");
     ofp_flow_mod_pkt_t* flow_mod_pkt = (ofp_flow_mod_pkt_t)calloc(1, sizeof(ofp_flow_mod_pkt_t));
-    memcpy(flow_mod_pkt, PyString_AsString($input), sizeof(ofp_flow_mod_pkt_t));
+    memcpy(flow_mod_pkt, PyString_AsString($input), size);
     $1 = flow_mod_pkt;    
 } 
 
