@@ -211,9 +211,12 @@ void printConfigInfo(module_config_t *config);
 
 // function prototyp for openflow protocol
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
-int ofpFlowModAdd();
-int ofpFlowModModify();
-int ofpFLowModModifyStrict();
-int ofpFlowModDelete();
-int ofpFlowModDleteStrict();
+int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+
+int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowModModify(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFLowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowModDleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt);
 #endif

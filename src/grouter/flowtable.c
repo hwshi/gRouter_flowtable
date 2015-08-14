@@ -357,27 +357,41 @@ void printFlowTable(flowtable_t *flowtable)
     }
     printf("-- End of Flow Table --\n");
 }
-
-int ofpFlowModAdd()
+int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
+{
+    printf("[ofpFlowMod] Receive FLOW MOD pkt!\n");
+    printOFPFlowModPkt(flow_mod_pkt);
+    return EXIT_SUCCESS;
+}
+int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
 }
 
-int ofpFlowModModify()
+int ofpFlowModModify(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
 }
 
-int ofpFLowModModifyStrict()
+int ofpFLowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
 }
 
-int ofpFlowModDelete()
+int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
 }
-int ofpFlowModDleteStrict()
+int ofpFlowModDleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     return EXIT_SUCCESS;
+}
+
+void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
+{
+    printf("--  Flow_Mod packet --\n");
+    printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
+    printf("Command: %d\n", flow_mod_pkt->command);
+    printf("BufferId: %d\n", flow_mod_pkt->buffer_id);
+    printf("--  End of packet  --\n");
 }

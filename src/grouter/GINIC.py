@@ -94,6 +94,30 @@ getPortNumber = _GINIC.getPortNumber
 def getPortTuple():
   return _GINIC.getPortTuple()
 getPortTuple = _GINIC.getPortTuple
+
+def gini_ofp_flow_mod(*args):
+  return _GINIC.gini_ofp_flow_mod(*args)
+gini_ofp_flow_mod = _GINIC.gini_ofp_flow_mod
+
+def gini_ofp_flow_mod_ADD(*args):
+  return _GINIC.gini_ofp_flow_mod_ADD(*args)
+gini_ofp_flow_mod_ADD = _GINIC.gini_ofp_flow_mod_ADD
+
+def gini_ofp_flow_mod_MODIFY(*args):
+  return _GINIC.gini_ofp_flow_mod_MODIFY(*args)
+gini_ofp_flow_mod_MODIFY = _GINIC.gini_ofp_flow_mod_MODIFY
+
+def gini_ofp_flow_mod_MODIFY_STRICT(*args):
+  return _GINIC.gini_ofp_flow_mod_MODIFY_STRICT(*args)
+gini_ofp_flow_mod_MODIFY_STRICT = _GINIC.gini_ofp_flow_mod_MODIFY_STRICT
+
+def gini_ofp_flow_mod_DELETE(*args):
+  return _GINIC.gini_ofp_flow_mod_DELETE(*args)
+gini_ofp_flow_mod_DELETE = _GINIC.gini_ofp_flow_mod_DELETE
+
+def gini_ofp_flow_mod_DELETE_STRICT(*args):
+  return _GINIC.gini_ofp_flow_mod_DELETE_STRICT(*args)
+gini_ofp_flow_mod_DELETE_STRICT = _GINIC.gini_ofp_flow_mod_DELETE_STRICT
 class pkt_data_t(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, pkt_data_t, name, value)

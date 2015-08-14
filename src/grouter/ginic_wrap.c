@@ -2920,13 +2920,14 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_devicearray_t swig_types[7]
 #define SWIGTYPE_p_interface_array_t swig_types[8]
 #define SWIGTYPE_p_mtu_entry_t swig_types[9]
-#define SWIGTYPE_p_pkt_data_t_header swig_types[10]
-#define SWIGTYPE_p_pktcore_t swig_types[11]
-#define SWIGTYPE_p_route_entry_t swig_types[12]
-#define SWIGTYPE_p_uchar swig_types[13]
-#define SWIGTYPE_p_ushort swig_types[14]
-static swig_type_info *swig_types[16];
-static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
+#define SWIGTYPE_p_ofp_flow_mod_pkt_t swig_types[10]
+#define SWIGTYPE_p_pkt_data_t_header swig_types[11]
+#define SWIGTYPE_p_pktcore_t swig_types[12]
+#define SWIGTYPE_p_route_entry_t swig_types[13]
+#define SWIGTYPE_p_uchar swig_types[14]
+#define SWIGTYPE_p_ushort swig_types[15]
+static swig_type_info *swig_types[17];
+static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3059,6 +3060,41 @@ static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
             }
         }
         return port_list;
+    }
+    int gini_ofp_flow_mod(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        printf("[gini_ofp_flow_mod]\n");
+        ofpFlowMod(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
+    }
+    ///////////////////////////////////////////////////////////
+    int gini_ofp_flow_mod_ADD(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        ofpFlowModAdd(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
+    }
+
+    int gini_ofp_flow_mod_MODIFY(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        ofpFlowModModify(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
+    }
+
+    int gini_ofp_flow_mod_MODIFY_STRICT(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        ofpFLowModModifyStrict(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
+    }
+
+    int gini_ofp_flow_mod_DELETE(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        ofpFlowModDelete(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
+    }
+    int gini_ofp_flow_mod_DELETE_STRICT(ofp_flow_mod_pkt_t *flow_mod_pkt)
+    {
+        ofpFlowModDleteStrict(pcore->flowtable, flow_mod_pkt);
+        return EXIT_SUCCESS;
     }
 
 
@@ -3575,6 +3611,138 @@ SWIGINTERN PyObject *_wrap_getPortTuple(PyObject *SWIGUNUSEDPARM(self), PyObject
   if (!PyArg_ParseTuple(args,(char *)":getPortTuple")) SWIG_fail;
   result = (PyObject *)getPortTuple();
   resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod_ADD(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod_ADD",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod_ADD" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod_ADD(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod_MODIFY(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod_MODIFY",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod_MODIFY" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod_MODIFY(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod_MODIFY_STRICT(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod_MODIFY_STRICT",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod_MODIFY_STRICT" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod_MODIFY_STRICT(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod_DELETE(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod_DELETE",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod_DELETE" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod_DELETE(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_gini_ofp_flow_mod_DELETE_STRICT(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ofp_flow_mod_pkt_t *arg1 = (ofp_flow_mod_pkt_t *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:gini_ofp_flow_mod_DELETE_STRICT",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ofp_flow_mod_pkt_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "gini_ofp_flow_mod_DELETE_STRICT" "', argument " "1"" of type '" "ofp_flow_mod_pkt_t *""'"); 
+  }
+  arg1 = (ofp_flow_mod_pkt_t *)(argp1);
+  result = (int)gini_ofp_flow_mod_DELETE_STRICT(arg1);
+  resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
   return NULL;
@@ -4770,6 +4938,12 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
 	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
 	 { (char *)"getPortTuple", _wrap_getPortTuple, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod", _wrap_gini_ofp_flow_mod, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod_ADD", _wrap_gini_ofp_flow_mod_ADD, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod_MODIFY", _wrap_gini_ofp_flow_mod_MODIFY, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod_MODIFY_STRICT", _wrap_gini_ofp_flow_mod_MODIFY_STRICT, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod_DELETE", _wrap_gini_ofp_flow_mod_DELETE, METH_VARARGS, NULL},
+	 { (char *)"gini_ofp_flow_mod_DELETE_STRICT", _wrap_gini_ofp_flow_mod_DELETE_STRICT, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_set", _wrap_pkt_data_t_data_set, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_data_get", _wrap_pkt_data_t_data_get, METH_VARARGS, NULL},
 	 { (char *)"pkt_data_t_header_get", _wrap_pkt_data_t_header_get, METH_VARARGS, NULL},
@@ -4835,6 +5009,7 @@ static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_devicearray_t = {"_p_devicearray_t", "devicearray_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_interface_array_t = {"_p_interface_array_t", "interface_array_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_mtu_entry_t = {"_p_mtu_entry_t", "mtu_entry_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ofp_flow_mod_pkt_t = {"_p_ofp_flow_mod_pkt_t", "ofp_flow_mod_pkt_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pkt_data_t_header = {"_p_pkt_data_t_header", "pkt_data_t_header *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_pktcore_t = {"_p_pktcore_t", "pktcore_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_route_entry_t = {"_p_route_entry_t", "route_entry_t *", 0, 0, (void*)0, 0};
@@ -4852,6 +5027,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_devicearray_t,
   &_swigt__p_interface_array_t,
   &_swigt__p_mtu_entry_t,
+  &_swigt__p_ofp_flow_mod_pkt_t,
   &_swigt__p_pkt_data_t_header,
   &_swigt__p_pktcore_t,
   &_swigt__p_route_entry_t,
@@ -4869,6 +5045,7 @@ static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0,
 static swig_cast_info _swigc__p_devicearray_t[] = {  {&_swigt__p_devicearray_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_interface_array_t[] = {  {&_swigt__p_interface_array_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_mtu_entry_t[] = {  {&_swigt__p_mtu_entry_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ofp_flow_mod_pkt_t[] = {  {&_swigt__p_ofp_flow_mod_pkt_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pkt_data_t_header[] = {  {&_swigt__p_pkt_data_t_header, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_pktcore_t[] = {  {&_swigt__p_pktcore_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_route_entry_t[] = {  {&_swigt__p_route_entry_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -4886,6 +5063,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_devicearray_t,
   _swigc__p_interface_array_t,
   _swigc__p_mtu_entry_t,
+  _swigc__p_ofp_flow_mod_pkt_t,
   _swigc__p_pkt_data_t_header,
   _swigc__p_pktcore_t,
   _swigc__p_route_entry_t,

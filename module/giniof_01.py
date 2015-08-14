@@ -111,8 +111,27 @@ class gini_of:
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
         print(pkt.show())
-        pkt_echo_reply = of.ofp_echo_reply()
-        self.s.send(pkt_echo_reply.pack())
+
+        # if pkt.command == 0:
+        #     # OFPFC_ADD
+        #     _GINIC.gini_ofp_flow_mod_ADD(pkt.pack())
+        # if pkt.command == 1:
+        #     # OFPFC_MODIFY
+        #     _GINIC.gini_ofp_flow_mod_MODIFY(pkt.pack())
+        # if pkt.command == 2:
+        #     # OFPFC_MODIFY_STRICT
+        #     _GINIC.gini_ofp_flow_mod_MODIFY_STRICT(pkt.pack())
+        # if pkt.command == 3:
+        #     # OFPFC_DELETE
+        #     _GINIC.gini_ofp_flow_mod_DELETE(pkt.pack())
+        # if pkt.command == 4:
+        #     # OFPFC_DELETE_STRICT
+        #     _GINIC.gini_ofp_flow_mod_DELETE_STRICT(pkt.pack())
+        _GINIC.gini_ofp_flow_mod(pkt.pack())
+        pkt_echo_reply = of.ofp_echo_reply() #???
+        self.s.send(pkt_echo_reply.pack())  #???
+        # if gini_ofp_flow_mod(pkt) == True:
+        #     print('flow mod succesful!')
         print("[process_set_mod] sent")
 
     def process_barrier_request(self, pkt):
