@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <dlfcn.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "message.h"
 #include "grouter.h"

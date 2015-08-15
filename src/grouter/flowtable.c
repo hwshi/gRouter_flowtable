@@ -10,6 +10,7 @@
 #include "ginic_wrap.c"
 #include "flowtable.h"
 #include "Python.h"
+//#include "utils.h"
 //
 
 void *judgeProcessor(void *pc)
@@ -396,15 +397,18 @@ int ofpFlowModDleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_p
 
 void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
+    uchar tmpbuff[MAX_TMPBUF_LEN];
     printf("--  Flow_Mod packet --\n");
     printf("Version: %" PRIu8 "\n", flow_mod_pkt->header.version);
     printf("Type: %" PRIu8 "\n", flow_mod_pkt->header.type);
-    printf("Length: %" PRIu16 "\n", flow_mod_pkt->header.length);
-    printf("Xid: %" PRIu32 "\n", flow_mod_pkt->header.xid);
-    printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
-    printf("Command: %" PRIu16 "\n", flow_mod_pkt->command);
-    printf("Priority: %" PRIu16 "\n", flow_mod_pkt->priority);
-    printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
-    printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
+    printf("Length: %" PRIu16 "\n", ntohs(flow_mod_pkt->header.length));
+    printf("before convert: %x", flow_mod_pkt->header.xid);
+    printf("Xid: %" PRIu32 "\n", ntohl(flow_mod_pkt->header.xid));
+    printf("Cookie: %" PRIu64 "\n", be64toh(flow_mod_pkt->cookie));
+    printf("Command: %" PRIu16 "\n", ntohs(flow_mod_pkt->command));
+    printf("Priority: %" PRIu16 "\n", ntohs(flow_mod_pkt->priority));
+    printf("before convert: %x", flow_mod_pkt->buffer_id);
+    printf("BufferId: %" PRIu32 "\n", ntohl(flow_mod_pkt->buffer_id));
+    printf("Out port: %" PRIu16 "\n", ntohs(flow_mod_pkt->out_port));
     printf("--  End of packet  --\n");
 }

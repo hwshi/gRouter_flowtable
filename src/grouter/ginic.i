@@ -109,7 +109,7 @@
         ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)calloc(1, sizeof(ofp_flow_mod_pkt_t));
         //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
         memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
-        printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
+        //printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;
     }
