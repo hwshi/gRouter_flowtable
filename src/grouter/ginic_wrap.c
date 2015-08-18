@@ -3054,7 +3054,11 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
                 // this function steal a reference to "o"
                 // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
                 char mac_str[256];
-                MAC2Colon(mac_str, ifptr->mac_addr);
+                MAC2String(mac_str, ifptr->mac_addr);
+                //uchar *mac = ifptr->mac_addr;
+                //char *buf;
+                //PyObject *mac_byte = PyBytes_FromFormat("%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+                //printf("ADDDDDDDDDDRES%s:: buf");
                 PyTuple_SetItem(port_list, tuple_index ++, 
                                 Py_BuildValue("(i,s,s)", ifptr->interface_id, mac_str, ifptr->device_name));
             }
@@ -3092,7 +3096,7 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
 
     int gini_ofp_flow_mod_MODIFY_STRICT(ofp_flow_mod_pkt_t *flow_mod_pkt)
     {
-        ofpFLowModModifyStrict(pcore->flowtable, flow_mod_pkt);
+        ofpFlowModModifyStrict(pcore->flowtable, flow_mod_pkt);
         return EXIT_SUCCESS;
     }
 
@@ -3103,7 +3107,7 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     }
     int gini_ofp_flow_mod_DELETE_STRICT(ofp_flow_mod_pkt_t *flow_mod_pkt)
     {
-        ofpFlowModDleteStrict(pcore->flowtable, flow_mod_pkt);
+        ofpFlowModDeleteStrict(pcore->flowtable, flow_mod_pkt);
         return EXIT_SUCCESS;
     }
 

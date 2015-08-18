@@ -82,6 +82,12 @@ char *MAC2Colon(char *buf, uchar mac_addr[])
 	return buf;
 }
 
+char *MAC2String(char *buf, uchar mac_addr[])
+{
+    sprintf(buf, "%02x%02x%02x%02x%02x%02x", mac_addr[0], mac_addr[1], mac_addr[2],
+		mac_addr[3], mac_addr[4], mac_addr[5]);
+    return buf;
+}
 
 int gAtoi(char *str)
 {

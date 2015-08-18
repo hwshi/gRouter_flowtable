@@ -128,7 +128,7 @@ typedef struct _ftentry_t
     ushort is_empty;
     ushort language;
     ushort ip_protocol_type;
-    // for of
+    // for open flow
     ofp_match_t match;
     int count;
     ofp_action_type action;
@@ -216,8 +216,8 @@ ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
 int ofpFlowMod2(flowtable_t *flowtable, void *msg);
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 int ofpFlowModModify(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
-int ofpFLowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
-int ofpFlowModDleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowModDeleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt);
 #endif

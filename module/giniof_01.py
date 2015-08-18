@@ -8,6 +8,7 @@ import threading
 
 # utils
 import copy
+import struct
 
 # TODO: import POX.openflow.libopenflow_01
 import pox.openflow.libopenflow_01 as of
@@ -35,15 +36,77 @@ def gini_get_device_ports():
         print("tuple: ", tp)
         port = of.ofp_phy_port()
         port.port_no = tp[0]
-        port.hw_addr = tp[1]
+        port.hw_addr = of.EthAddr(tp[1])
         port.name = tp[2]
-        port_list.append(copy.deepcopy(port)) # stupid way??
+        port_list.append(copy.deepcopy(port)) # wrong way??
     print("port list is: ", port_list)
     return port_list
 def gini_ofp_flow_mod(pkt):
 
     return 0
 
+_PAD = b'\x00'
+_PAD2 = _PAD*2
+_PAD3 = _PAD*3
+_PAD4 = _PAD*4
+_PAD6 = _PAD*6
+
+class giniclass_flow_mod(of.ofp_flow_mod):
+    def pack_for_gini(self):
+        # pack in little endian
+        packed = b""
+        # pack header
+        packed += struct.pack("BBIQ", self.version, self.header_type, len(self), self.xid)
+        # pack match field
+        match = self.match
+        packed += struct.pack("LH", match.wildcards, match._in_port)
+        packed += match._dl_src.toRaw()
+        packed += match._dl_dst.toRaw()
+        def check_ip(val):
+          return (val or 0) if self.dl_type == 0x0800 else 0
+        def check_ip_or_arp(val):
+          return (val or 0) if self.dl_type == 0x0800 \
+                               or self.dl_type == 0x0806 else 0
+        def check_tp(val):
+          return (val or 0) if self.dl_type == 0x0800 \
+                               and self.nw_proto in (1,6,17) else 0
+        try:
+            self.dl_vlan
+        except AttributeError:
+            print('dl_vlan is not defined!!')
+            self.dl_vlan = None
+        try:
+             self.dl_vlan_pcp
+        except AttributeError:
+            self.dl_vlan_pcp = None
+            ('dl_vlan_pcp is not defined!!')
+
+        packed += struct.pack("HB", self.dl_vlan or 0, self.dl_vlan_pcp or 0)
+        packed += _PAD # Hardcode padding
+        packed += struct.pack("HBB", self.dl_type or 0,
+            check_ip(self.nw_tos), check_ip_or_arp(self.nw_proto))
+        packed += _PAD2 # Hardcode padding
+        def fix (addr):
+          if addr is None: return 0
+          if type(addr) is int: return addr & 0xffFFffFF
+          if type(addr) is long: return addr & 0xffFFffFF
+          return addr.toUnsigned()
+        packed += struct.pack("LLHH", check_ip_or_arp(fix(self.nw_src)),
+            check_ip_or_arp(fix(self.nw_dst)),
+            check_tp(self.tp_src), check_tp(self.tp_dst))
+        #
+        # packed += struct.pack("HBBLBBIQQII", match._dl_vlan, match._dl_vlan_pcp,
+        #                       _PAD, match._dl_type, match._nw_tos,
+        #                       match._nw_proto, _PAD2, match._nw_src,
+        #                       match._nw_dst, match._tp_src, match._tp_dst)
+        # pack body
+        packed += struct.pack("QHHHHLHH", self.cookie, self.command,
+                      self.idle_timeout, self.hard_timeout,
+                      self.priority, self.buffer_id, self.out_port,
+                      self.flags)
+        for i in self.actions:
+          packed += i.pack()
+        #pack actions
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -96,7 +159,8 @@ class gini_of:
         pkt_features_reply.n_tables = 0
         pkt_features_reply.capabilities = 0
         pkt_features_reply.actions = 0
-        pkt_features_reply.ports = []  # set the list of ports
+        pkt_features_reply.ports = ports  # set the list of ports
+
         self.s.send(pkt_features_reply.pack())
 
     def process_set_config(self, pkt):
@@ -106,7 +170,6 @@ class gini_of:
         pkt_echo_rep = of.ofp_echo_reply()
         self.s.send(pkt_echo_rep.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
-
     # TODO: huge work here ...
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
@@ -126,7 +189,8 @@ class gini_of:
         # if pkt.command == 4:
         #     # OFPFC_DELETE_STRICT
         #     _GINIC.gini_ofp_flow_mod_DELETE_STRICT(pkt.pack())
-        _GINIC.gini_ofp_flow_mod(pkt.pack())
+
+        _GINIC.gini_ofp_flow_mod(pkt.pack_for_gini())
         pkt_echo_reply = of.ofp_echo_reply() #???
         self.s.send(pkt_echo_reply.pack())  #???
         # if gini_ofp_flow_mod(pkt) == True:
@@ -176,7 +240,7 @@ class gini_of:
                 self.process_set_config(pkt)
             elif pkt.header_type == gini_of.OFPT_FLOW_MOD:
                 print("OFPT_FLOW_MOD msg: ")
-                pkt = of.ofp_flow_mod()
+                pkt = giniclass_flow_mod()
                 pkt.unpack(buff)
                 self.process_flow_mod(pkt)
             elif pkt.header_type == gini_of.OFPT_BARRIER_REQUEST:
