@@ -41,15 +41,14 @@ def gini_get_device_ports():
         port_list.append(copy.deepcopy(port)) # wrong way??
     print("port list is: ", port_list)
     return port_list
-def gini_ofp_flow_mod(pkt):
-
-    return 0
 
 _PAD = b'\x00'
 _PAD2 = _PAD*2
 _PAD3 = _PAD*3
 _PAD4 = _PAD*4
 _PAD6 = _PAD*6
+
+NO_BUFFER = 4294967295
 
 class giniclass_flow_mod(of.ofp_flow_mod):
     def pack_for_gini(self):
@@ -63,46 +62,49 @@ class giniclass_flow_mod(of.ofp_flow_mod):
         packed += match._dl_src.toRaw()
         packed += match._dl_dst.toRaw()
         def check_ip(val):
-          return (val or 0) if self.dl_type == 0x0800 else 0
+          return (val or 0) if match._dl_type == 0x0800 else 0
         def check_ip_or_arp(val):
-          return (val or 0) if self.dl_type == 0x0800 \
-                               or self.dl_type == 0x0806 else 0
+          return (val or 0) if match._dl_type == 0x0800 \
+                               or match._dl_type == 0x0806 else 0
         def check_tp(val):
-          return (val or 0) if self.dl_type == 0x0800 \
-                               and self.nw_proto in (1,6,17) else 0
-        try:
-            self.dl_vlan
-        except AttributeError:
-            print('dl_vlan is not defined!!')
-            self.dl_vlan = None
-        try:
-             self.dl_vlan_pcp
-        except AttributeError:
-            self.dl_vlan_pcp = None
-            ('dl_vlan_pcp is not defined!!')
+          return (val or 0) if match._dl_type == 0x0800 \
+                               and match._nw_proto in (1,6,17) else 0
+        # try:
+        #     self.dl_vlan
+        # except AttributeError:
+        #     print('dl_vlan is not defined!!')
+        #     self.dl_vlan = None
+        # try:
+        #      self.dl_vlan_pcp
+        # except AttributeError:
+        #     self.dl_vlan_pcp = None
+        #     ('dl_vlan_pcp is not defined!!')
 
-        packed += struct.pack("HB", self.dl_vlan or 0, self.dl_vlan_pcp or 0)
+        packed += struct.pack("HB", match._dl_vlan or 0, match._dl_vlan_pcp or 0)
         packed += _PAD # Hardcode padding
-        packed += struct.pack("HBB", self.dl_type or 0,
-            check_ip(self.nw_tos), check_ip_or_arp(self.nw_proto))
+        packed += struct.pack("HBB", match._dl_type or 0,
+            check_ip(match._nw_tos), check_ip_or_arp(match._nw_proto))
         packed += _PAD2 # Hardcode padding
         def fix (addr):
           if addr is None: return 0
           if type(addr) is int: return addr & 0xffFFffFF
           if type(addr) is long: return addr & 0xffFFffFF
           return addr.toUnsigned()
-        packed += struct.pack("LLHH", check_ip_or_arp(fix(self.nw_src)),
-            check_ip_or_arp(fix(self.nw_dst)),
-            check_tp(self.tp_src), check_tp(self.tp_dst))
+        packed += struct.pack("LLHH", check_ip_or_arp(fix(match._nw_src)),
+            check_ip_or_arp(fix(match._nw_dst)),
+            check_tp(match._tp_src), check_tp(match._tp_dst))
         #
         # packed += struct.pack("HBBLBBIQQII", match._dl_vlan, match._dl_vlan_pcp,
         #                       _PAD, match._dl_type, match._nw_tos,
         #                       match._nw_proto, _PAD2, match._nw_src,
         #                       match._nw_dst, match._tp_src, match._tp_dst)
         # pack body
+        buffer_id = self.buffer_id
+        if buffer_id == None:
+            buffer_id = NO_BUFFER
         packed += struct.pack("QHHHHLHH", self.cookie, self.command,
                       self.idle_timeout, self.hard_timeout,
-                      self.priority, self.buffer_id, self.out_port,
+                      self.priority, buffer_id, self.out_port,
                       self.flags)
         for i in self.actions:
           packed += i.pack()
