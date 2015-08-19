@@ -3024,7 +3024,7 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         for(i = 0; i < 20; i ++)
             if(netarray.elem[i] != NULL)
                 break;
-        verbose(3, "[SWIG - getDeviceName]Index: %d\n", i);
+        verbose(2, "[SWIG - getDeviceName]Index: %d\n", i);
         ifptr = netarray.elem[i];
         printf("[getDevicename]---number: %d", netarray.count);
         sprintf(name, "%02x%02x%02x%02x%02x%02x", ifptr->mac_addr[0], ifptr->mac_addr[1], ifptr->mac_addr[2], 
@@ -3068,9 +3068,11 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
-        ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)calloc(1, sizeof(ofp_flow_mod_pkt_t));
+        ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
         //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
-        memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
+        printf("size1: %d, size2: %d", sizeof(ofp_flow_mod_pkt_t), PyString_Size(flow_mod_pkt));
+        //memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
+        //printf("[gini_ofp_flow_mod]check point 2\n");
         //printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;

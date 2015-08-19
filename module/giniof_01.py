@@ -55,7 +55,8 @@ class giniclass_flow_mod(of.ofp_flow_mod):
         # pack in little endian
         packed = b""
         # pack header
-        packed += struct.pack("BBIQ", self.version, self.header_type, len(self), self.xid)
+        packed += struct.pack("BBHL", self.version, self.header_type, len(self), self.xid)
+        print('cur len: {0}'.format(len(packed)))
         # pack match field
         match = self.match
         packed += struct.pack("LH", match.wildcards, match._in_port)
@@ -98,6 +99,7 @@ class giniclass_flow_mod(of.ofp_flow_mod):
         #                       _PAD, match._dl_type, match._nw_tos,
         #                       match._nw_proto, _PAD2, match._nw_src,
         #                       match._nw_dst, match._tp_src, match._tp_dst)
+        print('cur len: {0}'.format(len(packed)))
         # pack body
         buffer_id = self.buffer_id
         if buffer_id == None:
@@ -106,9 +108,12 @@ class giniclass_flow_mod(of.ofp_flow_mod):
                       self.idle_timeout, self.hard_timeout,
                       self.priority, buffer_id, self.out_port,
                       self.flags)
+        print('cur len: {0}'.format(len(packed)))
+        #pack actions
         for i in self.actions:
           packed += i.pack()
-        #pack actions
+        # barrier request pack missing??
+        return packed
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -191,7 +196,7 @@ class gini_of:
         # if pkt.command == 4:
         #     # OFPFC_DELETE_STRICT
         #     _GINIC.gini_ofp_flow_mod_DELETE_STRICT(pkt.pack())
-
+        print('test length {0}->{1}'.format(len(pkt.pack()), len(pkt.pack_for_gini())))
         _GINIC.gini_ofp_flow_mod(pkt.pack_for_gini())
         pkt_echo_reply = of.ofp_echo_reply() #???
         self.s.send(pkt_echo_reply.pack())  #???

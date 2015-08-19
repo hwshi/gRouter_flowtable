@@ -5,23 +5,22 @@
 
 import socket
 import threading
+
+# utils
+import copy
 import struct
 
-#utilities
-import copy
-
-# pox libraries
+# TODO: import POX.openflow.libopenflow_01
 import pox.openflow.libopenflow_01 as of
-try:
-    __import__('_GINIC')
-    _gini_error = 0
-except ImportError:
-    _gini_error = 1
-    print('Module _GINIC missing!')
-
+import _GINIC
+# try:
+#     __import__('_GINIC')
+# except ImportError:
+#     print('Module _GINIC missing!')
+# CONSTANT
 def gini_get_device_name():
     print("[gini_get_device_name]")
-    name = ""
+    name = "aaaaaaaaaaaa"
     print("got name before: ", name)
     name =_GINIC.getDeviceName()
     print("got name done: ", name)
@@ -43,41 +42,20 @@ def gini_get_device_ports():
     print("port list is: ", port_list)
     return port_list
 
-def gini_ofp_flow_mod(pkt):
-    #TODO: parse the pkt and send modification command to flow table(in GINI)
-    #_GINIC.ofpFlowMod()
-    print(pkt.match.__str__())
-
-    return True
-
-def gini_ofp_flow_mod_ADD(flow_mod_pkt):
-    pass
-
-def gini_ofp_flow_mod_MODIFY(flow_mod_pkt):
-    pass
-
-def gini_ofp_flow_mod_MODIFY_STRICT(flow_mod_pkt):
-    pass
-
-def gini_ofp_flow_mod_DELETE(flow_mod_pkt):
-    pass
-
-def gini_ofp_flow_mod_DELETE_STRICT(flow_mod_pkt):
-    pass
-
 _PAD = b'\x00'
 _PAD2 = _PAD*2
 _PAD3 = _PAD*3
 _PAD4 = _PAD*4
 _PAD6 = _PAD*6
+
 NO_BUFFER = 4294967295
+
 class giniclass_flow_mod(of.ofp_flow_mod):
     def pack_for_gini(self):
         # pack in little endian
         packed = b""
         # pack header
-        packed += struct.pack("BBHL", self.version, self.header_type, len(self), self.xid)
-        print('cur len: {0}'.format(len(packed)))
+        packed += struct.pack("BBIQ", self.version, self.header_type, len(self), self.xid)
         # pack match field
         match = self.match
         packed += struct.pack("LH", match.wildcards, match._in_port)
@@ -120,7 +98,6 @@ class giniclass_flow_mod(of.ofp_flow_mod):
         #                       _PAD, match._dl_type, match._nw_tos,
         #                       match._nw_proto, _PAD2, match._nw_src,
         #                       match._nw_dst, match._tp_src, match._tp_dst)
-        print('cur len: {0}'.format(len(packed)))
         # pack body
         buffer_id = self.buffer_id
         if buffer_id == None:
@@ -129,12 +106,9 @@ class giniclass_flow_mod(of.ofp_flow_mod):
                       self.idle_timeout, self.hard_timeout,
                       self.priority, buffer_id, self.out_port,
                       self.flags)
-        print('cur len: {0}'.format(len(packed)))
-        #pack actions
         for i in self.actions:
           packed += i.pack()
-        # barrier request pack missing??
-        return packed
+        #pack actions
 
 class gini_of:
     NAME = "GINI RUNALBE"
@@ -162,6 +136,8 @@ class gini_of:
             print('Failed connection to %s : %d') % (addr, port)
             exit(1)
             # TODO: except? timeout?
+
+
     def process_hello(self, pkt):
         print("This is a [Hello packet]")
         pkt_hello = of.ofp_hello()
@@ -178,33 +154,24 @@ class gini_of:
         print("This is a [Features reuqest packet]")
         pkt_features_reply = of.ofp_features_reply()  # set fields
         pkt_features_reply.xid = pkt.xid  # same xid
-        if _gini_error == 1:
-            device_name = "cccccccccccc"
-            ports = []
-        else:
-            device_name = gini_get_device_name() # returns a string for name eg. "003de70fc98a"
-            ports = gini_get_device_ports()
+        device_name = gini_get_device_name() # returns a string for name eg. "003de70fc98a"
+        ports = gini_get_device_ports()
         pkt_features_reply.datapath_id = int(device_name, 16) # [16bit: USER DEFIN |48bit: MAC ADDRESS]
         pkt_features_reply.n_buffers = 0
-        pkt_features_reply.n_tables = 1 # number of tables supported
+        pkt_features_reply.n_tables = 0
         pkt_features_reply.capabilities = 0
         pkt_features_reply.actions = 0
         pkt_features_reply.ports = ports  # set the list of ports
+
         self.s.send(pkt_features_reply.pack())
 
     def process_set_config(self, pkt):
         print("This is a [set config packet]")
         print(pkt.show())
         #TODO: miss_send_len is received
-        pkt_reply = of.ofp_echo_reply()  # TODO: why cannot reply with config_reply
-        self.s.send(pkt_reply.pack())
-        # pkt_get_config_reply = of.ofp_get_config_reply()
-        # pkt_get_config_reply.xid = pkt.xid
-        # pkt_get_config_reply.flags = 0
-        # pkt_get_config_reply.miss_send_len = pkt.miss_send_len
-        # self.s.send(pkt_get_config_reply.pack()) # TODO: not need. But cant connect when missing....
+        pkt_echo_rep = of.ofp_echo_reply()
+        self.s.send(pkt_echo_rep.pack()) # TODO: not need. But cant connect when missing....
         print("[process_set_config] done")
-
     # TODO: huge work here ...
     def process_flow_mod(self, pkt):
         print("This is a [flow mod packet]")
@@ -224,9 +191,8 @@ class gini_of:
         # if pkt.command == 4:
         #     # OFPFC_DELETE_STRICT
         #     _GINIC.gini_ofp_flow_mod_DELETE_STRICT(pkt.pack())
-        print('test length {0}->{1}'.format(len(pkt.pack()), len(pkt.pack_for_gini())))
-        if _gini_error == 0:
-            _GINIC.gini_ofp_flow_mod(pkt.pack_for_gini())
+
+        _GINIC.gini_ofp_flow_mod(pkt.pack_for_gini())
         pkt_echo_reply = of.ofp_echo_reply() #???
         self.s.send(pkt_echo_reply.pack())  #???
         # if gini_ofp_flow_mod(pkt) == True:
@@ -310,7 +276,48 @@ gini_of_runable = gini_of()
 gini_of_runable.launch("127.0.0.1", 8899)
 print("gini_of_runable lanched!")
 
-# test area:
+
+
+# Interface functions
+def Protocol_Processor(packet):
+    print("receive an Openflow packet from Ginic...")
+    global gini_of_runable
+    print("Process_OpenflowPkt", gini_of_runable.NAME)
+    print("[Process_OpenflowPkt] packet: ", packet)
+    # gini_of_runable.launch("127.0.0.1", 8899)
+    #   gini_of_runable.process_packet(packet)
+    # process_packet not done
+
+
+def Command_Line(str):
+    print("Command for giniof_01", str)
+
+
+def Config():
+    return "of"
+
+
+# --read socket with count
+# count = 1
+# while True:
+# try:
+#         buff = s.recv(32)
+#     except socket.errno, e:
+#         print("exception")
+#         err = e.args[0]
+#         if err == socket.errno.EAGAIN or err == socket.errno.EWOULDBLOCK:
+#             print("No data")
+#             break
+#     print('recved: ', len(buff))
+#     print(buff, "rev hello pkt", count, ": len: ", len(buff))
+#     count += 1
+#         break
 #
-# gini_of_runable.process_features_request(of.ofp_features_request())
+# if buff:
+#     print('recved: ', len(buff))
+#     print(buff, "rev hello pkt", count, ": len: ", len(buff))
+#     count += 1
+# else:
+#     print("socket is empty")
+#     break
 
