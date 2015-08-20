@@ -295,11 +295,12 @@ void printConfigInfo(module_config_t *config)
     printf("command     :       %p\n", config->command);
     printf("----       End of Config    ----\n");
 }
-
+ftentry_t *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match)
+{
+    return NULL;
+}
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
-    //ftentry_t *entry_res = (ftentry_t *)malloc(sizeof(ftentry_t));
-    //verbose(2  , "[checkFlowTable]:: \n");
     //find the protocol label
     int i, j, fromUpper = 0, prot = NULL_PROTOCOL;
     verbose(2, "[checkFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
@@ -332,7 +333,7 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
             return &(flowtable->entry[j]);
         }
     }
-    verbose(2, "!!!!?????\n");
+    verbose(2, "Failed finding a entry!\n");
     return NULL;
 }
 
@@ -363,7 +364,7 @@ int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     printf("[ofpFlowMod] Receive FLOW MOD pkt!\n");
     printOFPFlowModPkt(flow_mod_pkt);
-    switch (ntohs(flow_mod_pkt->command))
+    switch (flow_mod_pkt->command)
     {
     case 0:
         ofpFlowModAdd(flowtable, flow_mod_pkt);
@@ -381,6 +382,7 @@ int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
         ofpFlowModDeleteStrict(flowtable, flow_mod_pkt);
         break;
     default:
+        printf("Flow Mod Command invalid...\n");
         break;
     }
     return EXIT_SUCCESS;
@@ -415,26 +417,27 @@ int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 
 int ofpFlowModModify(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
-    verbose(2, "[ofpFlowModAdd]Modifying a Match to flow table...\n");
+    verbose(2, "[ofpFlowModAdd]Modifying a Match in flow table...\n");
 
     return EXIT_SUCCESS;
 }
 
 int ofpFlowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
-    verbose(2, "[ofpFlowModModifyStrict]Modifying a Match to flow table...\n");
+    verbose(2, "[ofpFlowModModifyStrict]Modifying a Match in flow table...\n");
     return EXIT_SUCCESS;
 }
 
 int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
-    verbose(2, "[ofpFlowModDelete]Deleting a Match to flow table...\n");
+    verbose(2, "[ofpFlowModDelete]Deleting a Match from flow table...\n");
+    //findMatch();
     return EXIT_SUCCESS;
 }
 
 int ofpFlowModDeleteStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
-    verbose(2, "[ofpFlowModDeleteStrict]Deleting a Match to flow table...\n");
+    verbose(2, "[ofpFlowModDeleteStrict]Deleting a Match from flow table...\n");
     return EXIT_SUCCESS;
 }
 
@@ -444,20 +447,13 @@ void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
     printf("--  Flow_Mod packet --\n");
     printf("Version: %" PRIu8 "\n", flow_mod_pkt->header.version);
     printf("Type: %" PRIu8 "\n", flow_mod_pkt->header.type);
-    //    printf("Length: %" PRIu16 "\n", ntohs(flow_mod_pkt->header.length));
     printf("Length: %" PRIu16 "\n", flow_mod_pkt->header.length);
     printf("before convert: %x", flow_mod_pkt->header.xid);
-    //    printf("Xid: %" PRIu32 "\n", ntohl(flow_mod_pkt->header.xid));
-    //    printf("Cookie: %" PRIu64 "\n", be64toh(flow_mod_pkt->cookie));
-    //    printf("Command: %" PRIu16 "\n", ntohs(flow_mod_pkt->command));
-    //    printf("Priority: %" PRIu16 "\n", ntohs(flow_mod_pkt->priority));
     printf("Xid: %" PRIu32 "\n", flow_mod_pkt->header.xid);
     printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
     printf("Command: %" PRIu16 "\n", flow_mod_pkt->command);
     printf("Priority: %" PRIu16 "\n", flow_mod_pkt->priority);
-    printf("before convert: %x", flow_mod_pkt->buffer_id);
-    //    printf("BufferId: %" PRIu32 "\n", ntohl(flow_mod_pkt->buffer_id));
-    //    printf("Out port: %" PRIu16 "\n", ntohs(flow_mod_pkt->out_port));    
+    printf("before convert: %x", flow_mod_pkt->buffer_id);   
     printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
     printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
     printf("--  End of packet  --\n");
