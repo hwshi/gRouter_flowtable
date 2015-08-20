@@ -39,7 +39,6 @@
 #define PYTHON_FUNCTION 1
 
 //config infor
-
 typedef struct _module_config_t
 {
     char name[20];
@@ -49,6 +48,36 @@ typedef struct _module_config_t
     char command_str[20];
 } module_config_t;
 
+
+/* Flow wildcards. */
+typedef enum _ofp_flow_wildcards
+{
+    OFPFW_IN_PORT = 1 << 0,             /* Switch input port. */
+    OFPFW_DL_VLAN = 1 << 1,             /* VLAN id. */
+    OFPFW_DL_SRC = 1 << 2,              /* Ethernet source address. */
+    OFPFW_DL_DST = 1 << 3,              /* Ethernet destination address. */
+    OFPFW_DL_TYPE = 1 << 4,             /* Ethernet frame type. */
+    OFPFW_NW_PROTO = 1 << 5,            /* IP protocol. */
+    OFPFW_TP_SRC = 1 << 6,              /* TCP/UDP source port. */
+    OFPFW_TP_DST = 1 << 7,              /* TCP/UDP destination port. */
+    /* IP source address wildcard bit count. 0 is exact match, 1 ignores the
+     * LSB, 2 ignores the 2 least-significant bits, ..., 32 and higher wildcard
+     * the entire field. This is the *opposite* of the usual convention where
+     * e.g. /24 indicates that 8 bits (not 24 bits) are wildcarded. */
+    OFPFW_NW_SRC_SHIFT = 8,
+    OFPFW_NW_SRC_BITS = 6,
+    OFPFW_NW_SRC_MASK = ((1 << OFPFW_NW_SRC_BITS) - 1) << OFPFW_NW_SRC_SHIFT,
+    OFPFW_NW_SRC_ALL = 32 << OFPFW_NW_SRC_SHIFT,
+    /* IP destination address wildcard bit count. Same format as source. */
+    OFPFW_NW_DST_SHIFT = 14,
+    OFPFW_NW_DST_BITS = 6,
+    OFPFW_NW_DST_MASK = ((1 << OFPFW_NW_DST_BITS) - 1) << OFPFW_NW_DST_SHIFT,
+    OFPFW_NW_DST_ALL = 32 << OFPFW_NW_DST_SHIFT,
+    OFPFW_DL_VLAN_PCP = 1 << 20, /* VLAN priority. */
+    OFPFW_NW_TOS = 1 << 21, /* IP ToS (DSCP field, 6 bits). */
+    /* Wildcard all fields. */
+    OFPFW_ALL = ((1 << 22) - 1)
+} ofp_flow_wildcards;
 /* Fields to match against flows */
 typedef struct _ofp_match_t
 {
@@ -70,38 +99,6 @@ typedef struct _ofp_match_t
     uint16_t tp_dst;                    /* TCP/UDP destination port. */
 } ofp_match_t;
 //OFP_ASSERT(sizeof (struct ofp_match) == 40);
-
-/* Flow wildcards. */
-typedef enum _ofp_flow_wildcards
-{
-    OFPFW_IN_PORT = 1 << 0,             /* Switch input port. */
-    OFPFW_DL_VLAN = 1 << 1,             /* VLAN id. */
-    OFPFW_DL_SRC = 1 << 2,              /* Ethernet source address. */
-    OFPFW_DL_DST = 1 << 3,              /* Ethernet destination address. */
-    OFPFW_DL_TYPE = 1 << 4,             /* Ethernet frame type. */
-    OFPFW_NW_PROTO = 1 << 5,            /* IP protocol. */
-    OFPFW_TP_SRC = 1 << 6,              /* TCP/UDP source port. */
-    OFPFW_TP_DST = 1 << 7,              /* TCP/UDP destination port. */
-    
-    /* IP source address wildcard bit count. 0 is exact match, 1 ignores the
-     * LSB, 2 ignores the 2 least-significant bits, ..., 32 and higher wildcard
-     * the entire field. This is the *opposite* of the usual convention where
-     * e.g. /24 indicates that 8 bits (not 24 bits) are wildcarded. */
-    OFPFW_NW_SRC_SHIFT = 8,
-    OFPFW_NW_SRC_BITS = 6,
-    OFPFW_NW_SRC_MASK = ((1 << OFPFW_NW_SRC_BITS) - 1) << OFPFW_NW_SRC_SHIFT,
-    OFPFW_NW_SRC_ALL = 32 << OFPFW_NW_SRC_SHIFT,
-    /* IP destination address wildcard bit count. Same format as source. */
-    OFPFW_NW_DST_SHIFT = 14,
-    OFPFW_NW_DST_BITS = 6,
-    OFPFW_NW_DST_MASK = ((1 << OFPFW_NW_DST_BITS) - 1) << OFPFW_NW_DST_SHIFT,
-    OFPFW_NW_DST_ALL = 32 << OFPFW_NW_DST_SHIFT,
-    OFPFW_DL_VLAN_PCP = 1 << 20, /* VLAN priority. */
-    OFPFW_NW_TOS = 1 << 21, /* IP ToS (DSCP field, 6 bits). */
-    /* Wildcard all fields. */
-    OFPFW_ALL = ((1 << 22) - 1)
-} ofp_flow_wildcards;
-
 typedef enum _ofp_action_type
 {
     OFPAT_OUTPUT,                       /*Output to switch port. */
@@ -118,39 +115,6 @@ typedef enum _ofp_action_type
     OFPAT_ENQUEUE,                      /*Output to queue. */
     OFPAT_VENDOR = 0xffff
 } ofp_action_type;
-//flow table
-// TODO: an new flow table entry need to be designed.
-
-//TODO: change it into struct of unions? (classical and openflow...)
-typedef struct _ftentry_t
-{
-    // for gini_classic
-    ushort is_empty;
-    ushort language;
-    ushort ip_protocol_type;
-    // for open flow
-    ofp_match_t match;
-    int count;
-    ofp_action_type action;
-    //for gini_classic
-    void *action_c;
-} ftentry_t;
-
-//typedef struct _ftentry_t
-//{
-//    ushort is_empty; // 1 empty 0 occupied
-//    ushort language; // 0 C 1 PYTHON
-//    ushort protocol;
-//    void *action;
-//} ftentry_t;
-
-typedef struct _flowtable_t
-{
-    int num;
-    //ftentry_t entry[MAX_ENTRY_NUMBER];
-    ftentry_t entry[MAX_ENTRY_NUMBER];
-} flowtable_t;
-
 typedef struct _ofp_header_t
 {
     uint8_t version;
@@ -171,9 +135,7 @@ typedef struct _ofp_flow_mod_pkt_t
 {
     ofp_header_t header;
     ofp_match_t match;                  /* Fields to match */
-   
     uint64_t cookie;                    /* Opaque controller-issued identifier. */
-
     /* Flow actions. */
     uint16_t command;                   /*One of OFPFC_*. */
     uint16_t idle_timeout;              /*Idle time before discarding (seconds). */
@@ -193,6 +155,29 @@ typedef struct _ofp_flow_mod_pkt_t
                                         header. */
 } ofp_flow_mod_pkt_t;
 
+//flow table
+// TODO: an new flow table entry need to be designed.
+//TODO: change it into struct of unions? (classical and openflow...)
+typedef struct _ftentry_t
+{
+    // for gini_classic
+    ushort is_empty;
+    ushort language;
+    ushort ip_protocol_type;
+    // for open flow
+    ofp_match_t match;
+    int count;
+    ofp_action_type action;
+    //for gini_classic
+    void *action_c;
+} ftentry_t;
+
+typedef struct _flowtable_t
+{
+    int num;
+    //ftentry_t entry[MAX_ENTRY_NUMBER];
+    ftentry_t entry[MAX_ENTRY_NUMBER];
+} flowtable_t;
 void *judgeProcessor(void *pc);
 int addEntry(flowtable_t *flowtable, int type, ushort language, void *content);
 int deleteEntry();
@@ -211,9 +196,10 @@ void printConfigInfo(module_config_t *config);
 
 
 // function prototyp for openflow protocol
+short *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match, short result[MAX_ENTRY_NUMBER], short *res_num);
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
-//int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
-int ofpFlowMod2(flowtable_t *flowtable, void *msg);
+int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
+int ofpFlowMod2(flowtable_t *flowtable, void *msg);// for debug
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 int ofpFlowModModify(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 int ofpFlowModModifyStrict(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);

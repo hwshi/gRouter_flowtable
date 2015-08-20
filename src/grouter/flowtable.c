@@ -295,10 +295,33 @@ void printConfigInfo(module_config_t *config)
     printf("command     :       %p\n", config->command);
     printf("----       End of Config    ----\n");
 }
-ftentry_t *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match)
+// use short for result count?
+
+short *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match, short result[MAX_ENTRY_NUMBER], short *res_num)
 {
-    return NULL;
+    printf("[ofpFindMatch]finding the match..\n");
+    // TODO: matching algorithm needed....
+    ofp_flow_wildcards wc = match->wildcards;
+    int i, j, index = 0;
+    // all wildcards
+    if (wc == OFPFW_ALL)
+        for (i = 0; i < MAX_ENTRY_NUMBER; i++)
+            if (flowtable->entry[i].is_empty != 1)
+            {
+                result[index++] = i;
+                res_num++;
+            }
+    // match
+    for (i = 0; i < MAX_ENTRY_NUMBER; i++)
+    {
+        for (j = 0; j < 12; j++)
+        {
+
+        }
+    }
+    return result;
 }
+
 ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     //find the protocol label
@@ -340,6 +363,7 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     verbose(2, "[checkOFFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
+
     return NULL;
 }
 
@@ -432,6 +456,9 @@ int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     verbose(2, "[ofpFlowModDelete]Deleting a Match from flow table...\n");
     //findMatch();
+    short result[MAX_ENTRY_NUMBER] = {0};
+    short res_num = 0;
+    ofpFindMatch(flowtable, &(flow_mod_pkt->match), result, &res_num);
     return EXIT_SUCCESS;
 }
 
@@ -453,7 +480,7 @@ void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
     printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
     printf("Command: %" PRIu16 "\n", flow_mod_pkt->command);
     printf("Priority: %" PRIu16 "\n", flow_mod_pkt->priority);
-    printf("before convert: %x", flow_mod_pkt->buffer_id);   
+    printf("before convert: %x", flow_mod_pkt->buffer_id);
     printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
     printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
     printf("--  End of packet  --\n");
