@@ -29,7 +29,7 @@ void *judgeProcessor(void *pc)
         readQueue(pcore->decisionQ, (void **) &in_pkt, &pktsize);
         pthread_testcancel();
         verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
-        ftentry_t *entry_res;
+        ftentry_t *entry_res = NULL;
         ushort prot;
         //        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
         /*
@@ -384,15 +384,21 @@ ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     verbose(2, "[checkOFFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
     int i;
+    ushort cur_priority = 0;
+    ftentry_t *result = NULL;
     for (i = 0; i < MAX_ENTRY_NUMBER; i++)
     {
         if (flowtable->entry[i].is_empty != 1)
         {
-            if (compareFlowAndPkt(&(flowtable->entry[i]), pkt) == FLOW_MATCH)
-                return &(flowtable->entry[i]);
+            printf("checking entry[%d]..\n", i);
+            if (flowtable->entry[i].priority >= cur_priority && compareFlowAndPkt(&(flowtable->entry[i]), pkt) == FLOW_MATCH)
+            {
+                result = &(flowtable->entry[i]);
+                cur_priority = result->priority;
+            }
         }
     }
-    return NULL;
+    return result;
 }
 
 /* ntoh() needed for 5 items in packet_in
@@ -402,6 +408,7 @@ ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 int compareFlowAndPkt(ftentry_t *entry, gpacket_t *pkt)
 {
     char tmpbuff[MAX_TMPBUF_LEN];
+
     ofp_match_t *match = &(entry->match);
     uint32_t wildcards = match->wildcards;
     if (wildcards == OFPFW_ALL) return FLOW_MATCH;
@@ -504,6 +511,7 @@ void printFlowTable(flowtable_t *flowtable)
 void DEBUG_ADD_TEST_FLOW_AllWildcards(flowtable_t *flowtable)
 {
     ftentry_t *entry = &flowtable->entry[1];
+    entry->priority = 1;
     entry->match.wildcards = OFPFW_ALL;
     ofp_action_output_t *action = (ofp_action_output_t *) entry->action;
     action->port = 2;
@@ -514,9 +522,10 @@ void DEBUG_ADD_TEST_FLOW_AllWildcards(flowtable_t *flowtable)
 void DEBUG_ADD_TEST_FLOW_ARPFlow(flowtable_t *flowtable)
 {
     ftentry_t *entry = &flowtable->entry[0];
+    entry->priority = 1;
     /* for ARP*/
-    entry->match.wildcards = OFPFW_IN_PORT | OFPFW_DL_VLAN | OFPFW_DL_SRC | OFPFW_DL_DST 
-            | OFPFW_NW_PROTO| OFPFW_TP_SRC | OFPFW_TP_DST | OFPFW_DL_VLAN_PCP | OFPFW_NW_TOS
+    entry->match.wildcards = OFPFW_IN_PORT | OFPFW_DL_VLAN | OFPFW_DL_SRC | OFPFW_DL_DST
+            | OFPFW_NW_PROTO | OFPFW_TP_SRC | OFPFW_TP_DST | OFPFW_DL_VLAN_PCP | OFPFW_NW_TOS
             | 0x1F << 8 | 0x1F << 14;
     entry->match.dl_type = ARP_PROTOCOL;
     ofp_action_output_t *action = (ofp_action_output_t *) entry->action;
@@ -578,8 +587,13 @@ int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
         }
         if (i == MAX_ENTRY_NUMBER - 1) verbose(1, "[ofpFlowModAdd] Flow table is full, adding failed!\n");
     }
-    // TODO: ADD......
-
+    // TODO: ADD......be ware of action[0]..variable length..
+    entry->is_empty = 0;
+    memcpy(& entry->match, & flow_mod_pkt->match, sizeof(ofp_match_t));
+    entry->count = 0;
+    /*size ? is memory alloced properly?*/
+    memcpy(& entry->action, & flow_mod_pkt->actions, flow_mod_pkt->actions->len);
+    
     return EXIT_SUCCESS;
 }
 

@@ -184,6 +184,7 @@ typedef struct _ftentry_t
     ushort ip_protocol_type;
     // for open flow
     ofp_match_t match;
+    uint16_t priority;
     int count;
     void *action_c;
     ofp_action_type action[0];

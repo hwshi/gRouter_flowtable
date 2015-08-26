@@ -1,4 +1,4 @@
-/*                                                                                                               * This is the console (it creates a .port) interface for the gRouter.
+/* This is the console (it creates a .port) interface for the gRouter.
  * At this time, the console gives a copy of all the packets that are
  * flowing through the router in the libpcap format.
  */
