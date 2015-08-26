@@ -9,6 +9,8 @@
 #define __FLOW_TABLE_H__
 #define MAX_ENTRY_NUMBER 50
 #define MAX_ENTRY_SIZE 4
+#define FLOW_NOT_MATCH 0
+#define FLOW_MATCH 1
 #include <slack/std.h>
 #include <slack/map.h>
 #include <slack/list.h>
@@ -37,7 +39,11 @@
 //type of language
 #define C_FUNCTION 0
 #define PYTHON_FUNCTION 1
-
+typedef struct _tcp_udp_header_t
+{
+    ushort src_port;
+    ushort dst_port;
+}tcp_udp_header_t;
 //config infor
 typedef struct _module_config_t
 {
@@ -46,6 +52,9 @@ typedef struct _module_config_t
     void *processor;
     void *command;
     char command_str[20];
+    char shelp[500];
+    char usage[500];
+    char lhelp[500];
 } module_config_t;
 
 
@@ -73,6 +82,7 @@ typedef enum _ofp_flow_wildcards
     OFPFW_NW_DST_BITS = 6,
     OFPFW_NW_DST_MASK = ((1 << OFPFW_NW_DST_BITS) - 1) << OFPFW_NW_DST_SHIFT,
     OFPFW_NW_DST_ALL = 32 << OFPFW_NW_DST_SHIFT,
+            
     OFPFW_DL_VLAN_PCP = 1 << 20, /* VLAN priority. */
     OFPFW_NW_TOS = 1 << 21, /* IP ToS (DSCP field, 6 bits). */
     /* Wildcard all fields. */
@@ -82,26 +92,28 @@ typedef enum _ofp_flow_wildcards
 typedef struct _ofp_match_t
 {
     uint32_t wildcards;                 /* Wildcard fields. */
-    uint16_t in_port;                   /* Input switch port. */
-    uint8_t dl_src[OFP_ETH_ALEN];       /* Ethernet source address. */
-    uint8_t dl_dst[OFP_ETH_ALEN];       /* Ethernet destination address. */
-    uint16_t dl_vlan;                   /* Input VLAN id. */
-    uint8_t dl_vlan_pcp;                /* Input VLAN priority. */
+    uint16_t in_port;                   /* Input switch port. -wildcard*/
+    uint8_t dl_src[OFP_ETH_ALEN];       /* Ethernet source address. -wildcard*/
+    uint8_t dl_dst[OFP_ETH_ALEN];       /* Ethernet destination address. -wildcard*/
+    uint16_t dl_vlan;                   /* Input VLAN id. -wildcard*/
+    uint8_t dl_vlan_pcp;                /* Input VLAN priority. -wildcard*/
     uint8_t pad1[1];                    /* Align to 64-bits */
-    uint16_t dl_type;                   /* Ethernet frame type. */
-    uint8_t nw_tos;                     /* IP ToS (actually DSCP field, 6 bits). */
+    uint16_t dl_type;                   /* Ethernet frame type. -wildcard*/
+    uint8_t nw_tos;                     /* IP ToS (actually DSCP field, 6 bits). -wildcard*/
     uint8_t nw_proto;                   /* IP protocol or lower 8 bits of
-                                         * ARP opcode. */
+                                         * ARP opcode. -wildcard*/
     uint8_t pad2[2];                    /* Align to 64-bits */
-    uint32_t nw_src;                    /* IP source address. */
-    uint32_t nw_dst;                    /* IP destination address. */
-    uint16_t tp_src;                    /* TCP/UDP source port. */
-    uint16_t tp_dst;                    /* TCP/UDP destination port. */
+    uint32_t nw_src;                    /* IP source address. -wildcard*/
+    uint32_t nw_dst;                    /* IP destination address. -wildcard*/
+    uint16_t tp_src;                    /* TCP/UDP source port. -wildcard*/
+    uint16_t tp_dst;                    /* TCP/UDP destination port. -wildcard*/
 } ofp_match_t;
 //OFP_ASSERT(sizeof (struct ofp_match) == 40);
 typedef enum _ofp_action_type
-{
+{                                       
+    /* Required */
     OFPAT_OUTPUT,                       /*Output to switch port. */
+    /* Optional */
     OFPAT_SET_VLAN_VID,                 /*Set the 802.1q VLAN id. */
     OFPAT_SET_VLAN_PCP,                 /*Set the 802.1q priority. */
     OFPAT_STRIP_VLAN,                   /*Strip the 802.1q header. */
@@ -122,6 +134,12 @@ typedef struct _ofp_header_t
     uint16_t length;
     uint32_t xid;
 } ofp_header_t;
+typedef struct _ofp_action_output_t {
+    uint16_t type;                      /* OFPAT_OUTPUT. */
+    uint16_t len;                       /* Length is 8. */
+    uint16_t port;                      /* Output port. */
+    uint16_t max_len;                   /* Max length to send to controller. */
+} ofp_action_output_t;
 typedef struct _ofp_action_header_t
 {
     uint16_t type;                      /* One of OFPAT_*. */
@@ -150,7 +168,7 @@ typedef struct _ofp_flow_mod_pkt_t
 
     uint16_t flags;                     /* One of OFPFF_*. */
 // TODO: define....
-    ofp_action_header_t actions[0];/* The action length is inferred
+    ofp_action_header_t actions[0];     /* The action length is inferred
                                         from the length field in the
                                         header. */
 } ofp_flow_mod_pkt_t;
@@ -167,9 +185,10 @@ typedef struct _ftentry_t
     // for open flow
     ofp_match_t match;
     int count;
-    ofp_action_type action;
-    //for gini_classic
     void *action_c;
+    ofp_action_type action[0];
+    //for gini_classic
+    
 } ftentry_t;
 
 typedef struct _flowtable_t
@@ -196,8 +215,12 @@ void printConfigInfo(module_config_t *config);
 
 
 // function prototyp for openflow protocol
+int compareIPUsingWildcards(uchar *ip_src_p, uchar * ip_dst_p, 
+                            uchar *ip_src_f, uchar *ip_dst_f, ofp_flow_wildcards wc);
 short *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match, short result[MAX_ENTRY_NUMBER], short *res_num);
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt);
+int compareFlowAndPkt(ftentry_t *entry, gpacket_t *pkt);
+int compareFlowAndFlow(ftentry_t *entry, ofp_flow_mod_pkt_t pkt);
 int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);
 int ofpFlowMod2(flowtable_t *flowtable, void *msg);// for debug
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt);

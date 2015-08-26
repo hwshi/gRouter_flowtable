@@ -91,9 +91,26 @@ print("*               this is the beginning of the module             *")
 pcb = UDPPcb()
 print("pcb created!")
 
+class module_config:
+    def init(self, name = "module", protocol = 255, command_string = "",
+             short_help = "", usage = "", long_help = ""):
+        self.name = name
+        self.protocol = protocol
+        self.command_string = command_string
+        self.short_help = short_help
+        self.usage = usage
+        self.long_help = long_help
+
+    def to_tuple(self):
+        config_tuple = (self.name, self.protocol, self.command_string,
+                        self.short_help, self.usage, self.long_help);
+        return config_tuple
+
 def Config():
     # print("Py::[Config]")
-    return "nc"
+    config = module_config("udp", 17, "nc", "udp function", '"nc -l [port]" "nc [IP][port]"',
+                           "sending and listening to udp packet")
+    return config.to_tuple()
 
 
 def Command_Line(str):

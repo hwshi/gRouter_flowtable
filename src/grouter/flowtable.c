@@ -23,6 +23,7 @@ void *judgeProcessor(void *pc)
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     while (1)
     {
+
         verbose(2, "[judgeProcessor]:: Waiting for a packet...");
         //TODO: Redefine data format in Queue from pkt to frame
         readQueue(pcore->decisionQ, (void **) &in_pkt, &pktsize);
@@ -84,6 +85,7 @@ void *judgeProcessor(void *pc)
         //                verbose(2, "Got Pyton obj\n");
         //                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
         //                CheckPythonError();
+        //              /* TODO: check whether further process is needed. */
         //                //                printf("pResult: %p", Py_pResult);
         //            }
         //        }
@@ -92,7 +94,7 @@ void *judgeProcessor(void *pc)
          * 2. openflow switch
          * tmp: let flowtable[3] have openflow.py (hardcoded)         
          */
-        //entry_res = checkOFFlowTable(pcore->flowtable, in_pkt);
+        entry_res = checkOFFlowTable(pcore->flowtable, in_pkt);
         if (entry_res == NULL) // No action in flowtable, send to openflow.py
         {
             PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
@@ -104,6 +106,15 @@ void *judgeProcessor(void *pc)
                 Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
                 CheckPythonError();
             }
+        }
+        else
+            /* found an match, apply action. Only [Output to switch port] is supported */
+        {
+            /*Other fields..*/
+            ofp_action_output_t *action = (ofp_action_output_t *) entry_res->action;
+            printAction(action);
+            in_pkt->frame.dst_interface = action->port;
+            writeQueue(pcore->outputQ, (void *) in_pkt, sizeof (gpacket_t));
         }
 
     }
@@ -227,16 +238,21 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
             pFuncCommand = PyDict_GetItemString(pProtGlobalDict, "Command_Line");
             if (pFuncCommand == NULL) verbose(2, "[addPyModule]pFuncCommand is NULL!!\n", pFuncCommand);
             verbose(2, "[addPyModule]Command_Line got\n");
-            //return a string for command: 
-            PyObject *Py_Config = PyDict_GetItemString(pProtGlobalDict, "Config");
+
+            //return a tuple of config info 
+            PyObject *PyConfigFunc = PyDict_GetItemString(pProtGlobalDict, "Config");
             verbose(2, "[addPyModule]Config got\n");
-            PyObject *Py_String = PyObject_CallFunction(Py_Config, NULL);
-            if (Py_String == NULL)
-            {
-                verbose(2, "[addPyModule]Py_String is NULL !\n");
-            }
-            char *command = PyString_AsString(Py_String);
-            registerCLI(command, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
+            module_config_t *config = (module_config_t *) calloc(1, sizeof (module_config_t));
+            PyObject *PyConfigTuple = PyObject_CallFunction(PyConfigFunc, NULL);
+            PyArg_ParseTuple(PyConfigTuple, "sHssss", config->name, &(config->protocol), config->command_str, config->shelp, config->usage, config->lhelp);
+            //            PyObject *Py_String = 
+            //            if (Py_String == NULL)
+            //            {
+            //                verbose(2, "[addPyModule]Py_String is NULL !\n");
+            //            }
+            //            char *command = PyString_AsString(Py_String);
+            printConfigInfo(config);
+            registerCLI(config->command_str, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
 
             verbose(2, "[addPyModule]Command < %p >registered\n", pFuncCommand);
             //CheckPythonError();
@@ -311,7 +327,7 @@ short *ofpFindMatch(flowtable_t *flowtable, ofp_match_t *match, short result[MAX
                 result[index++] = i;
                 res_num++;
             }
-    // match
+    // TODO: match
     for (i = 0; i < MAX_ENTRY_NUMBER; i++)
     {
         for (j = 0; j < 12; j++)
@@ -360,11 +376,112 @@ ftentry_t *checkFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
     return NULL;
 }
 
+/* match packet with openflow flowtable.
+ * algorithm: naive match
+ * return corresponding entry if found, NULL if not.
+ */
 ftentry_t *checkOFFlowTable(flowtable_t *flowtable, gpacket_t *pkt)
 {
     verbose(2, "[checkOFFlowTable]:: Search protocol(EtherType): %#06x\n", ntohs(pkt->data.header.prot));
-
+    int i;
+    for (i = 0; i < MAX_ENTRY_NUMBER; i++)
+    {
+        if (flowtable->entry[i].is_empty != 1)
+        {
+            if (compareFlowAndPkt(&(flowtable->entry[i]), pkt) == FLOW_MATCH)
+                return &(flowtable->entry[i]);
+        }
+    }
     return NULL;
+}
+
+/* ntoh() needed for 5 items in packet_in
+ * ntol() needed for 2 IP address in packet in.
+ * change before match? 'cus match occurs several times for one packet....
+ */
+int compareFlowAndPkt(ftentry_t *entry, gpacket_t *pkt)
+{
+    char tmpbuff[MAX_TMPBUF_LEN];
+    ofp_match_t *match = &(entry->match);
+    uint32_t wildcards = match->wildcards;
+    if (wildcards == OFPFW_ALL) return FLOW_MATCH;
+    /* which port should be used?..*/
+    if (!(wildcards >> 0 & 1) && match->in_port != pkt->frame.src_interface)
+    {
+        printf("port not matched..\n");
+        return FLOW_NOT_MATCH;
+    }
+    /* vlan tagging not supported..*/
+    if (!(wildcards >> 1 & 1))
+    {
+
+    }
+    /* Ethernet source address. */
+    if (!(wildcards >> 2 & 1) && COMPARE_MAC(match->dl_src, pkt->data.header.src) != 0)
+    {
+        printf("Ethernet source address not matched..\n");
+        return FLOW_NOT_MATCH;
+    }
+    /* Ethernet destination address. */
+    if (!(wildcards >> 3 & 1) && COMPARE_MAC(match->dl_dst, pkt->data.header.dst) != 0)
+    {
+        printf("Ethernet destination address not matched..\n");
+        return FLOW_NOT_MATCH;
+    }
+    /* Ethernet frame type. */
+    if (!(wildcards >> 4 & 1) && (match->dl_type != ntohs(pkt->data.header.prot)))
+    {
+        printf("Ethernet frame type not matched..match: %d, pkt: %d\n", match->dl_type, ntohs(pkt->data.header.prot));
+        return FLOW_NOT_MATCH;
+    }
+    ip_packet_t *ip_pkt = (ip_packet_t *) & pkt->data.data;
+    /* IP protocol. */
+    if (pkt->data.header.prot == IP_PROTOCOL)
+    {
+        if (!(wildcards >> 5 & 1) && (match->nw_proto != ip_pkt->ip_prot))
+        {
+            printf("IP protocol not matched..\n");
+            return FLOW_NOT_MATCH;
+        }
+        /* Match IP*/
+
+        if (compareIPUsingWildcards(gNtohl(tmpbuff, ip_pkt->ip_src), gNtohl(tmpbuff, ip_pkt->ip_dst),
+                                    (uchar*) match->nw_src, (uchar*) match->nw_dst, wildcards))
+        {
+            printf("IP not matched..\n");
+            return FLOW_NOT_MATCH;
+        }
+        tcp_udp_header_t * tcp_udp = (tcp_udp_header_t *) (ip_pkt + 1);
+        /* TCP/UDP source port. */
+        if (!(wildcards >> 6 & 1) && (match->tp_src != tcp_udp->src_port))
+        {
+            printf("TCP/UDP source port not matched..\n");
+            return FLOW_NOT_MATCH;
+        }
+        /* TCP/UDP destination port. */
+        if (!(wildcards >> 7 & 1) && (match->tp_dst != tcp_udp->dst_port))
+        {
+            printf("TCP/UDP destination port not matched..\n");
+            return FLOW_NOT_MATCH;
+        }
+        /* VLAN priority. */
+        if (wildcards >> 20 & 1)
+        {
+            /* vlan tagging not supported..*/
+        }
+        /* IP ToS (DSCP field, 6 bits). */
+        if (!(wildcards >> 21 & 1) && (match->nw_tos != ip_pkt->ip_tos))
+        {
+            printf("IP ToS not matched..\n");
+            return FLOW_NOT_MATCH;
+        }
+    }
+    return FLOW_MATCH;
+}
+
+int compareFlowAndFlow(ftentry_t *entry, ofp_flow_mod_pkt_t pkt)
+{
+    //TODO: sufficient implementation needed...
 }
 
 void printFlowTable(flowtable_t *flowtable)
@@ -384,10 +501,37 @@ void printFlowTable(flowtable_t *flowtable)
     printf("-- End of Flow Table --\n");
 }
 
+void DEBUG_ADD_TEST_FLOW_AllWildcards(flowtable_t *flowtable)
+{
+    ftentry_t *entry = &flowtable->entry[1];
+    entry->match.wildcards = OFPFW_ALL;
+    ofp_action_output_t *action = (ofp_action_output_t *) entry->action;
+    action->port = 2;
+    action->type = OFPAT_OUTPUT;
+    return;
+}
+
+void DEBUG_ADD_TEST_FLOW_ARPFlow(flowtable_t *flowtable)
+{
+    ftentry_t *entry = &flowtable->entry[0];
+    /* for ARP*/
+    entry->match.wildcards = OFPFW_IN_PORT | OFPFW_DL_VLAN | OFPFW_DL_SRC | OFPFW_DL_DST 
+            | OFPFW_NW_PROTO| OFPFW_TP_SRC | OFPFW_TP_DST | OFPFW_DL_VLAN_PCP | OFPFW_NW_TOS
+            | 0x1F << 8 | 0x1F << 14;
+    entry->match.dl_type = ARP_PROTOCOL;
+    ofp_action_output_t *action = (ofp_action_output_t *) entry->action;
+    action->port = 1;
+    action->type = OFPAT_OUTPUT;
+    return;
+}
+
 int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     printf("[ofpFlowMod] Receive FLOW MOD pkt!\n");
     printOFPFlowModPkt(flow_mod_pkt);
+    DEBUG_ADD_TEST_FLOW_AllWildcards(flowtable);
+    DEBUG_ADD_TEST_FLOW_ARPFlow(flowtable);
+    printAction(flowtable->entry[0].action);
     switch (flow_mod_pkt->command)
     {
     case 0:
@@ -412,13 +556,13 @@ int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
     return EXIT_SUCCESS;
 }
 
-int ofpFlowMod2(flowtable_t *flowtable, void *msg)
-{
-    printf("[ofpFlowMod2] Receive FLOW MOD pkt!\n");
-    ofp_flow_mod_pkt_t *flow_mod_pkt = msg;
-    printOFPFlowModPkt(flow_mod_pkt);
-    return EXIT_SUCCESS;
-}
+//int ofpFlowMod2(flowtable_t *flowtable, void *msg)
+//{
+//    printf("[ofpFlowMod2] Receive FLOW MOD pkt!\n");
+//    ofp_flow_mod_pkt_t *flow_mod_pkt = msg;
+//    printOFPFlowModPkt(flow_mod_pkt);
+//    return EXIT_SUCCESS;
+//}
 
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
@@ -458,7 +602,8 @@ int ofpFlowModDelete(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
     //findMatch();
     short result[MAX_ENTRY_NUMBER] = {0};
     short res_num = 0;
-    ofpFindMatch(flowtable, &(flow_mod_pkt->match), result, &res_num);
+    //ofpFindMatch(flowtable, &(flow_mod_pkt->match), result, &res_num);
+    verbose(2, "[ofpFlowModDelete]Deleted..\n");
     return EXIT_SUCCESS;
 }
 
@@ -484,4 +629,20 @@ void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
     printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
     printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
     printf("--  End of packet  --\n");
+}
+
+printAction(ofp_action_output_t *action)
+{
+    printf("--  action  --\n");
+    printf("type: %" PRIu16 "\n", action->type);
+    printf("port: %" PRIu16 "\n", action->port);
+    printf("--    end   --\n");
+}
+
+int compareIPUsingWildcards(uchar *ip_src_p, uchar * ip_dst_p,
+                            uchar *ip_src_f, uchar *ip_dst_f, ofp_flow_wildcards wc)
+{
+    int mask_src = wc >> 8 & 0x1F;
+    int mast_dst = wc >> 14 & 0x1F;
+    return memcmp(ip_src_p, ip_src_f, mask_src) | memcmp(ip_dst_p, ip_dst_f, mast_dst);
 }

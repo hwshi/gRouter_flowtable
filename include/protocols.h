@@ -10,7 +10,7 @@
 #define __PROTOCOLS_H__
 
 // From RFC 790-793 
-#define ARP_PROTOCOL 	        0x0806 //
+#define ARP_PROTOCOL                0x0806
 #define IP_PROTOCOL  		    0x0800
 #define ETHERNET_PROTOCOL	    0x0001
 

@@ -393,6 +393,7 @@ void *packetProcessor(void *pc)
             break;
 
         }
+        
          writeQueue(pcore->decisionQ, in_pkt, sizeof(gpacket_t));
     }
 }

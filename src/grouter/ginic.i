@@ -101,6 +101,7 @@
                 //char *buf;
                 //PyObject *mac_byte = PyBytes_FromFormat("%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
                 //printf("ADDDDDDDDDDRES%s:: buf");
+                
                 PyTuple_SetItem(port_list, tuple_index ++, 
                                 Py_BuildValue("(i,s,s)", ifptr->interface_id, mac_str, ifptr->device_name));
             }
@@ -119,12 +120,12 @@
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;
     }
-    int gini_ofp_flow_mod2(void * msg)
-    {
-        printf("[gini_ofp_flow_mod2]\n");
-        ofpFlowMod2(pcore->flowtable, msg);
-        return EXIT_SUCCESS;
-    }
+//    int gini_ofp_flow_mod2(void * msg)
+//    {
+//        printf("[gini_ofp_flow_mod2]\n");
+//        ofpFlowMod2(pcore->flowtable, msg);
+//        return EXIT_SUCCESS;
+//    }
     ///////////////////////////////////////////////////////////
     int gini_ofp_flow_mod_ADD(ofp_flow_mod_pkt_t *flow_mod_pkt)
     {
