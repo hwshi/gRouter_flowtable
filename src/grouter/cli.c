@@ -1186,9 +1186,7 @@ void addprotCmd()
             if (addModule(pcore->flowtable, PYTHON_FUNCTION, next_tok) == EXIT_SUCCESS)
                 verbose(2, "[addprotCmd]Python Module Added");
             else
-            {
                 verbose(2, "[addprotCmd]Python Module Adding Failed");
-            }
         }
         else if(strcmp(language_tok, "c") == 0 || strcmp(language_tok, "C") == 0)
         {

@@ -47,14 +47,14 @@ typedef struct _tcp_udp_header_t
 //config infor
 typedef struct _module_config_t
 {
-    char name[20];
+    char *name;
     ushort protocol;
     void *processor;
     void *command;
-    char command_str[20];
-    char shelp[500];
-    char usage[500];
-    char lhelp[500];
+    char *command_str;
+    char *shelp;
+    char *usage;
+    char *lhelp;
 } module_config_t;
 
 

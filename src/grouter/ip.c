@@ -76,6 +76,10 @@ int IPIncomingPacket(gpacket_t *in_pkt)
  * Check against all possible IPs I have to determine whether this packet
  * is meant for me.
  */
+
+/* return value change from TRUE/FALSE to the next layer's protocol
+ * 
+ */
 int IPCheckPacket4Me(gpacket_t *in_pkt)
 {
     ip_packet_t *ip_pkt = (ip_packet_t *) & in_pkt->data.data;
@@ -93,7 +97,7 @@ int IPCheckPacket4Me(gpacket_t *in_pkt)
             if (COMPARE_IP(iface_ip[i], pkt_ip) == 0)
             {
                 verbose(2, "[IPCheckPacket4Me]:: found a matching IP.. for %s ", IP2Dot(tmpbuf, pkt_ip));
-                return TRUE;
+                return ip_pkt->ip_prot;
             }
         }
         return FALSE;

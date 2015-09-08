@@ -3,6 +3,10 @@
  * AUTHOR: Haowei Shi
  * DATE: October 01, 2014
  *
+ * naming: 
+ * #define ABCD 1
+ * int checkVariable(int c_variable);
+ * 
  */
 
 //Haowei
@@ -11,7 +15,12 @@
 #include "flowtable.h"
 #include "Python.h"
 //#include "utils.h"
-//
+
+enum grouter_mode
+{
+    CLASSICAL_MODE = 0,
+    OPENFLOW_MODE = 1
+} GROUTER_MODE = CLASSICAL_MODE;
 
 void *judgeProcessor(void *pc)
 {
@@ -23,100 +32,100 @@ void *judgeProcessor(void *pc)
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     while (1)
     {
-
         verbose(2, "[judgeProcessor]:: Waiting for a packet...");
-        //TODO: Redefine data format in Queue from pkt to frame
         readQueue(pcore->decisionQ, (void **) &in_pkt, &pktsize);
         pthread_testcancel();
         verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
-        ftentry_t *entry_res = NULL;
-        ushort prot;
         //        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
         /*
          * check flow table:    1. classical router
          *                      2. openflow switch
          */
-
-        /*
-         * 1. classical router
-         */
-        /////////// 
-        //        entry_res = checkFlowTable(pcore->flowtable, in_pkt);
-        //        if (entry_res == NULL)
-        //            //if (!checkFlowTable(pcore->flowtable, in_pkt, action_c, &prot))
-        //        {
-        //            printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
-        //            return;
-        //        }
-        //        //TODO: call function using action(char *):  PyObject_CallFunction(String)
-        //        verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->ip_protocol_type);
-        //        if (entry_res->language == C_FUNCTION)
-        //        {
-        //
-        //            verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
-        //            int (*processor)(gpacket_t *);
-        //            processor = entry_res->action_c;
-        //            int nextlabel = (*processor)(in_pkt);
-        //            if (entry_res->ip_protocol_type == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
-        //            {
-        //                verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
-        //                continue;
-        //            }
-        //            if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
-        //            verbose(2, "[judgeProcessor][Ft]New style round");
-        //            labelNext(in_pkt, entry_res->ip_protocol_type, nextlabel);
-        //            verbose(2, "[judgeProcessor]Writing back to decision Q...");
-        //            writeQueue(pcore->decisionQ, in_pkt, sizeof (gpacket_t));
-        //            verbose(2, "[judgeProcessor]Wrote back to decision Q...");
-        //            //            printSimpleQueue(pcore->decisionQ);
-        //
-        //        }
-        //        else if (entry_res->language == PYTHON_FUNCTION)
-        //        {
-        //            verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
-        //            //TODO: Python embedding
-        //            //TODO: ?? Where to declaire!?
-        //            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-        //            Py_pFun = entry_res->action_c;
-        //            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
-        //            //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
-        //            if (Py_pPkt)
-        //            {
-        //                verbose(2, "Got Pyton obj\n");
-        //                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-        //                CheckPythonError();
-        //              /* TODO: check whether further process is needed. */
-        //                //                printf("pResult: %p", Py_pResult);
-        //            }
-        //        }
-        ///////////
+        /* 1. classical router */
+        if (GROUTER_MODE == CLASSICAL_MODE)
+            classicalDecisionQProcessor(pcore, in_pkt);
         /*
          * 2. openflow switch
          * tmp: let flowtable[3] have openflow.py (hardcoded)         
          */
-        entry_res = checkOFFlowTable(pcore->flowtable, in_pkt);
-        if (entry_res == NULL) // No action in flowtable, send to openflow.py
-        {
-            PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-            Py_pFun = pcore->flowtable->entry[3].action_c; // 3 is now for giniof_01
-            Py_pPkt = SWIG_NewPointerObj((void *) in_pkt, SWIGTYPE_p__gpacket_t, 1);
-            if (Py_pPkt)
-            {
-                verbose(2, "Got Pyton obj\n");
-                Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-                CheckPythonError();
-            }
-        }
-        else
-            /* found an match, apply action. Only [Output to switch port] is supported */
-        {
-            /*Other fields..*/
-            ofp_action_output_t *action = (ofp_action_output_t *) entry_res->action;
-            printAction(action);
-            in_pkt->frame.dst_interface = action->port;
-            writeQueue(pcore->outputQ, (void *) in_pkt, sizeof (gpacket_t));
-        }
+        if (GROUTER_MODE == OPENFLOW_MODE)
+            openflowDecisionQProcessor(pcore, in_pkt);
+    }
+}
 
+int classicalDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
+{
+    ftentry_t *entry_res = checkFlowTable(pcore->flowtable, pkt);
+    if (entry_res == NULL)
+        //if (!checkFlowTable(pcore->flowtable, in_pkt, action_c, &prot))
+    {
+        printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
+        return;
+    }
+    //TODO: call function using action(char *):  PyObject_CallFunction(String)
+    verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->ip_protocol_type);
+    if (entry_res->language == C_FUNCTION)
+    {
+
+        verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
+        int (*processor)(gpacket_t *);
+        processor = entry_res->action_c;
+        int nextlabel = (*processor)(pkt);
+        if (entry_res->ip_protocol_type == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
+        {
+            verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
+            return EXIT_SUCCESS;
+        }
+        if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
+        verbose(2, "[judgeProcessor][Ft]New style round");
+        labelNext(pkt, entry_res->ip_protocol_type, nextlabel);
+        verbose(2, "[judgeProcessor]Writing back to decision Q...");
+        writeQueue(pcore->decisionQ, pkt, sizeof (gpacket_t));
+        verbose(2, "[judgeProcessor]Wrote back to decision Q...");
+    }
+    else if (entry_res->language == PYTHON_FUNCTION)
+    {
+        verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
+        //TODO: Python embedding
+        //TODO: ?? Where to declaire!?
+        PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+        Py_pFun = entry_res->action_c;
+        Py_pPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
+        //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
+        if (Py_pPkt)
+        {
+            verbose(2, "Got Pyton obj\n");
+            Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+            CheckPythonError();
+            /* TODO: check whether further process is needed. */
+            //                printf("pResult: %p", Py_pResult);
+        }
+    }
+}
+
+openflowDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
+{
+    ftentry_t *entry_res = checkOFFlowTable(pcore->flowtable, pkt);
+    if (entry_res == NULL) // No action in flowtable, send to openflow.py
+    {
+        PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
+        Py_pFun = pcore->flowtable->entry[3].action_c; // 3 is now for giniof_01
+        Py_pPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
+        if (Py_pPkt)
+        {
+            verbose(2, "Got Pyton obj\n");
+            Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
+            CheckPythonError();
+        }
+    }
+    else
+        /* found an match, apply action. Only [Output to switch port] is supported */
+    {
+        /*Other fields..*/
+        ofp_action_output_t *action = (ofp_action_output_t *) entry_res->action;
+        printAction(action);
+        pkt->frame.dst_interface = action->port;
+        writeQueue(pcore->outputQ, (void *) pkt, sizeof (gpacket_t));
     }
 }
 
@@ -241,19 +250,14 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
 
             //return a tuple of config info 
             PyObject *PyConfigFunc = PyDict_GetItemString(pProtGlobalDict, "Config");
-            verbose(2, "[addPyModule]Config got\n");
+            if(PyConfigFunc != NULL)verbose(2, "[addPyModule]Config got\n");
             module_config_t *config = (module_config_t *) calloc(1, sizeof (module_config_t));
             PyObject *PyConfigTuple = PyObject_CallFunction(PyConfigFunc, NULL);
-            PyArg_ParseTuple(PyConfigTuple, "sHssss", config->name, &(config->protocol), config->command_str, config->shelp, config->usage, config->lhelp);
-            //            PyObject *Py_String = 
-            //            if (Py_String == NULL)
-            //            {
-            //                verbose(2, "[addPyModule]Py_String is NULL !\n");
-            //            }
-            //            char *command = PyString_AsString(Py_String);
+            PyArg_ParseTuple(PyConfigTuple, "sissss",&config->name, &config->protocol,
+                             &config->command_str, &config->shelp, &config->usage, &config->lhelp);
+            //memcpy(config->command_str, PyString_AsString(PyTuple_GET_ITEM(PyConfigTuple, 2)), PyString_Size(PyTuple_GET_ITEM(PyConfigTuple, 2)));
             printConfigInfo(config);
             registerCLI(config->command_str, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
-
             verbose(2, "[addPyModule]Command < %p >registered\n", pFuncCommand);
             //CheckPythonError();
             if (pFuncProcess == NULL)
@@ -262,8 +266,7 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
                 return EXIT_FAILURE;
             }
             addEntry(flowtable, CLASSICAL, PYTHON_FUNCTION, (void *) pFuncProcess); //add protocol into flow table
-            //registerCLI("giniudp", addprotCmd, NULL, NULL, NULL);
-            verbose(2, "[addPyModule]!!!!Python Processor added into flowtable!!!");
+            verbose(2, "[addPyModule]Python Processor added into flowtable!!!");
             return EXIT_SUCCESS;
         }
         verbose(2, "[addPyModule]loading protocol module failed!\n");
@@ -309,6 +312,9 @@ void printConfigInfo(module_config_t *config)
     printf("protocol    :       %#06x\n", config->protocol);
     printf("processor   :       %p\n", config->processor);
     printf("command     :       %p\n", config->command);
+    printf("shelp       :       %s\n", config->shelp);
+    printf("usage       :       %s\n", config->usage);
+    printf("lhelp       :       %s\n", config->lhelp);
     printf("----       End of Config    ----\n");
 }
 // use short for result count?
@@ -589,11 +595,11 @@ int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
     }
     // TODO: ADD......be ware of action[0]..variable length..
     entry->is_empty = 0;
-    memcpy(& entry->match, & flow_mod_pkt->match, sizeof(ofp_match_t));
+    memcpy(& entry->match, & flow_mod_pkt->match, sizeof (ofp_match_t));
     entry->count = 0;
     /*size ? is memory alloced properly?*/
     memcpy(& entry->action, & flow_mod_pkt->actions, flow_mod_pkt->actions->len);
-    
+
     return EXIT_SUCCESS;
 }
 
