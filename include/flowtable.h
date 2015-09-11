@@ -174,7 +174,7 @@ typedef struct _ofp_flow_mod_pkt_t
 } ofp_flow_mod_pkt_t;
 
 //flow table
-// TODO: an new flow table entry need to be designed.
+//TODO: an new flow table entry need to be designed.
 //TODO: change it into struct of unions? (classical and openflow...)
 typedef struct _ftentry_t
 {
@@ -195,11 +195,10 @@ typedef struct _ftentry_t
 typedef struct _flowtable_t
 {
     int num;
-    //ftentry_t entry[MAX_ENTRY_NUMBER];
     ftentry_t entry[MAX_ENTRY_NUMBER];
 } flowtable_t;
-void *judgeProcessor(void *pc);
-int addEntry(flowtable_t *flowtable, int type, ushort language, void *content);
+void *decisionProcessor(void *pc);
+int addEntry(flowtable_t *flowtable, int type, ushort language, module_config_t *config);
 int deleteEntry();
 flowtable_t *initFlowTable();
 int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function);

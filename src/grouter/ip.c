@@ -327,7 +327,9 @@ int IPProcessMyPacket(gpacket_t *in_pkt)
         }
 
     }
-    return EXIT_FAILURE;
+    printf("FAILED in IP process my packet!\n");
+    return NULL_PROTOCOL;
+    //return EXIT_FAILURE;
 }
 
 
@@ -335,22 +337,22 @@ int IPProcessMyPacket(gpacket_t *in_pkt)
  * TODO: implement UDP processing routines..
  * this is necessary for implementing some routing protocols.
  */
-extern PyObject *pUDPMod, *pUDPGlobalDict;
-PyObject *pFunc, *pResult, *pArg, *pPcore;
-// int PythonError(PyObject *pObj)
-// {
-// 	char *Str = PyString_AsString(pObj);
-// 	return printf(Str);
-// }
-
-// void CheckPythonError(void)
-// {
-// 	if (PyErr_Occurred() != NULL)
-// 	{
-// 		PyErr_Print();
-// 		PyErr_Clear();
-// 	}
-// }
+//extern PyObject *pUDPMod, *pUDPGlobalDict;
+//PyObject *pFunc, *pResult, *pArg, *pPcore;
+//// int PythonError(PyObject *pObj)
+//// {
+//// 	char *Str = PyString_AsString(pObj);
+//// 	return printf(Str);
+//// }
+//
+//// void CheckPythonError(void)
+//// {
+//// 	if (PyErr_Occurred() != NULL)
+//// 	{
+//// 		PyErr_Print();
+//// 		PyErr_Clear();
+//// 	}
+//// }
 
 int UDPProcess(gpacket_t *in_pkt)
 {
@@ -380,28 +382,7 @@ void printAsString(void* s)
 
 int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int src_prot)
 {
-    verbose(2, "[IPOutgoingPacket]::");
-    int check = 0;
-    if (pcore == NULL)
-    {
-        check = 1;
-        printf("[IPOutgoingPacket]:: pcore is NULL !!\n");
-    }
-    if (route_tbl == NULL)
-    {
-        check = 1;
-        printf("[IPOutgoingPacket]:: route_tbl is NULL !!\n");
-
-    }
-    if (MTU_tbl == NULL)
-    {
-        check = 1;
-        printf("[IPOutgoingPacket]:: MTU_tbl is NULL !!\n");
-
-    }
-    //printf("[IPOutgoingPacket]size of flowtable is: %d\n", pcore->flowtable->num);
-    //printRouteTable(route_tbl);
-    if (check == 1) return EXIT_FAILURE;
+    verbose(2, "[IPOutgoingPacket]::\n");
     //printAsString(pkt);
     ip_packet_t *ip_pkt = (ip_packet_t *) pkt->data.data;
     ushort cksum;
@@ -445,38 +426,24 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
         verbose(2, "[IPOutgoingPacket]:: lookup next hop ");
         // find the nexthop and interface and fill them in the "meta" frame
         // NOTE: the packet itself is not modified by this lookup!
-        // for(i = 0; i < 30; i ++){
-        // 	printf("[IPOutgoingPacket] Check point 11!\n");
-        // }
         if (findRouteEntry(route_tbl, gNtohl(tmpbuf, ip_pkt->ip_dst),
                            pkt->frame.nxth_ip_addr, &(pkt->frame.dst_interface)) == EXIT_FAILURE)
             return EXIT_FAILURE;
         verbose(2, "[IPOutgoingPacket]:: lookup MTU of nexthop");
         // lookup the IP address of the destination interface..
-        if (pkt == NULL)
-            printf("pkt is null!!!\n");
-
-        //printf("=====Packet======");
         //printf("pkt->frame.dst_interface: %d\n", pkt->frame.dst_interface);
-
-
         if ((status = findInterfaceIP(MTU_tbl, pkt->frame.dst_interface,
                                       iface_ip_addr)) == EXIT_FAILURE)
             return EXIT_FAILURE;
         // the outgoing packet should have the interface IP as source
         COPY_IP(ip_pkt->ip_src, gHtonl(tmpbuf, iface_ip_addr));
-        verbose(2, "[IPOutgoingPacket]:: almost one processing the IP header.");
+        verbose(2, "[IPOutgoingPacket]:: almost done processing the IP header.");
     }
     else
     {
         error("[IPOutgoingPacket]:: unknown outgoing packet action.. packet discarded ");
         return EXIT_FAILURE;
     }
-    if (pkt == NULL)
-        printf("pkt is null!!!\n");
-    //    else
-    //        printf("[IPOutgoingPacket] Check point 3!\n");
-
     //	compute the new checksum
     cksum = checksum((uchar *) ip_pkt, ip_pkt->ip_hdr_len * 2);
     ip_pkt->ip_cksum = htons(cksum);
@@ -484,7 +451,6 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
 
     verbose(2, "[IPOutgoingPacket]:: header.dst before send2Out(MAC) = %s", MAC2Colon(tmpbuf + 20, pkt->data.header.dst));
     IPSend2Output(pkt);
-    //ARPPrintTable();
     verbose(2, "[IPOutgoingPacket]:: IP packet sent to output queue.. ");
     return EXIT_SUCCESS;
 }
@@ -496,13 +462,6 @@ int IPSend2Output(gpacket_t *pkt)
 {
     int vlevel;
     int i;
-
-    if (pkt == NULL)
-    {
-        verbose(1, "[IPSend2Output]:: NULL pointer error... nothing sent");
-        return EXIT_FAILURE;
-    }
-
     vlevel = prog_verbosity_level();
     if (vlevel >= 3)
         printGPacket(pkt, vlevel, "IP_ROUTINE");

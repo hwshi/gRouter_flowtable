@@ -338,7 +338,7 @@ int PktCoreJudgeInit(pktcore_t *pcore)
 {
     int threadstat, threadid;
     
-    threadstat = pthread_create((pthread_t *)&threadid, NULL, (void *)judgeProcessor, (void *)pcore);
+    threadstat = pthread_create((pthread_t *)&threadid, NULL, (void *)decisionProcessor, (void *)pcore);
     if (threadstat != 0)
     {
         verbose(1, "[PktCoreJudgeInit]:: unable to create thread..");

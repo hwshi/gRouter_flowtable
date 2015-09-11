@@ -69,7 +69,7 @@ typedef struct _arp_packet_t
 
 
 int ARPResolve(gpacket_t *in_pkt);
-void ARPProcess(gpacket_t *pkt);
+int ARPProcess(gpacket_t *pkt);
 
 void ARPInitTable();
 void ARPReInitTable();

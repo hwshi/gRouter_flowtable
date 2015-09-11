@@ -71,13 +71,25 @@ except AttributeError:
 
 MAX_IPREVLENGTH_ICMP = _GINIC.MAX_IPREVLENGTH_ICMP
 
-def getUDPPacketString(*args):
-  return _GINIC.getUDPPacketString(*args)
-getUDPPacketString = _GINIC.getUDPPacketString
+def IPPayload(*args):
+  return _GINIC.IPPayload(*args)
+IPPayload = _GINIC.IPPayload
 
 def createGPacket(*args):
   return _GINIC.createGPacket(*args)
 createGPacket = _GINIC.createGPacket
+
+def assembleWithIPPayload(*args):
+  return _GINIC.assembleWithIPPayload(*args)
+assembleWithIPPayload = _GINIC.assembleWithIPPayload
+
+def createGPacketWithIPPayload(*args):
+  return _GINIC.createGPacketWithIPPayload(*args)
+createGPacketWithIPPayload = _GINIC.createGPacketWithIPPayload
+
+def getGPacketMetaheaderLen():
+  return _GINIC.getGPacketMetaheaderLen()
+getGPacketMetaheaderLen = _GINIC.getGPacketMetaheaderLen
 
 def getGPacketString(*args):
   return _GINIC.getGPacketString(*args)

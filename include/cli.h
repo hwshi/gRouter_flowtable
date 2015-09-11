@@ -77,7 +77,7 @@ void qdiscCmd();
 void spolicyCmd();
 void classCmd();
 void filterCmd();
-void addprotCmd();
+void addModuleCmd();
 void showftCmd();
 void ofconnect();
 #endif

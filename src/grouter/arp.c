@@ -107,7 +107,7 @@ int ARPResolve(gpacket_t *in_pkt)
 
  * If it a request, send a reply.. no need to record any state here.
  */
-void ARPProcess(gpacket_t *pkt)
+int ARPProcess(gpacket_t *pkt)
 {
 	verbose(2, "[APRProcess]::\n");
 	char tmpbuf[MAX_TMPBUF_LEN];
@@ -133,7 +133,7 @@ void ARPProcess(gpacket_t *pkt)
 
 		verbose(2, "[APRProcess]:: packet destined for %s, dropping",
 		       IP2Dot(tmpbuf, gNtohl((uchar *)tmpbuf, apkt->dst_ip_addr)));
-		return;
+		return NULL_PROTOCOL;
 	}
 
 	// We have a valid ARP packet, lets process it now.
@@ -172,7 +172,7 @@ void ARPProcess(gpacket_t *pkt)
 	else
 		verbose(2, "[ARPProcess]:: unknown ARP type");
 
-	return;
+	return NULL_PROTOCOL;
 }
 
 

@@ -10,10 +10,13 @@ import inspect
 import array
 import struct
 
-import _GINIC
+#import GINIC
+
+import _GINIC as GINIC
 
 MAX_PCB_NUMBER = 5
 MAX_BUFFER_SIZE = 5
+
 
 class UDPPcbEntry:
     def __init__(self,
@@ -22,6 +25,7 @@ class UDPPcbEntry:
         self.sport = sport
         self.dport = dport
         self.buff = []
+
 
 class UDPPcb:
     def __init__(self,
@@ -67,11 +71,11 @@ class UDPPcb:
         while True:
             str = raw_input()
             udp_pkt = Packet(sport, dport, len(str), 0, str)
-            #TODO: read src_ip from rout_tbl(C)
-            src_ip = ip_ltostr([128, 1, 168, 192])
-            upkt_a = assemble(udp_pkt, 0)  # no checksum
-            _GINIC.IPOutgoingPacket(upkt_a, dipn, len(upkt_a), 1, 17)
-
+            upkt_a = assemble(udp_pkt, 0)  # disable checksum
+            gpacket = GPacket()
+            gpacket.ip_payload = upkt_a
+            print(upkt_a)
+            GINIC.IPOutgoingPacket(gpacket._assemble(), dipn, len(upkt_a), 1, 17)
     def listen(self, port):
         if self.port_dict.has_key(port):
             print("listen failed! port in use!")
@@ -80,20 +84,18 @@ class UDPPcb:
             for id in range(MAX_PCB_NUMBER):
                 if self.entry[id].sport == -1:
                     self.port_dict[port] = id
-                    #print("after add... port_dict: ", self.port_dict, "..")
                     self.entry[id].sport = port
                     self.entry[id].dport = -1
                     return
 
 
-print("****************************   UDP   ****************************")
-print("*               this is the beginning of the module             *")
+print("--    SIMPLE UDP IMPLEMENTATION FOR GINI    --")
 pcb = UDPPcb()
-print("pcb created!")
+
 
 class module_config:
-    def init(self, name = "module", protocol = 255, command_string = "",
-             short_help = "", usage = "", long_help = ""):
+    def __init__(self, name="module", protocol=255, command_string="",
+                 short_help="", usage="", long_help=""):
         self.name = name
         self.protocol = protocol
         self.command_string = command_string
@@ -106,16 +108,15 @@ class module_config:
                         self.short_help, self.usage, self.long_help);
         return config_tuple
 
+
 def Config():
-    # print("Py::[Config]")
-    config = module_config("udp", 17, "nc", "udp function", '"nc -l [port]" "nc [IP][port]"',
-                           "sending and listening to udp packet")
+    config = module_config(name="udp", protocol=17, command_string="nc", short_help="udp function",
+                           usage="nc -l [port] nc [IP][port]",
+                           long_help="sending and listening to udp packet")
     return config.to_tuple()
 
 
 def Command_Line(str):
-    # print("[Command_Line] start!")
-    print(str)
     global pcb
     if pcb == None:
         pcb = UDPPcb()
@@ -126,52 +127,145 @@ def Command_Line(str):
         port_listen = int(command_string[2])
         pcb.listen(port_listen)
         print("listen to port", command_string[2], "...")
-        pass
     else:
         dip_hl = command_string[1].split(".")
         dport = int(command_string[2])
         if is_dip_hl(dip_hl) and is_port(dport):
             id = pcb.bind(dport)
             pcb.send(dip_hl, pcb.entry[id].sport, dport)
-            pass
         else:
             print("invalid IP or PORT!")
-    # print("[Command_Line] Done!")
 
 
-def Protocol_Processor(gpkt):
+def Protocol_Processor(meta_gpkt):
     global pcb
-    print("=====Py#[Packet_Processor]::=====")
+    print("[Protocol_Processor - UDP]...")
     print(pcb.port_dict)
     if pcb is None:
         pcb = UDPPcb()
-    udpPacketFromC = _GINIC.getUDPPacketString(gpkt)
-    packet = disassemble(udpPacketFromC, 1)
-    print(packet)
-    if packet.dport == 7:
+    # ip_playload = GINIC.IPPayload(gpkt)  # g_header is lost here... need to save if somewhere?
+    gpacket = GPacket()
+    gpacket._dissemble(meta_gpkt)
+    udp_packet = disassemble(gpacket.ip_payload, 1)
+    print(udp_packet)
+    if udp_packet.dport == 7:
         print("recieved an UDP ECHO packet")
-        _udp_echo_reply(packet)
-    elif pcb.check(packet.dport) != -1:
-        print("Received Msg: ", packet.data)
+        _udp_echo_reply(udp_packet)
+        dest_ip = [8, 9, 168, 192]
+        # dest_ip = __find_dest_ip(packet)  #TODO extract dest_ip from packet
+        print("[_udp_echo_reply]dest ip: %d", dest_ip)
+        newflag = 0
+        prot = 17
+        meta_udp_pkt = assemble(udp_packet)
+        size = len(meta_udp_pkt)
+        print("[_udp_echo_reply]sending to %s : %d", dest_ip, udp_packet.dport)
+        gpacket.ip_payload = meta_udp_pkt
+        GINIC.IPOutgoingPacket(gpacket._assemble(), dest_ip, size, newflag, prot)
+    elif pcb.check(udp_packet.dport) != -1:
+        print("Received Msg: ", udp_packet.data)
         pass
     else:
         print("Port Unreachable!")
-    print("[UDPPacketProcess]Done")
 
 
 def _udp_echo_reply(packet):
     port_tmp = packet.sport
     packet.sport = packet.dport
     packet.dport = port_tmp
-    dest_ip = __find_dest_ip(packet)  #TODO extract dest_ip from packet
-    print("[_udp_echo_reply]dest ip: %d", dest_ip)
-    newflag = 1
-    prot = 17
-    pkt = assemble(packet)
-    size = len(pkt)
-    print("[_udp_echo_reply]sending to %s : %d", dest_ip, packet.dport)
-    udp2gpkt = _GINIC.createGPacket(pkt)  #process udp2gpkt in typemap
-    _GINIC.IPOutgoingPacket(pkt, dest_ip, size, newflag, prot)
+
+class GPacket:
+    def __init__(self,
+                 ip_payload=None):
+        self.meta_msg = None
+        self.ip_payload = ip_payload
+
+    def _dissemble(self, msg):
+        self.ip_payload = GINIC.IPPayload(msg)
+        self.meta_msg = GINIC.getGPacketString(msg)
+        repr(self.meta_msg)
+    def _assemble(self):
+        header_size = GINIC.getGPacketMetaheaderLen()
+        self.__packed = ''
+        if self.meta_msg == None:
+            return GINIC.createGPacketWithIPPayload(self.ip_payload)
+        else:
+            return GINIC.assembleWithIPPayload(self.meta_msg, self.ip_payload);
+
+class Packet:
+    def __init__(self,
+                 sport=0,
+                 dport=0,
+                 ulen=8,
+                 sum=0,
+                 data=''):
+        self.sport = sport
+        self.dport = dport
+        self.ulen = ulen
+        self.sum = sum
+        self.data = data
+
+    def __repr__(self):
+        begin = "<UDP %d->%d len=%d " % (self.sport, self.dport, self.ulen)
+        if self.ulen == 8:
+            rep = begin + "\'\'>"
+        elif self.ulen < 18:
+            rep = begin + "%s>" % repr(self.data)
+        else:
+            rep = begin + "%s>" % repr(self.data[:10] + '...')
+        return rep
+
+    def __eq__(self, other):
+        if not isinstance(other, Packet):
+            return 0
+        return self.sport == other.sport and \
+               self.dport == other.dport and \
+               self.ulen == other.ulen and \
+               self.sum == other.sum and \
+               self.data == other.data
+
+    def _assemble(self, cksum=1):
+        self.ulen = 8 + len(self.data)
+        src_ip = ip_ltostr([128, 1, 168, 192])
+        dest_ip = ip_ltostr([2, 1, 168, 192])
+        begin = struct.pack('HHH', self.sport, self.dport, self.ulen)
+        pseudo_header = src_ip + dest_ip + '\000\000' + struct.pack('H', self.ulen)
+        pseudo_packet = pseudo_header + begin + '\000\000' + self.data
+        if cksum:
+            self.sum = udpcksum(pseudo_packet)
+            #self.sum = udpchecksum(packet)
+            packet = begin + struct.pack('H', self.sum) + self.data
+        else:
+            self.sum = 0
+            packet = begin + struct.pack('H', self.sum) + self.data
+        self.__packet = udph2net(packet)
+        return self.__packet
+
+    def _disassemble(self, raw_packet, cksum=1):
+        packet = net2updh(raw_packet)
+        if cksum and packet[6:8] != '\000\000':
+            our_cksum = udpcksum(packet)
+            # no check sum
+            # if our_cksum != 0:
+            #      print("[_disassemble]Check sum invalid!!")
+            #      raise ValueError, packet
+        elts = map(lambda x: x & 0xffff, struct.unpack('HHHH', packet[:8]))
+        [self.sport, self.dport, self.ulen, self.sum] = elts
+        #tail = self.ulen# Haowei
+        self.data = packet[8:self.ulen]
+
+
+def assemble(packet, cksum=1):
+    return packet._assemble(cksum)
+
+
+def disassemble(buffer, cksum=1):
+    packet = Packet()
+    packet._disassemble(buffer, cksum)
+    return packet
+
+
+def gprint(str):
+    print(inspect.stack()[0][3] + "::" + str)
 
 
 def is_port(data):
@@ -184,6 +278,7 @@ def is_dip_hl(data):
            is_uchar(int(data[1])) and \
            is_uchar(int(data[2])) and \
            is_uchar(int(data[3]))
+
 
 def is_uchar(num):
     return num >= 0 and num <= 255
@@ -241,84 +336,3 @@ def udpcksum(s):
 
 
 HDR_SIZE_IN_BYTES = 8
-
-
-class Packet:
-    def __init__(self,
-                 sport=0,
-                 dport=0,
-                 ulen=8,
-                 sum=0,
-                 data=''):
-        self.sport = sport
-        self.dport = dport
-        self.ulen = ulen
-        self.sum = sum
-        self.data = data
-
-    def __repr__(self):
-        begin = "<UDP %d->%d len=%d " % (self.sport, self.dport, self.ulen)
-        if self.ulen == 8:
-            rep = begin + "\'\'>"
-        elif self.ulen < 18:
-            rep = begin + "%s>" % repr(self.data)
-        else:
-            rep = begin + "%s>" % repr(self.data[:10] + '...')
-        return rep
-
-    def __eq__(self, other):
-        if not isinstance(other, Packet):
-            return 0
-
-        return self.sport == other.sport and \
-               self.dport == other.dport and \
-               self.ulen == other.ulen and \
-               self.sum == other.sum and \
-               self.data == other.data
-
-
-    def _assemble(self, cksum=1):
-        self.ulen = 8 + len(self.data)
-        src_ip = ip_ltostr([128, 1, 168, 192])
-        dest_ip = ip_ltostr([2, 1, 168, 192])
-        begin = struct.pack('HHH', self.sport, self.dport, self.ulen)
-        pseudo_header = src_ip + dest_ip + '\000\000' + struct.pack('H', self.ulen)
-        pseudo_packet = pseudo_header + begin + '\000\000' + self.data
-        if cksum:
-            self.sum = udpcksum(pseudo_packet)
-            #self.sum = udpchecksum(packet)
-            packet = begin + struct.pack('H', self.sum) + self.data
-        else:
-            self.sum = 0
-            packet = begin + struct.pack('H', self.sum) + self.data
-        self.__packet = udph2net(packet)
-        return self.__packet
-
-    def _disassemble(self, raw_packet, cksum=1):
-        packet = net2updh(raw_packet)
-        if cksum and packet[6:8] != '\000\000':
-            our_cksum = udpcksum(packet)
-            # no check sum
-            # if our_cksum != 0:
-            #      print("[_disassemble]Check sum invalid!!")
-            #      raise ValueError, packet
-        elts = map(lambda x: x & 0xffff, struct.unpack('HHHH', packet[:8]))
-        [self.sport, self.dport, self.ulen, self.sum] = elts
-        #tail = self.ulen# Haowei
-        self.data = packet[8:self.ulen]
-
-
-def assemble(packet, cksum=1):
-    return packet._assemble(cksum)
-
-
-def disassemble(buffer, cksum=1):
-    packet = Packet()
-    packet._disassemble(buffer, cksum)
-    return packet
-
-
-def gprint(str):
-    print(inspect.stack()[0][3] + "::" + str)
-
-

@@ -26,8 +26,9 @@ pingstat_t pstat;
  * Only ICMP Echo is processed at this point.. we need to process other ICMP packets
  * as well. This is somewhat urgent!!
  */
-void ICMPProcessPacket(gpacket_t *in_pkt)
+int ICMPProcessPacket(gpacket_t *in_pkt)
 {
+        verbose(2, "[ICMPProcessPacket]...\n");
 	ip_packet_t *ip_pkt = (ip_packet_t *)in_pkt->data.data;
 	int iphdrlen = ip_pkt->ip_hdr_len *4;
 	icmphdr_t *icmphdr = (icmphdr_t *)((uchar *)ip_pkt + iphdrlen);
@@ -53,6 +54,8 @@ void ICMPProcessPacket(gpacket_t *in_pkt)
 		verbose(2, "[ICMPProcessPacket]:: ICMP processing for type %d not implemented ", icmphdr->type);
 		break;
 	}
+        verbose(2, "[ICMPProcessPacket]:: ICMP processing unkown type %d", icmphdr->type);
+        return NULL_PROTOCOL;
 }
 
 

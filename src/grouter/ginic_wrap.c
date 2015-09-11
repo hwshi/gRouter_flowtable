@@ -2959,26 +2959,24 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-#include <sys/types.h>
-#include "grouter.h"
-#include "message.h"
-#include "arp.h"
-#include "gnet.h"
-#include "ip.h"
-#include "packetcore.h"
-#include "routetable.h"
-#include "mtu.h"
-#define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
-#define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
-#define uchar unsigned char
-#define ushort unsigned short
+    #include <sys/types.h>
+    #include "grouter.h"
+    #include "message.h"
+    #include "arp.h"
+    #include "gnet.h"
+    #include "ip.h"
+    #include "packetcore.h"
+    #include "routetable.h"
+    #include "mtu.h"
+    #define MAX_IPREVLENGTH_ICMP            50       // maximum previous header sent back
+    #define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
+    #define uchar unsigned char
+    #define ushort unsigned short
 
-    
-    extern interface_array_t netarray;  // interface table from gnet.h
+
     extern pktcore_t *pcore;
     extern route_entry_t route_tbl[MAX_ROUTES]; // routing table
     extern mtu_entry_t MTU_tbl[MAX_MTU]; // MTU table
-    
     extern interface_array_t netarray;
     extern devicearray_t devarray;
     extern arp_entry_t arp_cache[ARP_CACHE_SIZE];
@@ -2987,35 +2985,51 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     extern int tbl_replace_indx;            // overwrite this element if no free space in ARP table
     extern int buf_replace_indx;            // overwrite this element if no free space in ARP buffer
     
-    PyObject * getUDPPacketString(gpacket_t * gpacket) {
-//        printf("[UDPPacketString]:: 1\n");
-        //int gpayload = sizeof(gpacket->data.data);
+    /* TODO: simplify..*/
+    PyObject * IPPayload(gpacket_t * gpacket)
+    {
         int payload = sizeof (gpacket->data.data);
         int gheader = sizeof (gpacket_t) - payload;
-        int udplen = sizeof (*gpacket) - gheader - sizeof (ip_packet_t);
-//        printf("[UDPPacketString]:: 2\n");
+        int len_payload = sizeof (*gpacket) - gheader - sizeof (ip_packet_t);
         ip_packet_t *ip_pkt = (ip_packet_t *) gpacket->data.data;
-//        printf("[UDPPacketString]:: 3\n");
-//        printf("gpayload: %d size of ip_t %d", payload, sizeof (ip_packet_t));
-        return PyString_FromStringAndSize((char *) (ip_pkt + 1), udplen);
+        return PyString_FromStringAndSize((char *) (ip_pkt + 1), len_payload);
     }
-    //helper function for gpacket
-
-    gpacket_t * createGPacket(PyObject * pkt) {
+    /* helper function for gpacket */
+    gpacket_t * createGPacket(PyObject * pkt) 
+    {
         void * pktString = PyString_AsString(pkt);
-//        printf("[helpr - createGPacket]\n");
-        gpacket_t *gpkt = (gpacket_t *) malloc(sizeof (gpacket_t));
-        memcpy(gpkt->data.data, pktString, sizeof (pktString));
-        //gpkt->data.data = (uchar*)pkt;
-//        printf("[createGPacket] coppied %d byte\n", sizeof (pktString));
+        gpacket_t *gpkt = (gpacket_t *)pktString;
         return gpkt;
 
     }
+    /* returns a new packet with only ip_payload changed */
+    gpacket_t * assembleWithIPPayload(PyObject * gpacket_py, PyObject * payload) 
+    {
+        void * pktString = PyString_AsString(payload);
+        gpacket_t *gpkt = (gpacket_t *)PyString_AsString(gpacket_py);
+        memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(payload), PyString_Size(payload));        
+        return gpkt;
 
+    }
+    /* returns a gpacket with ip_payload as input */
+    gpacket_t * createGPacketWithIPPayload(PyObject * payload) 
+    {
+        void * pktString = PyString_AsString(payload);
+        gpacket_t *gpkt = (gpacket_t *) calloc(1, sizeof (gpacket_t));
+        memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(payload), PyString_Size(payload));
+        return gpkt;
+    }
+    
+    PyObject *getGPacketMetaheaderLen(){
+        return PyLong_FromSize_t(MAX_MESSAGE_SIZE - DEFAULT_MTU + sizeof(ip_packet_t));
+    }
     PyObject* getGPacketString(gpacket_t * gpacket) {
         return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
     }
     
+    /* 
+     * for openflow switch functionalities     
+     */
     PyObject* getDeviceName()
     {
         char name[200];
@@ -3030,7 +3044,6 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         sprintf(name, "%02x%02x%02x%02x%02x%02x", ifptr->mac_addr[0], ifptr->mac_addr[1], ifptr->mac_addr[2], 
                ifptr->mac_addr[3], ifptr->mac_addr[4],ifptr->mac_addr[5]);
         printf("[getDeviceName] name is: %s\n", name);
-        //return PyString_FromStringAndSize("aaaaaaaaaaaa", 12);
         return PyString_FromStringAndSize(name, 12);
     }
     
@@ -3052,14 +3065,8 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
                   //1. port no. 2. MAC 3. name
                 //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
                 // this function steal a reference to "o"
-                // TODO - DONE: need to convert netarray.elem[] to PyObject.....using PyTupple_Pack()
                 char mac_str[256];
-                MAC2String(mac_str, ifptr->mac_addr);
-                //uchar *mac = ifptr->mac_addr;
-                //char *buf;
-                //PyObject *mac_byte = PyBytes_FromFormat("%02x%02x%02x%02x%02x%02x", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-                //printf("ADDDDDDDDDDRES%s:: buf");
-                
+                MAC2String(mac_str, ifptr->mac_addr);                
                 PyTuple_SetItem(port_list, tuple_index ++, 
                                 Py_BuildValue("(i,s,s)", ifptr->interface_id, mac_str, ifptr->device_name));
             }
@@ -3078,13 +3085,7 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;
     }
-//    int gini_ofp_flow_mod2(void * msg)
-//    {
-//        printf("[gini_ofp_flow_mod2]\n");
-//        ofpFlowMod2(pcore->flowtable, msg);
-//        return EXIT_SUCCESS;
-//    }
-    ///////////////////////////////////////////////////////////
+    
     int gini_ofp_flow_mod_ADD(ofp_flow_mod_pkt_t *flow_mod_pkt)
     {
         ofpFlowModAdd(pcore->flowtable, flow_mod_pkt);
@@ -3277,33 +3278,6 @@ typedef struct {
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN int Swig_var_netarray_set(PyObject *_val) {
-  {
-    void *argp = 0;
-    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_interface_array_t,  0 );
-    if (!SWIG_IsOK(res)) {
-      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""netarray""' of type '""interface_array_t""'");
-    }
-    if (!argp) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""netarray""' of type '""interface_array_t""'");
-    } else {
-      netarray = *((interface_array_t *)(argp));
-    }
-  }
-  return 0;
-fail:
-  return 1;
-}
-
-
-SWIGINTERN PyObject *Swig_var_netarray_get(void) {
-  PyObject *pyobj = 0;
-  
-  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&netarray), SWIGTYPE_p_interface_array_t,  0 );
-  return pyobj;
-}
-
-
 SWIGINTERN int Swig_var_pcore_set(PyObject *_val) {
   {
     void *argp = 0;
@@ -3377,6 +3351,33 @@ SWIGINTERN PyObject *Swig_var_MTU_tbl_get(void) {
   PyObject *pyobj = 0;
   
   pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(MTU_tbl), SWIGTYPE_p_mtu_entry_t,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_netarray_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_interface_array_t,  0 );
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""netarray""' of type '""interface_array_t""'");
+    }
+    if (!argp) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in variable '""netarray""' of type '""interface_array_t""'");
+    } else {
+      netarray = *((interface_array_t *)(argp));
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_netarray_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(&netarray), SWIGTYPE_p_interface_array_t,  0 );
   return pyobj;
 }
 
@@ -3535,7 +3536,7 @@ SWIGINTERN PyObject *Swig_var_buf_replace_indx_get(void) {
 }
 
 
-SWIGINTERN PyObject *_wrap_getUDPPacketString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_IPPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   gpacket_t *arg1 = (gpacket_t *) 0 ;
   void *argp1 = 0 ;
@@ -3543,13 +3544,13 @@ SWIGINTERN PyObject *_wrap_getUDPPacketString(PyObject *SWIGUNUSEDPARM(self), Py
   PyObject * obj0 = 0 ;
   PyObject *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:getUDPPacketString",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:IPPayload",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getUDPPacketString" "', argument " "1"" of type '" "gpacket_t *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IPPayload" "', argument " "1"" of type '" "gpacket_t *""'"); 
   }
   arg1 = (gpacket_t *)(argp1);
-  result = (PyObject *)getUDPPacketString(arg1);
+  result = (PyObject *)IPPayload(arg1);
   resultobj = result;
   return resultobj;
 fail:
@@ -3567,6 +3568,54 @@ SWIGINTERN PyObject *_wrap_createGPacket(PyObject *SWIGUNUSEDPARM(self), PyObjec
   arg1 = obj0;
   result = (gpacket_t *)createGPacket(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_assembleWithIPPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject *arg2 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  gpacket_t *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:assembleWithIPPayload",&obj0,&obj1)) SWIG_fail;
+  arg1 = obj0;
+  arg2 = obj1;
+  result = (gpacket_t *)assembleWithIPPayload(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_createGPacketWithIPPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  gpacket_t *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:createGPacketWithIPPayload",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (gpacket_t *)createGPacketWithIPPayload(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getGPacketMetaheaderLen(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":getGPacketMetaheaderLen")) SWIG_fail;
+  result = (PyObject *)getGPacketMetaheaderLen();
+  resultobj = result;
   return resultobj;
 fail:
   return NULL;
@@ -4893,6 +4942,8 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   int arg3 ;
   int arg4 ;
   int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int val3 ;
   int ecode3 = 0 ;
   int val4 ;
@@ -4907,15 +4958,12 @@ SWIGINTERN PyObject *_wrap_IPOutgoingPacket(PyObject *SWIGUNUSEDPARM(self), PyOb
   int result;
   
   if (!PyArg_ParseTuple(args,(char *)"OOOOO:IPOutgoingPacket",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
-  {
-    //    printf("[typemap-gpacket_t *out_gpkt]\n");
-    int size  = PyString_Size(obj0);
-    gpacket_t* gpkt = (gpacket_t *)calloc(1, sizeof(gpacket_t));
-    memcpy((gpkt->data.data)+sizeof (ip_packet_t), PyString_AsString(obj0), size);
-    arg1 = gpkt;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p__gpacket_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "IPOutgoingPacket" "', argument " "1"" of type '" "gpacket_t *""'"); 
   }
+  arg1 = (gpacket_t *)(argp1);
   {
-    //    printf("[typemap-uchar*]\n");
     arg2 = PyString_AsString(obj1);
   }
   ecode3 = SWIG_AsVal_int(obj2, &val3);
@@ -4943,8 +4991,11 @@ fail:
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { (char *)"getUDPPacketString", _wrap_getUDPPacketString, METH_VARARGS, NULL},
+	 { (char *)"IPPayload", _wrap_IPPayload, METH_VARARGS, NULL},
 	 { (char *)"createGPacket", _wrap_createGPacket, METH_VARARGS, NULL},
+	 { (char *)"assembleWithIPPayload", _wrap_assembleWithIPPayload, METH_VARARGS, NULL},
+	 { (char *)"createGPacketWithIPPayload", _wrap_createGPacketWithIPPayload, METH_VARARGS, NULL},
+	 { (char *)"getGPacketMetaheaderLen", _wrap_getGPacketMetaheaderLen, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
 	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
 	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
@@ -5766,10 +5817,10 @@ SWIG_init(void) {
   
   SWIG_Python_SetConstant(d, "MAX_IPREVLENGTH_ICMP",SWIG_From_int((int)(50)));
   PyDict_SetItemString(md,(char*)"cvar", SWIG_globals());
-  SWIG_addvarlink(SWIG_globals(),(char*)"netarray",Swig_var_netarray_get, Swig_var_netarray_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"pcore",Swig_var_pcore_get, Swig_var_pcore_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"route_tbl",Swig_var_route_tbl_get, Swig_var_route_tbl_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"MTU_tbl",Swig_var_MTU_tbl_get, Swig_var_MTU_tbl_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"netarray",Swig_var_netarray_get, Swig_var_netarray_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"devarray",Swig_var_devarray_get, Swig_var_devarray_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"arp_cache",Swig_var_arp_cache_get, Swig_var_arp_cache_set);
   SWIG_addvarlink(SWIG_globals(),(char*)"ARPtable",Swig_var_ARPtable_get, Swig_var_ARPtable_set);

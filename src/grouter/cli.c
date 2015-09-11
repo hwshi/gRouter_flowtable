@@ -93,7 +93,7 @@ int CLIInit(router_config *rarg)
     registerCLI("class", classCmd, C_FUNCTION, SHELP_CLASS, USAGE_CLASS, LHELP_CLASS);
     registerCLI("filter", filterCmd, C_FUNCTION, SHELP_FILTER, USAGE_FILTER, LHELP_FILTER);
     //adding commands for protocol importing
-    registerCLI("addprot", addprotCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
+    registerCLI("addmod", addModuleCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
     registerCLI("flowtable", showftCmd, C_FUNCTION, SHELP_ADDPROT, USAGE_ADDPROT, LHELP_ADDPROT);
     registerCLI("ofconnect", ofconnect, C_FUNCTION, SHELP_ADDPROT, SHELP_ADDPROT, SHELP_ADDPROT);
 
@@ -1165,9 +1165,10 @@ void spolicyCmd()
 }
 
 /*
- * add new protocols
+ * add new modules written in either C or Python
+ * usage: addmod udp python
  */
-void addprotCmd()
+void addModuleCmd()
 {
     char *next_tok = strtok(NULL, " \n");
     char *language_tok;
@@ -1175,11 +1176,8 @@ void addprotCmd()
     if (next_tok != NULL)
     {
         verbose(2, "[addprotCmd]:: adding %s\n", next_tok);
-        //TODO: addProtocol(pcore->flowtable, next_tok);
-        //FOR PYTHON
         language_tok = strtok(NULL, " \n");
         verbose(2, "language:   %s\n", language_tok);
-        if(!strcmp(language_tok, "c")) printf("CCCC\n");
         if (strcmp(language_tok, "python") == 0 || strcmp(language_tok, "Python") == 0 || strcmp(language_tok, "PYTHON") == 0)
         {
             language = PYTHON_FUNCTION;
@@ -1197,12 +1195,26 @@ void addprotCmd()
                 verbose(2, "[addprotCmd]C Module Adding Failed");
             }
         }
+        else
+        {
+            printf("invalid command. usage: addmod udp python / addmod udp c\n");
+           
+        }
     }
 }
 
 void showftCmd()
 {
-    printFlowTable(pcore->flowtable);
+    char *next_tok = strtok(NULL, " \n");
+    if(!strcmp(next_tok, "show"))
+        printFlowTable(pcore->flowtable);
+    else if(!strcmp(next_tok, "init")){
+        free(pcore->flowtable);
+        Py_Finalize();
+        CheckPythonError();
+        Py_Initialize();
+        pcore->flowtable = initFlowTable();
+    }
     CheckPythonError();
 }
 

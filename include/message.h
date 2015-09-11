@@ -17,7 +17,7 @@
 
 
 #define MAX_MESSAGE_SIZE                sizeof(gpacket_t)
-
+#define GFRAME_SIZE                     sizeof(pkt_frame_t)
 
 
 // this is just an ethernet frame with

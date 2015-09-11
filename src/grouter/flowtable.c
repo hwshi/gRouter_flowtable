@@ -3,18 +3,13 @@
  * AUTHOR: Haowei Shi
  * DATE: October 01, 2014
  *
- * naming: 
- * #define ABCD 1
- * int checkVariable(int c_variable);
- * 
  */
 
-//Haowei
-//#include "flowtable_wrap.c"
 #include "ginic_wrap.c"
 #include "flowtable.h"
 #include "Python.h"
-//#include "utils.h"
+#include <sys/types.h>
+#define DEBUG
 
 enum grouter_mode
 {
@@ -22,25 +17,22 @@ enum grouter_mode
     OPENFLOW_MODE = 1
 } GROUTER_MODE = CLASSICAL_MODE;
 
-void *judgeProcessor(void *pc)
+/* TODO:
+ *  1. check SWIG_init() position
+ */
+void *decisionProcessor(void *pc)
 {
     pktcore_t *pcore = (pktcore_t *) pc;
     gpacket_t *in_pkt;
-    //flowtable
-    SWIG_init(); // Haowei: should be init here or in packetcore.c???
+    SWIG_init(); /* Initialize the wrapped GINIC module*/
     int pktsize;
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     while (1)
     {
-        verbose(2, "[judgeProcessor]:: Waiting for a packet...");
+        verbose(2, "[decisionProcessor]:: Waiting for a packet...");
         readQueue(pcore->decisionQ, (void **) &in_pkt, &pktsize);
         pthread_testcancel();
-        verbose(2, "[judgeProcessor]:: Got a packet for further processing...");
-        //        printf("[judgeProcessor]:: flowtable size: %d\n", pcore->flowtable->num);
-        /*
-         * check flow table:    1. classical router
-         *                      2. openflow switch
-         */
+        verbose(2, "[decisionProcessor]:: Got a packet for further processing...");
         /* 1. classical router */
         if (GROUTER_MODE == CLASSICAL_MODE)
             classicalDecisionQProcessor(pcore, in_pkt);
@@ -53,128 +45,11 @@ void *judgeProcessor(void *pc)
     }
 }
 
-int classicalDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
-{
-    ftentry_t *entry_res = checkFlowTable(pcore->flowtable, pkt);
-    if (entry_res == NULL)
-        //if (!checkFlowTable(pcore->flowtable, in_pkt, action_c, &prot))
-    {
-        printf("[judgeProcessor]:: Cannot find action to given packet...Drop!\n");
-        return;
-    }
-    //TODO: call function using action(char *):  PyObject_CallFunction(String)
-    verbose(2, "[judgeProcessor]:: Entry found protocol: %#06x\n", entry_res->ip_protocol_type);
-    if (entry_res->language == C_FUNCTION)
-    {
-
-        verbose(2, "[judgeProcessor]:: C Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
-        int (*processor)(gpacket_t *);
-        processor = entry_res->action_c;
-        int nextlabel = (*processor)(pkt);
-        if (entry_res->ip_protocol_type == ARP_PROTOCOL || nextlabel == EXIT_SUCCESS)
-        {
-            verbose(2, "[judgeProcessor] SUCCESS!  : %d\n", EXIT_SUCCESS);
-            return EXIT_SUCCESS;
-        }
-        if (nextlabel == UDP_PROTOCOL) verbose(2, "UDP!!!!!!!!");
-        verbose(2, "[judgeProcessor][Ft]New style round");
-        labelNext(pkt, entry_res->ip_protocol_type, nextlabel);
-        verbose(2, "[judgeProcessor]Writing back to decision Q...");
-        writeQueue(pcore->decisionQ, pkt, sizeof (gpacket_t));
-        verbose(2, "[judgeProcessor]Wrote back to decision Q...");
-    }
-    else if (entry_res->language == PYTHON_FUNCTION)
-    {
-        verbose(2, "[judgeProcessor]:: Python Function: Action: (0x%lx)\n", (unsigned long) entry_res->action_c);
-        //TODO: Python embedding
-        //TODO: ?? Where to declaire!?
-        PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-        Py_pFun = entry_res->action_c;
-        Py_pPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
-        //Py_pResult = PyObject_CallFunction(Py_pFun, NULL);
-        if (Py_pPkt)
-        {
-            verbose(2, "Got Pyton obj\n");
-            Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-            CheckPythonError();
-            /* TODO: check whether further process is needed. */
-            //                printf("pResult: %p", Py_pResult);
-        }
-    }
-}
-
-openflowDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
-{
-    ftentry_t *entry_res = checkOFFlowTable(pcore->flowtable, pkt);
-    if (entry_res == NULL) // No action in flowtable, send to openflow.py
-    {
-        PyObject * Py_pFun, *Py_pPkt, *Py_pResult;
-        Py_pFun = pcore->flowtable->entry[3].action_c; // 3 is now for giniof_01
-        Py_pPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
-        if (Py_pPkt)
-        {
-            verbose(2, "Got Pyton obj\n");
-            Py_pResult = PyObject_CallFunction(Py_pFun, "O", Py_pPkt);
-            CheckPythonError();
-        }
-    }
-    else
-        /* found an match, apply action. Only [Output to switch port] is supported */
-    {
-        /*Other fields..*/
-        ofp_action_output_t *action = (ofp_action_output_t *) entry_res->action;
-        printAction(action);
-        pkt->frame.dst_interface = action->port;
-        writeQueue(pcore->outputQ, (void *) pkt, sizeof (gpacket_t));
-    }
-}
-
-int addEntry(flowtable_t *flowtable, int type, ushort language, void *content)
-{
-    verbose(2, "[addEntry]:: \n");
-    if (type == CLASSICAL)
-    {
-        verbose(2, "[addEntry]:: Adding a classical entry\n");
-        //TODO: how to add?: append? insert? : Haowei
-        //append: reason: less time when check pkt/add entry, more time delete entry;
-        if (flowtable->num < MAX_ENTRY_NUMBER)
-        {
-            flowtable->entry[flowtable->num].is_empty = 0;
-            flowtable->entry[flowtable->num].language = language;
-            flowtable->entry[flowtable->num].ip_protocol_type = UDP_PROTOCOL; // TODO: temporary soluction
-            flowtable->entry[flowtable->num].action_c = content;
-            flowtable->num++;
-            return EXIT_SUCCESS;
-        }
-        else
-        {
-            verbose(2, "[addEntry]:: flowtable is full...Exit with failure\n");
-            return EXIT_FAILURE;
-        }
-
-
-    }
-    else if (type == OPENFLOW)
-    {
-        verbose(2, "[addEntry]:: Adding a openflow entry\n");
-        return EXIT_SUCCESS;
-    }
-
-    return EXIT_FAILURE;
-}
-
-int deleteEntry()
-{
-    verbose(2, "[deleteEntry]:: \n");
-    return EXIT_SUCCESS;
-}
-
 flowtable_t *initFlowTable()
 {
     verbose(2, "[initFlowTable]:: \n");
     flowtable_t *flowtable = (flowtable_t *) malloc(sizeof (flowtable_t));
     flowtable->num = 0;
-    //int (*function_ptr)(gpacket_t);
     defaultProtocol(flowtable, ARP_PROTOCOL, (void *) ARPProcess);
     defaultProtocol(flowtable, IP_PROTOCOL, (void *) IPIncomingPacket);
     defaultProtocol(flowtable, ICMP_PROTOCOL, (void *) ICMPProcessPacket);
@@ -201,100 +76,206 @@ int defaultProtocol(flowtable_t *flowtable, ushort prot, void *function)
     return EXIT_SUCCESS;
 }
 
+/* TODO:
+ *  1. Handle Python Result..
+ *  2. Return value from module need to be decided..
+ */
+int classicalDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
+{
+    ftentry_t *entry_res = checkFlowTable(pcore->flowtable, pkt);
+    int (*processor)(gpacket_t *);
+    if (entry_res == NULL)
+    {
+        printf("[decisionProcessor]:: Cannot find action to given packet...Drop!\n");
+        return EXIT_FAILURE;
+    }
+    else if (entry_res->language == C_FUNCTION)
+    {
+        verbose(2, "[decisionProcessor]:: Entry found protocol: %#06x C Function: Action: (0x%lx)\n", entry_res->ip_protocol_type, (unsigned long) entry_res->action_c);
+        processor = entry_res->action_c;
+        int nextlabel = (*processor)(pkt);
+        if(nextlabel == NULL_PROTOCOL)
+            return EXIT_SUCCESS;
+        verbose(2, "[decisionProcessor][Ft]New style round");
+        labelNext(pkt, entry_res->ip_protocol_type, nextlabel);
+        writeQueue(pcore->decisionQ, pkt, sizeof (gpacket_t));
+        verbose(2, "[decisionProcessor]:: Wrote back to decision Q...");
+    }
+    else if (entry_res->language == PYTHON_FUNCTION)
+    {
+        verbose(2, "[decisionProcessor]:: Entry found protocol: %#06x Python Function: Action: (0x%lx)\n", entry_res->ip_protocol_type, (unsigned long) entry_res->action_c);
+
+        PyObject * PyActionFun, *PyPkt, *PyFunReturn;
+        PyActionFun = entry_res->action_c;
+        /* TODO: integrate SWIG interface / helper function */
+        PyPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
+        if (PyPkt)
+        {
+            /*TODO: handle PyReturn for further process*/
+            PyFunReturn = PyObject_CallFunction(PyActionFun, "O", PyPkt);
+            CheckPythonError();
+        }
+    }
+}
+
+int openflowDecisionQProcessor(pktcore_t *pcore, gpacket_t *pkt)
+{
+    ftentry_t *entry_res = checkOFFlowTable(pcore->flowtable, pkt);
+    if (entry_res == NULL) // No action in flowtable, send to openflow.py
+    {
+        PyObject * PyActionFun, *PyPkt, *PyFunReturn;
+        PyActionFun = pcore->flowtable->entry[3].action_c; // 3 is now for giniof_01
+        PyPkt = SWIG_NewPointerObj((void *) pkt, SWIGTYPE_p__gpacket_t, 1);
+        if (PyPkt)
+        {
+            PyFunReturn = PyObject_CallFunction(PyActionFun, "O", PyPkt);
+            CheckPythonError();
+        }
+    }
+    else /* found an match, apply action. Only [Output to switch port] is supported */
+    {
+        /*Other fields..*/
+        ofp_action_output_t *action = (ofp_action_output_t *) entry_res->action;
+        printAction(action);
+        pkt->frame.dst_interface = action->port;
+        writeQueue(pcore->outputQ, (void *) pkt, sizeof (gpacket_t));
+    }
+}
+
 int addModule(flowtable_t *flowtable, ushort language, char *mod_name)
 {
-    //TODO: 1. import module 2. find getEntry function 3.addEntry with \
-    //given entry
-    //======
-    //SWIG_init();
-    //init_CFT();//TODO: build CFT
-    //==
     verbose(2, "[addModule]Start to add protocol");
     switch (language)
     {
     case PYTHON_FUNCTION:
-        if (addPyModule(flowtable, mod_name))
+        if (addPyModule(flowtable, mod_name) == EXIT_SUCCESS)
+        {
             verbose(2, "[addModule]Python module: %s added", mod_name);
-        break;
+            return EXIT_SUCCESS;
+        }
+        else break;
     case C_FUNCTION:
-        if (addCModule(flowtable, mod_name))
+        if (addCModule(flowtable, mod_name) == EXIT_SUCCESS)
+        {
             verbose(2, "[addModule]C Module: %s added", mod_name);
-        break;
+            return EXIT_SUCCESS;
+        }
+        else break;
     }
-
+    CheckPythonError();
     return EXIT_FAILURE;
 }
-// only check the protocol for now
 
+/* TODO:
+ *  1. CheckPythonError();
+ */
 int addPyModule(flowtable_t *flowtable, char *mod_name)
 {
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("sys.path.append('./')");
-
-    PyObject *pProtMod, *pProtGlobalDict, *pFuncProcess, *pFuncCommand;
-    pProtMod = PyImport_ImportModule(mod_name); //load protocol.py
-    if (pProtMod)
+    PyObject *PyModule, *PyModuleGlobalDict, *PyFunProcess, *PyFunCommandLine, *PyFunConfig, *PyTupleConfig;
+    module_config_t *config = (module_config_t *) calloc(1, sizeof (module_config_t));
+    PyModule = PyImport_ImportModule(mod_name);
+    if (PyModule)
     {
-        verbose(2, "[addPyModule]-%s- Module loaded\n", mod_name);
-        //verbose(2, "[addPyModule]module [udp] imported\n");
-        pProtGlobalDict = PyModule_GetDict(pProtMod); // Get main dictionary
-        //CheckPythonError();
-        if (pProtGlobalDict)
+        PyModuleGlobalDict = PyModule_GetDict(PyModule);
+        if (PyModuleGlobalDict)
         {
-            verbose(2, "[addPyModule]main dictionary got\n");
-            pFuncProcess = PyDict_GetItemString(pProtGlobalDict, "Protocol_Processor"); //TODO: find function of getEntry
-            verbose(2, "[addPyModule]Protocol_Processor got\n");
-            pFuncCommand = PyDict_GetItemString(pProtGlobalDict, "Command_Line");
-            if (pFuncCommand == NULL) verbose(2, "[addPyModule]pFuncCommand is NULL!!\n", pFuncCommand);
-            verbose(2, "[addPyModule]Command_Line got\n");
-
-            //return a tuple of config info 
-            PyObject *PyConfigFunc = PyDict_GetItemString(pProtGlobalDict, "Config");
-            if(PyConfigFunc != NULL)verbose(2, "[addPyModule]Config got\n");
-            module_config_t *config = (module_config_t *) calloc(1, sizeof (module_config_t));
-            PyObject *PyConfigTuple = PyObject_CallFunction(PyConfigFunc, NULL);
-            PyArg_ParseTuple(PyConfigTuple, "sissss",&config->name, &config->protocol,
-                             &config->command_str, &config->shelp, &config->usage, &config->lhelp);
-            //memcpy(config->command_str, PyString_AsString(PyTuple_GET_ITEM(PyConfigTuple, 2)), PyString_Size(PyTuple_GET_ITEM(PyConfigTuple, 2)));
-            printConfigInfo(config);
-            registerCLI(config->command_str, pFuncCommand, PYTHON_FUNCTION, "command", "command", "command");
-            verbose(2, "[addPyModule]Command < %p >registered\n", pFuncCommand);
-            //CheckPythonError();
-            if (pFuncProcess == NULL)
+            config->command = (void *) PyDict_GetItemString(PyModuleGlobalDict, "Command_Line");
+            if (config->command == NULL)
+                verbose(2, "[addPyModule]PyFunCommandLine is NULL!!\n", PyFunCommandLine);
+            /* return a tuple of config info */ 
+            PyFunConfig = PyDict_GetItemString(PyModuleGlobalDict, "Config");
+            if (PyFunConfig)
             {
-                verbose(2, "[addPyModule]pFunc is NULL !!");
-                return EXIT_FAILURE;
+                PyTupleConfig = PyObject_CallFunction(PyFunConfig, NULL);
+                PyArg_ParseTuple(PyTupleConfig, "sissss", &config->name, &config->protocol,
+                                 &config->command_str, &config->shelp, &config->usage, &config->lhelp);
+                config->processor = PyDict_GetItemString(PyModuleGlobalDict, "Protocol_Processor"); //TODO: find function of getEntry
+                if (config->processor)
+                {
+                    printConfigInfo(config);
+                    addEntry(flowtable, CLASSICAL, PYTHON_FUNCTION, config); //add protocol into flow table
+                    verbose(2, "[addPyModule]:: Python Processor added into flowtable!!!");
+                    return EXIT_SUCCESS;
+                }
             }
-            addEntry(flowtable, CLASSICAL, PYTHON_FUNCTION, (void *) pFuncProcess); //add protocol into flow table
-            verbose(2, "[addPyModule]Python Processor added into flowtable!!!");
-            return EXIT_SUCCESS;
         }
-        verbose(2, "[addPyModule]loading protocol module failed!\n");
+        printf("[addPyModule]:: Failed to get Main Dictionary of module -%s- !\n", mod_name);
         return EXIT_FAILURE;
+
     }
+    printf("[addPyModule]:: Failed to load module -%s- !\n", mod_name);
+    return EXIT_FAILURE;
 }
 
 int addCModule(flowtable_t *flowtable, char *mod_name)
 {
-    //read config info from mod_nameConfig()
-    //module_config_t *config = (module_config_t)calloc(1, sizeof(module_config_t));
-    module_config_t *config_info;
+    // read config info from mod_nameConfig()
+    module_config_t *config;
     void *library = NULL;
     module_config_t * (*config_fun)();
     library = dlopen(mod_name, RTLD_LAZY); //RTLD_LAZY  RTLD_NOW
-    if (!library)
+    if (library)
+    {
+        char tmpbuff[20];
+        //config_fun = dlsym(library, Name2ConfigName(tmpbuff, mod_name));
+        config_fun = dlsym(library, Name2ConfigName(tmpbuff, "udp2"));
+        if (config_fun)
+            config = config_fun();
+        printConfigInfo(config);
+        if (addEntry(flowtable, CLASSICAL, C_FUNCTION, config) == EXIT_SUCCESS)
+            return EXIT_SUCCESS;
+    }
+    else
     {
         printf("%s \n", dlerror());
+        return EXIT_FAILURE;
     }
-    dlerror();
-    char tmpbuff[20];
-    //config_fun = dlsym(library, Name2ConfigName(tmpbuff, mod_name));
-    config_fun = dlsym(library, Name2ConfigName(tmpbuff, "udp2"));
-    if (config_fun)
-        config_info = config_fun();
-    printConfigInfo(config_info);
-    registerCLI(config_info->command_str, config_info->command, C_FUNCTION, "command_C", "command_C", "command_C");
-    addEntry(flowtable, CLASSICAL, C_FUNCTION, (void *) config_info->processor); //TODO: protocol is not passed..
+}
+
+/* TODO: 1. How to add entries. append? insert?
+ * append: reason: less time when check pkt/add entry, more time delete entry;
+ */
+int addEntry(flowtable_t *flowtable, int type, ushort language, module_config_t *config)
+{
+
+    verbose(2, "[addEntry]:: \n");
+
+    if (type == CLASSICAL)
+    {
+        verbose(2, "[addEntry]:: Adding a classical entry\n");
+        if (flowtable->num < MAX_ENTRY_NUMBER)
+        {
+            flowtable->entry[flowtable->num].is_empty = 0;
+            flowtable->entry[flowtable->num].language = language;
+            flowtable->entry[flowtable->num].ip_protocol_type = config->protocol;
+            flowtable->entry[flowtable->num].action_c = config->processor;
+            registerCLI(config->command_str, config->command, language, config->shelp, config->usage, config->lhelp);
+            verbose(2, "[addPyModule]:: Command < %s >registered\n", config->command_str);
+            flowtable->num++;
+            return EXIT_SUCCESS;
+        }
+        else
+        {
+            verbose(2, "[addEntry]:: flowtable is full...Exit with failure\n");
+            return EXIT_FAILURE;
+        }
+    }
+    else if (type == OPENFLOW)
+    {
+        verbose(2, "[addEntry]:: Adding a openflow entry\n");
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
+}
+
+/* TODO:
+ * Implementation....
+ */
+int deleteEntry()
+{
+    verbose(2, "[deleteEntry]:: \n");
     return EXIT_SUCCESS;
 }
 
@@ -571,14 +552,6 @@ int ofpFlowMod(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
     return EXIT_SUCCESS;
 }
 
-//int ofpFlowMod2(flowtable_t *flowtable, void *msg)
-//{
-//    printf("[ofpFlowMod2] Receive FLOW MOD pkt!\n");
-//    ofp_flow_mod_pkt_t *flow_mod_pkt = msg;
-//    printOFPFlowModPkt(flow_mod_pkt);
-//    return EXIT_SUCCESS;
-//}
-
 int ofpFlowModAdd(flowtable_t *flowtable, ofp_flow_mod_pkt_t *flow_mod_pkt)
 {
     verbose(2, "[ofpFlowModAdd]Adding a Match to flow table...\n");
@@ -640,12 +613,10 @@ void printOFPFlowModPkt(ofp_flow_mod_pkt_t *flow_mod_pkt)
     printf("Version: %" PRIu8 "\n", flow_mod_pkt->header.version);
     printf("Type: %" PRIu8 "\n", flow_mod_pkt->header.type);
     printf("Length: %" PRIu16 "\n", flow_mod_pkt->header.length);
-    printf("before convert: %x", flow_mod_pkt->header.xid);
     printf("Xid: %" PRIu32 "\n", flow_mod_pkt->header.xid);
     printf("Cookie: %" PRIu64 "\n", flow_mod_pkt->cookie);
     printf("Command: %" PRIu16 "\n", flow_mod_pkt->command);
     printf("Priority: %" PRIu16 "\n", flow_mod_pkt->priority);
-    printf("before convert: %x", flow_mod_pkt->buffer_id);
     printf("BufferId: %" PRIu32 "\n", flow_mod_pkt->buffer_id);
     printf("Out port: %" PRIu16 "\n", flow_mod_pkt->out_port);
     printf("--  End of packet  --\n");

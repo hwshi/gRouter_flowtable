@@ -86,7 +86,7 @@ typedef struct _pingstat_t
 
 
 // function prototypes should go here....
-void ICMPProcessPacket(gpacket_t *in_pkt);
+int ICMPProcessPacket(gpacket_t *in_pkt);
 void ICMPSendPingPacket(uchar *dst_ip, int size, int seq);
 void ICMPProcessEchoRequest(gpacket_t *in_pkt);
 void ICMPProcessEchoReply(gpacket_t *in_pkt);
