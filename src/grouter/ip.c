@@ -412,6 +412,7 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
     else if (newflag == 1)
     {
         // non REPLY PACKET -- this is a new packet; set all fields
+        verbose(2, "[IPOutgoingPacket]:: new packet ");
         ip_pkt->ip_version = 4;
         ip_pkt->ip_hdr_len = 5;
         ip_pkt->ip_tos = 0;
@@ -419,8 +420,9 @@ int IPOutgoingPacket(gpacket_t *pkt, uchar *dst_ip, int size, int newflag, int s
         RESET_DF_BITS(ip_pkt->ip_frag_off);
         RESET_MF_BITS(ip_pkt->ip_frag_off);
         ip_pkt->ip_frag_off = 0;
-
+        verbose(2, "[IPOutgoingPacket]:: cpy IP ");
         COPY_IP(ip_pkt->ip_dst, gHtonl(tmpbuf, dst_ip));
+        verbose(2, "[IPOutgoingPacket]:: cpy Done");
         ip_pkt->ip_pkt_len = htons(size + ip_pkt->ip_hdr_len * 4);
 
         verbose(2, "[IPOutgoingPacket]:: lookup next hop ");

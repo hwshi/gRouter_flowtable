@@ -9,7 +9,10 @@ class GPacket(object):
     def __init__(self, meta_packet=None):
         # self.gheader = gheader
         # self.packet = Ether(GINIC.getGPacketString(meta_packet))
-        self.ip_payload = GINIC.IPPayload(meta_packet)
+        if meta_packet == None:
+            self.ip_payload = None
+        else:
+            self.ip_payload = GINIC.IPPayload(meta_packet)
 
     #
     # def _dissemble(self, msg):
@@ -24,19 +27,19 @@ class GPacket(object):
     #     else:
     #         return GINIC.assembleWithIPPayload(self.meta_msg, self.ip_payload);
     def build(self):
-        raw_packet = GINIC.assembleWithIPPayload(self.ip_payload)
-        return GINIC.createGPacketWithPacket(raw_packet)
+        raw_packet = GINIC.createGPacketWithIPPayload(self.ip_payload)
+        return raw_packet
 def send2IP(ip_payload, dip_h_str, protocol):
     dip_n = htonStringToIP(dip_h_str)
     print("[send2IP]sending to dest ip:", dip_n)
     out_gpacket = GPacket()
     out_gpacket.ip_payload = ip_payload.build()
-    GINIC.IPOutgoingPacket(out_gpacket.build(), dip_n, len(ip_payload), 1, protocol) # 0 for old packet, 1 for new packet
+
+    print("ready to send...ip_payload: ", out_gpacket.ip_payload)
+    GINIC.IPOutgoingPacket(out_gpacket.build(), dip_n, len(ip_payload) + 8, 1, protocol) # 0 for old packet, 1 for new packet
 def htonStringToIP(str):
-    ipn = []
     list = str.split(".")
-    for i in range(4):
-        ipn[i] = int(list[3 - i])
+    ipn = struct.pack('BBBB', int(list[3]), int(list[2]), int(list[1]), int(list[0]))
     print("[stringToIP]ip is:", ipn)
     return ipn
 

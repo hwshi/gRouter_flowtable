@@ -25,8 +25,12 @@ class UDPpcb(object):
             str = raw_input()
             # udp_pkt = Packet(sport, dport, len(str), 0, str)
             packet = UDPPacket(sport = sp, dport = dp, len  = len(str))
-            packet.payload = str
+            # packet.payload = str
+            packet.add_payload(str)
             hexdump(packet)
+            print("ok ma len: ", len(packet))
+            # packet.build()
+            print("ok??")
             send2IP(packet, dip, 17)
             # upkt_a = assemble(udp_pkt, 0)  # disable checksum
             # gpacket = GPacket()
@@ -73,7 +77,8 @@ def Protocol_Processor(meta_pkt):
         print("Receiving an Echo packet..")
         _echoReply(gpacket)
     elif udp_field.dport in pcb.port_set:
-        hexdump(udp_field)
+        udp_field.show()
+        # hexdump(udp_field)
     else:
         print("Port Unreachable!")
 
