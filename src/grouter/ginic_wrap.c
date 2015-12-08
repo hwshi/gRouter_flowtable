@@ -3011,6 +3011,13 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         return gpkt;
 
     }
+    gpacket_t * createGPacketWithPacket(PyObject * packet)
+    {
+        void * pktString = PyString_AsString(packet);
+        gpacket_t *gpkt = (gpacket_t *) calloc(1, sizeof(gpacket_t));
+        memcpy(&(gpkt->data), PyString_AsString(packet), PyString_Size(packet));
+        return gpkt;
+    }
     /* returns a gpacket with ip_payload as input */
     gpacket_t * createGPacketWithIPPayload(PyObject * payload) 
     {
@@ -3023,10 +3030,13 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     PyObject *getGPacketMetaheaderLen(){
         return PyLong_FromSize_t(MAX_MESSAGE_SIZE - DEFAULT_MTU + sizeof(ip_packet_t));
     }
+//    PyObject* getGPacketString(gpacket_t * gpacket) {
+//        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
+//    }
     PyObject* getGPacketString(gpacket_t * gpacket) {
-        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
+        printf("[getGPacketString]size: %d\n", sizeof (*gpacket) - sizeof(pkt_frame_t));
+        return PyString_FromStringAndSize((char *) (&gpacket->data), sizeof (*gpacket) - sizeof(pkt_frame_t));
     }
-    
     /* 
      * for openflow switch functionalities     
      */
@@ -3062,9 +3072,10 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
             if(netarray.elem[i] != NULL)
             {
                 ifptr = netarray.elem[i];
-                  //1. port no. 2. MAC 3. name
-                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
-                // this function steal a reference to "o"
+                /* 1. port no. 2. MAC 3. name
+                 * int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
+                 * this function steal a reference to "o"
+                 */
                 char mac_str[256];
                 MAC2String(mac_str, ifptr->mac_addr);                
                 PyTuple_SetItem(port_list, tuple_index ++, 
@@ -3073,15 +3084,22 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         }
         return port_list;
     }
+    
+    
+    /* TODO:
+     * Helper functions for routing table
+     */
+    
+    
+    /* 
+     * Helper functions for Openflow Protocol
+     * 
+     */
     int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
         ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
-        //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
         printf("size1: %d, size2: %d", sizeof(ofp_flow_mod_pkt_t), PyString_Size(flow_mod_pkt));
-        //memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
-        //printf("[gini_ofp_flow_mod]check point 2\n");
-        //printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;
     }
@@ -3586,6 +3604,22 @@ SWIGINTERN PyObject *_wrap_assembleWithIPPayload(PyObject *SWIGUNUSEDPARM(self),
   arg1 = obj0;
   arg2 = obj1;
   result = (gpacket_t *)assembleWithIPPayload(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_createGPacketWithPacket(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  gpacket_t *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:createGPacketWithPacket",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (gpacket_t *)createGPacketWithPacket(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p__gpacket_t, 0 |  0 );
   return resultobj;
 fail:
@@ -4989,11 +5023,57 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_addRouteEntry(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  route_entry_t *arg1 ;
+  uchar *arg2 = (uchar *) 0 ;
+  uchar *arg3 = (uchar *) 0 ;
+  uchar *arg4 = (uchar *) 0 ;
+  int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:addRouteEntry",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_route_entry_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "addRouteEntry" "', argument " "1"" of type '" "route_entry_t []""'"); 
+  } 
+  arg1 = (route_entry_t *)(argp1);
+  {
+    arg2 = PyString_AsString(obj1);
+  }
+  {
+    arg3 = PyString_AsString(obj2);
+  }
+  {
+    arg4 = PyString_AsString(obj3);
+  }
+  ecode5 = SWIG_AsVal_int(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "addRouteEntry" "', argument " "5"" of type '" "int""'");
+  } 
+  arg5 = (int)(val5);
+  addRouteEntry(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"IPPayload", _wrap_IPPayload, METH_VARARGS, NULL},
 	 { (char *)"createGPacket", _wrap_createGPacket, METH_VARARGS, NULL},
 	 { (char *)"assembleWithIPPayload", _wrap_assembleWithIPPayload, METH_VARARGS, NULL},
+	 { (char *)"createGPacketWithPacket", _wrap_createGPacketWithPacket, METH_VARARGS, NULL},
 	 { (char *)"createGPacketWithIPPayload", _wrap_createGPacketWithIPPayload, METH_VARARGS, NULL},
 	 { (char *)"getGPacketMetaheaderLen", _wrap_getGPacketMetaheaderLen, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
@@ -5055,6 +5135,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_gpacket_t", _wrap_delete_gpacket_t, METH_VARARGS, NULL},
 	 { (char *)"gpacket_t_swigregister", gpacket_t_swigregister, METH_VARARGS, NULL},
 	 { (char *)"IPOutgoingPacket", _wrap_IPOutgoingPacket, METH_VARARGS, NULL},
+	 { (char *)"addRouteEntry", _wrap_addRouteEntry, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

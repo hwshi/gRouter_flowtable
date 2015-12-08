@@ -83,6 +83,10 @@ def assembleWithIPPayload(*args):
   return _GINIC.assembleWithIPPayload(*args)
 assembleWithIPPayload = _GINIC.assembleWithIPPayload
 
+def createGPacketWithPacket(*args):
+  return _GINIC.createGPacketWithPacket(*args)
+createGPacketWithPacket = _GINIC.createGPacketWithPacket
+
 def createGPacketWithIPPayload(*args):
   return _GINIC.createGPacketWithIPPayload(*args)
 createGPacketWithIPPayload = _GINIC.createGPacketWithIPPayload
@@ -260,6 +264,10 @@ gpacket_t_swigregister(gpacket_t)
 def IPOutgoingPacket(*args):
   return _GINIC.IPOutgoingPacket(*args)
 IPOutgoingPacket = _GINIC.IPOutgoingPacket
+
+def addRouteEntry(*args):
+  return _GINIC.addRouteEntry(*args)
+addRouteEntry = _GINIC.addRouteEntry
 # This file is compatible with both classic and new-style classes.
 
 

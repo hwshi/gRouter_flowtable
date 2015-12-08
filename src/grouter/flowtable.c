@@ -189,8 +189,10 @@ int addPyModule(flowtable_t *flowtable, char *mod_name)
             if (PyFunConfig)
             {
                 PyTupleConfig = PyObject_CallFunction(PyFunConfig, NULL);
+                verbose(2, "[addPyModule] got config\n");
                 PyArg_ParseTuple(PyTupleConfig, "sissss", &config->name, &config->protocol,
                                  &config->command_str, &config->shelp, &config->usage, &config->lhelp);
+                verbose(2, "[addPyModule] set config 1\n");
                 config->processor = PyDict_GetItemString(PyModuleGlobalDict, "Protocol_Processor"); //TODO: find function of getEntry
                 if (config->processor)
                 {

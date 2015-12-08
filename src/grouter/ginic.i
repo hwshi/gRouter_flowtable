@@ -1,4 +1,10 @@
-//file: message.i
+/*
+ * ginic.i (the SWIG interface for GINI)
+ * AUTHOR: Haowei Shi
+ * DATE: October 01, 2014
+ *
+ */
+
 %module GINIC
 %inline %{
     #include <sys/types.h>
@@ -53,6 +59,13 @@
         return gpkt;
 
     }
+    gpacket_t * createGPacketWithPacket(PyObject * packet)
+    {
+        void * pktString = PyString_AsString(packet);
+        gpacket_t *gpkt = (gpacket_t *) calloc(1, sizeof(gpacket_t));
+        memcpy(&(gpkt->data), PyString_AsString(packet), PyString_Size(packet));
+        return gpkt;
+    }
     /* returns a gpacket with ip_payload as input */
     gpacket_t * createGPacketWithIPPayload(PyObject * payload) 
     {
@@ -65,10 +78,13 @@
     PyObject *getGPacketMetaheaderLen(){
         return PyLong_FromSize_t(MAX_MESSAGE_SIZE - DEFAULT_MTU + sizeof(ip_packet_t));
     }
+//    PyObject* getGPacketString(gpacket_t * gpacket) {
+//        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
+//    }
     PyObject* getGPacketString(gpacket_t * gpacket) {
-        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
+        printf("[getGPacketString]size: %d\n", sizeof (*gpacket) - sizeof(pkt_frame_t));
+        return PyString_FromStringAndSize((char *) (&gpacket->data), sizeof (*gpacket) - sizeof(pkt_frame_t));
     }
-    
     /* 
      * for openflow switch functionalities     
      */
@@ -104,9 +120,10 @@
             if(netarray.elem[i] != NULL)
             {
                 ifptr = netarray.elem[i];
-                  //1. port no. 2. MAC 3. name
-                //int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
-                // this function steal a reference to "o"
+                /* 1. port no. 2. MAC 3. name
+                 * int PyTuple_SetItem(PyObject *p, Py_ssize_t pos, PyObject *o) 
+                 * this function steal a reference to "o"
+                 */
                 char mac_str[256];
                 MAC2String(mac_str, ifptr->mac_addr);                
                 PyTuple_SetItem(port_list, tuple_index ++, 
@@ -115,15 +132,22 @@
         }
         return port_list;
     }
+    
+    
+    /* TODO:
+     * Helper functions for routing table
+     */
+    
+    
+    /* 
+     * Helper functions for Openflow Protocol
+     * 
+     */
     int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
         ofp_flow_mod_pkt_t * pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
-        //pkt = (ofp_flow_mod_pkt_t *)PyString_AsString(flow_mod_pkt);
         printf("size1: %d, size2: %d", sizeof(ofp_flow_mod_pkt_t), PyString_Size(flow_mod_pkt));
-        //memcpy(pkt, PyString_AsString(flow_mod_pkt), PyString_Size(flow_mod_pkt));
-        //printf("[gini_ofp_flow_mod]check point 2\n");
-        //printf("[gini_ofp_flow_mod]pkt: %s\n", pkt);
         ofpFlowMod(pcore->flowtable, pkt);
         return EXIT_SUCCESS;
     }
@@ -166,7 +190,7 @@ typedef struct _pkt_data_t {
         uchar src[6]; // source host's MAC address (filled by gnet)
         ushort prot; // protocol field
     } header;
-    uchar data[DEFAULT_MTU]; //payloadPyObject_CallFunction     // PyObject_CallFunction (limited to maximum MTU)
+    uchar data[DEFAULT_MTU]; //payload  
 } pkt_data_t;
 
 typedef struct _label_t {
@@ -191,15 +215,37 @@ typedef struct _gpacket_t {
     pkt_data_t data;
 } gpacket_t;
 
-%typemap(in) uchar * {
+//%typemap(in) uchar * {
+//    $1 = PyString_AsString($input);
+//}
+
+%typemap(in) (uchar *) {
     $1 = PyString_AsString($input);
 }
-
 %typemap(in) ofp_flow_mod_pkt_t *flow_mod_pkt {
     int size = PyString_Size($input);
     ofp_flow_mod_pkt_t* flow_mod_pkt = (ofp_flow_mod_pkt_t)calloc(1, sizeof(ofp_flow_mod_pkt_t));
     memcpy(flow_mod_pkt, PyString_AsString($input), size);
     $1 = flow_mod_pkt;    
-} 
+}
 
+
+/* 
+ * Interface for existing functions in gRouter
+ * 
+ */
+
+
+/* IP output function */
 int IPOutgoingPacket(gpacket_t *out_gpkt, uchar *dst_ip, int size, int newflag, int src_prot);
+
+/* Routing table manipulation */
+void addRouteEntry(route_entry_t route_tbl[], uchar* nwork, uchar* nmask, uchar* nhop, int interface);
+
+%typemap(in) (route_entry_t route_tbl[], uchar* nwork, uchar* nmask, uchar* nhop, int interface) {
+    $1 = route_tbl;
+    $2 = PyString_AsString($input);
+    $3 = PyString_AsString($input);
+    $4 = PyString_AsString($input);
+    $5 = PyInt_AsLong($input);
+}

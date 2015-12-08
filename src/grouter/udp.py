@@ -1,7 +1,7 @@
 # #
 # udp.py
 # module
-# AUTHOR: Haowei Shi
+# AUTHOR: Haowei Shi class "Packt" is from pyip http://sourceforge.net/projects/pyip/
 # DATE: Jan 01, 2015
 # #
 
@@ -9,9 +9,7 @@ from random import randint
 import inspect
 import array
 import struct
-
 #import GINIC
-
 import _GINIC as GINIC
 
 MAX_PCB_NUMBER = 5
@@ -34,7 +32,7 @@ class UDPPcb:
         self.entry = [UDPPcbEntry() for i in range(5)]
         self.port_dict = {}
 
-    def bind(self, dport):  #done
+    def bind(self, dport):
         sport = 8888
         if self.port_dict.has_key(sport):
             sport = randint(7000, 9000)
@@ -105,7 +103,7 @@ class module_config:
 
     def to_tuple(self):
         config_tuple = (self.name, self.protocol, self.command_string,
-                        self.short_help, self.usage, self.long_help);
+                        self.short_help, self.usage, self.long_help)
         return config_tuple
 
 
@@ -176,7 +174,7 @@ def _udp_echo_reply(packet):
 class GPacket:
     def __init__(self,
                  ip_payload=None):
-        self.meta_msg = None
+        # self.meta_msg = None
         self.ip_payload = ip_payload
 
     def _dissemble(self, msg):
