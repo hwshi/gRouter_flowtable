@@ -3011,11 +3011,11 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         return gpkt;
 
     }
-    gpacket_t * createGPacketWithPacket(PyObject * packet)
+        gpacket_t * createGPacketWithPacket(PyObject * packet)
     {
         void * pktString = PyString_AsString(packet);
         gpacket_t *gpkt = (gpacket_t *) calloc(1, sizeof(gpacket_t));
-        memcpy(&(gpkt->data), PyString_AsString(packet), PyString_Size(packet));
+        memcpy(&(gpkt->data.data), PyString_AsString(packet), PyString_Size(packet));
         return gpkt;
     }
     /* returns a gpacket with ip_payload as input */
@@ -3030,15 +3030,44 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     PyObject *getGPacketMetaheaderLen(){
         return PyLong_FromSize_t(MAX_MESSAGE_SIZE - DEFAULT_MTU + sizeof(ip_packet_t));
     }
-//    PyObject* getGPacketString(gpacket_t * gpacket) {
-//        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
-//    }
+
     PyObject* getGPacketString(gpacket_t * gpacket) {
         printf("[getGPacketString]size: %d\n", sizeof (*gpacket) - sizeof(pkt_frame_t));
-        return PyString_FromStringAndSize((char *) (&gpacket->data), sizeof (*gpacket) - sizeof(pkt_frame_t));
+        return PyString_FromStringAndSize((char *) (&(gpacket->data)), sizeof (*gpacket) - sizeof(pkt_frame_t));
     }
+    
+    
+    /* TODO:
+     * Helper functions for routing table
+     */
+    PyObject* findRoute(PyObject* ip)
+    {
+        
+        char tmpbuf[MAX_TMPBUF_LEN];
+        uchar* ip_addr = PyString_AsString(ip);
+        uchar nxth_ip_addr[4];
+        uchar ip_addr_dot[4];
+        int interface = 0;
+        Dot2IP(ip_addr, ip_addr_dot);
+        printf("py: %s %s\n", ip_addr, tmpbuf);
+        if (findRouteEntry(route_tbl, ip_addr_dot,
+                       nxth_ip_addr,
+                       &interface) == EXIT_FAILURE)
+        {
+            return Py_None;
+        }
+        return Py_BuildValue("si", IP2Dot(tmpbuf, nxth_ip_addr), interface);
+    }
+    void showRouteTable()
+    {
+        printRouteTable(route_tbl);
+    }
+
+    
+    
     /* 
-     * for openflow switch functionalities     
+     * Helper functions for Openflow Protocol
+     * 
      */
     PyObject* getDeviceName()
     {
@@ -3084,17 +3113,7 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
         }
         return port_list;
     }
-    
-    
-    /* TODO:
-     * Helper functions for routing table
-     */
-    
-    
-    /* 
-     * Helper functions for Openflow Protocol
-     * 
-     */
+
     int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
@@ -3672,6 +3691,34 @@ SWIGINTERN PyObject *_wrap_getGPacketString(PyObject *SWIGUNUSEDPARM(self), PyOb
   arg1 = (gpacket_t *)(argp1);
   result = (PyObject *)getGPacketString(arg1);
   resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_findRoute(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:findRoute",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (PyObject *)findRoute(arg1);
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_showRouteTable(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  
+  if (!PyArg_ParseTuple(args,(char *)":showRouteTable")) SWIG_fail;
+  showRouteTable();
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -5077,6 +5124,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"createGPacketWithIPPayload", _wrap_createGPacketWithIPPayload, METH_VARARGS, NULL},
 	 { (char *)"getGPacketMetaheaderLen", _wrap_getGPacketMetaheaderLen, METH_VARARGS, NULL},
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
+	 { (char *)"findRoute", _wrap_findRoute, METH_VARARGS, NULL},
+	 { (char *)"showRouteTable", _wrap_showRouteTable, METH_VARARGS, NULL},
 	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
 	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
 	 { (char *)"getPortTuple", _wrap_getPortTuple, METH_VARARGS, NULL},

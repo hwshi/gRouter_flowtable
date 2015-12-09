@@ -59,11 +59,11 @@
         return gpkt;
 
     }
-    gpacket_t * createGPacketWithPacket(PyObject * packet)
+        gpacket_t * createGPacketWithPacket(PyObject * packet)
     {
         void * pktString = PyString_AsString(packet);
         gpacket_t *gpkt = (gpacket_t *) calloc(1, sizeof(gpacket_t));
-        memcpy(&(gpkt->data), PyString_AsString(packet), PyString_Size(packet));
+        memcpy(&(gpkt->data.data), PyString_AsString(packet), PyString_Size(packet));
         return gpkt;
     }
     /* returns a gpacket with ip_payload as input */
@@ -78,15 +78,44 @@
     PyObject *getGPacketMetaheaderLen(){
         return PyLong_FromSize_t(MAX_MESSAGE_SIZE - DEFAULT_MTU + sizeof(ip_packet_t));
     }
-//    PyObject* getGPacketString(gpacket_t * gpacket) {
-//        return PyString_FromStringAndSize((char *) (&gpacket->data.data), sizeof (*gpacket));
-//    }
+
     PyObject* getGPacketString(gpacket_t * gpacket) {
         printf("[getGPacketString]size: %d\n", sizeof (*gpacket) - sizeof(pkt_frame_t));
-        return PyString_FromStringAndSize((char *) (&gpacket->data), sizeof (*gpacket) - sizeof(pkt_frame_t));
+        return PyString_FromStringAndSize((char *) (&(gpacket->data)), sizeof (*gpacket) - sizeof(pkt_frame_t));
     }
+    
+    
+    /* TODO:
+     * Helper functions for routing table
+     */
+    PyObject* findRoute(PyObject* ip)
+    {
+        
+        char tmpbuf[MAX_TMPBUF_LEN];
+        uchar* ip_addr = PyString_AsString(ip);
+        uchar nxth_ip_addr[4];
+        uchar ip_addr_dot[4];
+        int interface = 0;
+        Dot2IP(ip_addr, ip_addr_dot);
+        printf("py: %s %s\n", ip_addr, tmpbuf);
+        if (findRouteEntry(route_tbl, ip_addr_dot,
+                       nxth_ip_addr,
+                       &interface) == EXIT_FAILURE)
+        {
+            return Py_None;
+        }
+        return Py_BuildValue("si", IP2Dot(tmpbuf, nxth_ip_addr), interface);
+    }
+    void showRouteTable()
+    {
+        printRouteTable(route_tbl);
+    }
+
+    
+    
     /* 
-     * for openflow switch functionalities     
+     * Helper functions for Openflow Protocol
+     * 
      */
     PyObject* getDeviceName()
     {
@@ -132,17 +161,7 @@
         }
         return port_list;
     }
-    
-    
-    /* TODO:
-     * Helper functions for routing table
-     */
-    
-    
-    /* 
-     * Helper functions for Openflow Protocol
-     * 
-     */
+
     int gini_ofp_flow_mod(PyObject *flow_mod_pkt)
     {
         printf("[gini_ofp_flow_mod]\n");
@@ -215,9 +234,6 @@ typedef struct _gpacket_t {
     pkt_data_t data;
 } gpacket_t;
 
-//%typemap(in) uchar * {
-//    $1 = PyString_AsString($input);
-//}
 
 %typemap(in) (uchar *) {
     $1 = PyString_AsString($input);

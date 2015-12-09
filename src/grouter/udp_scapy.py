@@ -1,84 +1,98 @@
-__author__ = 'chi'
+__author__ = 'Haowei Shi'
 
-# import _GINIC as GINIC
+import _GINIC as GINIC
 
 from ginilib import *
 
+
+print("test Route API")
+ip = "192.168.1.2"
+show_route_talbe()
+next_hop, interface = find_route(ip)
+if next_hop != None:
+    print("found route", re)
 print("--    SIMPLE UDP IMPLEMENTATION FOR GINI    --")
-UDP_SERVICES=load_services("/etc/services")
+
+
 class UDPPacket(Packet):
     name = "UDPPacket"
     fields_desc = [ ShortEnumField("sport", 53, {8888 : "test", 7 : "echo"}),
                     ShortEnumField("dport", 53, {8888 : "test", 7 : "echo"}),
                     ShortField("len", None),
                     XShortField("chksum", None), ]
-# class UDPPacket(UDP):
-#     pass
+    #methods for layer
+    def extract_padding(self, s):
+        l = self.len - 8
+        return s[:l],s[l:]
+    def post_build(self, p, pay):
+        p += pay
+        l = self.len
+        if l is None:
+            l = len(p)
+            p = p[:4]+struct.pack("!H",l)+p[6:]
+        if self.chksum is None:
+            if isinstance(self.underlayer, IP):
+                if self.underlayer.len is not None:
+                    ln = self.underlayer.len-20
+                else:
+                    ln = len(p)
+                psdhdr = struct.pack("!4s4sHH",
+                                     inet_aton(self.underlayer.src),
+                                     inet_aton(self.underlayer.dst),
+                                     self.underlayer.proto,
+                                     ln)
+                ck=checksum(psdhdr+p)
+                p = p[:6]+struct.pack("!H", ck)+p[8:]
+            elif isinstance(self.underlayer, scapy.layers.inet6.IPv6) or isinstance(self.underlayer, scapy.layers.inet6._IPv6ExtHdr):
+                ck = scapy.layers.inet6.in6_chksum(socket.IPPROTO_UDP, self.underlayer, p)
+                p = p[:6]+struct.pack("!H", ck)+p[8:]
+            else:
+                warning("No IP underlayer to compute checksum. Leaving null.")
+        return p
 
 class UDPpcb(object):
     def __init__(self):
         self.port_set = set()
     def send(self, dip, sp, dp):
         print("[UDPPcb.send] input your msg")
-        # dipn = struct.pack('BBBB', int(diph_l[3]), int(diph_l[2]), int(diph_l[1]), int(diph_l[0]))
         while True:
             str = raw_input()
-            # udp_pkt = Packet(sport, dport, len(str), 0, str)
-            packet = UDPPacket(sport = sp, dport = dp, len  = len(str))
-            # packet.payload = str
-            packet.add_payload(str)
-            hexdump(packet)
-            print("ok ma len: ", len(packet))
-            # packet.build()
-            print("ok??")
-            send2IP(packet, dip, 17)
-            # upkt_a = assemble(udp_pkt, 0)  # disable checksum
-            # gpacket = GPacket()
-            # gpacket.ip_payload = upkt_a
-            # print(upkt_a)
-            # GINIC.IPOutgoingPacket(gpacket._assemble(), dipn, len(upkt_a), 1, 17)
+            # payload = UDPPacket(sport = sp, dport = dp, len  = None, chksum = None)/str /IP() / Ether()
+            payload = UDPPacket(sport = sp, dport = dp, len  = None, chksum = None)
+            payload.add_payload(str)
+            hexdump(payload)
+            send_payload_to_ip(payload, dip, 17)
     def listen(self, port):
         self.port_set.add(port)
 
 pcb = UDPpcb()
-
-
+split_layers(IP, UDP, proto = 17)
+bind_layers(IP, UDPPacket, proto = 17)
+# bind_layers(UDPPacket, IP)
 # #
-# private functions
+# private functions for layer
 #
 def _echoReply(gpacket):
     udp = gpacket.ip_payload.payload
-    out_udp = UDPPacket(sport = udp.dport, dport = udp.sport, len = 0, chksum = None)
-    # dip_n = [8, 9, 168, 192]
+    out_udp = UDPPacket(sport = udp.dport, dport = udp.sport, len = None, chksum = None)
     dip = "192.168.1.2"
-    send2IP(out_udp, dip, 17)
-
-    # dest_ip = __find_dest_ip(packet)  #TODO extract dest_ip from packet
-    # print("[_udp_echo_reply]dest ip: %d", dest_ip)
-    # newflag = 0
-    # prot = 17
-    # meta_udp_pkt = assemble(udp_packet)
-    # size = len(meta_udp_pkt)
-    # print("[_udp_echo_reply]sending to %s : %d", dest_ip, udp_packet.dport)
-    # gpacket.ip_payload = meta_udp_pkt
-    # GINIC.IPOutgoingPacket(gpacket._assemble(), dest_ip, size, newflag, prot)
+    send_payload_to_ip(out_udp, dip, 17)
 
 # #
 # public functions
-#
+# MUST IMPLEMENT
 def Protocol_Processor(meta_pkt):
     global pcb
     gpacket = GPacket(meta_pkt)
     print("gpacket: ", gpacket)
-    # print("packet.payload", gpacket.packet.payload.payload)
-    udp_field = UDPPacket(gpacket.ip_payload)
-    print("gpacket.ip_payload: ", gpacket.ip_payload)
+    # udp_field = UDPPacket(gpacket.ip_payload)
+    udp_field = gpacket.packet.payload.payload
+    udp_field.show()
     if udp_field.dport == 7:
         print("Receiving an Echo packet..")
         _echoReply(gpacket)
     elif udp_field.dport in pcb.port_set:
         udp_field.show()
-        # hexdump(udp_field)
     else:
         print("Port Unreachable!")
 

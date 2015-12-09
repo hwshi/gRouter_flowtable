@@ -49,7 +49,7 @@ typedef struct _pkt_frame_t
 	uchar nxth_ip_addr[4];           // destination interface IP address; required by ARP, filled IP
 	int arp_valid;
 	int arp_bcast;
-	label_t label[8];                // label for flow table; required by packet core, filled by each protoco process
+	label_t label[8];                // label for flow table; required by packet core, filled by each protocol process
 	uchar dest_ip_addr[4];           // destination IP address; required for IPOutgoing; filled by protocols above IP layer.
 } pkt_frame_t;
 

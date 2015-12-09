@@ -99,6 +99,14 @@ def getGPacketString(*args):
   return _GINIC.getGPacketString(*args)
 getGPacketString = _GINIC.getGPacketString
 
+def findRoute(*args):
+  return _GINIC.findRoute(*args)
+findRoute = _GINIC.findRoute
+
+def showRouteTable():
+  return _GINIC.showRouteTable()
+showRouteTable = _GINIC.showRouteTable
+
 def getDeviceName():
   return _GINIC.getDeviceName()
 getDeviceName = _GINIC.getDeviceName
