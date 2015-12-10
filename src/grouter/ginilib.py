@@ -1,4 +1,5 @@
 __author__ = 'Haowei Shi'
+import socket
 # using scapy: http://www.secdev.org/projects/scapy/
 from scapy.all import *
 from scapy.layers.inet import *
@@ -34,28 +35,58 @@ def module_config(name="module", protocol=255, command_string="",
                         short_help, usage, long_help)
 # layers API
 def send_payload_to_ip(ip_payload, dip_h_str, protocol):
-    dip_n = IP_hton_str_to_list(dip_h_str)
-    out_gpacket = GPacket()
-    ip_payload.show2()
-    out_gpacket.ip_payload = ip_payload.build()
-    print("ready to send...ip_payload: ", out_gpacket.ip_payload)
-    GINIC.IPOutgoingPacket(out_gpacket.build(), dip_n, len(ip_payload), 1, protocol) # 0 for old packet, 1 for new packet
+    dip_n = ip_hton_str_to_list(dip_h_str)
+    if dip_n != None:
+        out_gpacket = GPacket()
+        out_gpacket.ip_payload = ip_payload.build()
+        # print("ready to send...ip_payload: ", out_gpacket.ip_payload)
+        GINIC.IPOutgoingPacket(out_gpacket.build(), dip_n, len(ip_payload), 1, protocol) # 0 for old packet, 1 for new packet
 def send_packet_to_ip():
     pass
 
 # routing table API
 def find_route(dip):
-    res = GINIC.findRoute(dip)
-    if res != None:
-        return res[0], res[1]
+    if not validate_ip(dip):
+        print("Not a valid IP")
     else:
-        return None, None
-
+        res = GINIC.findRoute(dip)
+        if res != None:
+            return res[0], res[1]
+        else:
+            return None, None
+def add_route(network, netmask, next_hop, interface):
+    if not validate_ip(network):
+        print("Not a valid network  IP")
+        return None
+    if not validate_ip(netmask):
+        print("Not a valid netmask IP")
+        return None
+    if not validate_ip(next_hop):
+        print("Not a valid next_hop IP")
+        return None
+    # TODO validate interface
+    GINIC.addRoute(network, netmask, next_hop, interface)
 def show_route_talbe():
     GINIC.showRouteTable()
+
 # utilities
-def IP_hton_str_to_list(str):
-    list = str.split(".")
-    ipn = struct.pack('BBBB', int(list[3]), int(list[2]), int(list[1]), int(list[0]))
-    print("[stringToIP]ip is:", ipn)
-    return ipn
+def ip_hton_str_to_list(str):
+    if not validate_ip(str):
+        print("Not a valid IP.")
+        return None
+    else:
+        list = str.split(".")
+        ipn = struct.pack('BBBB', int(list[3]), int(list[2]), int(list[1]), int(list[0]))
+        print("[stringToIP]ip is:", ipn)
+        return ipn
+def validate_ip(ip):
+    nums = ip.split('.')
+    if len(nums) != 4:
+        return False
+    for x in nums:
+        if not x.isdigit():
+            return False
+        i = int(x)
+        if i < 0 or i > 255:
+            return False
+    return True

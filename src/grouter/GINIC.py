@@ -107,6 +107,10 @@ def showRouteTable():
   return _GINIC.showRouteTable()
 showRouteTable = _GINIC.showRouteTable
 
+def addRoute(*args):
+  return _GINIC.addRoute(*args)
+addRoute = _GINIC.addRoute
+
 def getDeviceName():
   return _GINIC.getDeviceName()
 getDeviceName = _GINIC.getDeviceName

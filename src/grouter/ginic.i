@@ -110,8 +110,17 @@
     {
         printRouteTable(route_tbl);
     }
-
     
+    void addRoute(PyObject *network, PyObject* netmask, PyObject* next_hop, PyObject* interface){
+        uchar nwork[4];
+        uchar nmask[4];
+        uchar nhop[4];
+        int iface = PyInt_AsLong(interface);
+        Dot2IP(PyString_AsString(network), nwork);
+        Dot2IP(PyString_AsString(netmask), nmask);
+        Dot2IP(PyString_AsString(next_hop), nhop);
+        addRouteEntry(route_tbl, nwork, nmask, nhop, interface);
+    }
     
     /* 
      * Helper functions for Openflow Protocol

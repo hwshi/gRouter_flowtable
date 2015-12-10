@@ -4,15 +4,7 @@ import _GINIC as GINIC
 
 from ginilib import *
 
-
-print("test Route API")
-ip = "192.168.1.2"
-show_route_talbe()
-next_hop, interface = find_route(ip)
-if next_hop != None:
-    print("found route", re)
 print("--    SIMPLE UDP IMPLEMENTATION FOR GINI    --")
-
 
 class UDPPacket(Packet):
     name = "UDPPacket"
@@ -69,6 +61,7 @@ pcb = UDPpcb()
 split_layers(IP, UDP, proto = 17)
 bind_layers(IP, UDPPacket, proto = 17)
 # bind_layers(UDPPacket, IP)
+
 # #
 # private functions for layer
 #
@@ -85,14 +78,14 @@ def Protocol_Processor(meta_pkt):
     global pcb
     gpacket = GPacket(meta_pkt)
     print("gpacket: ", gpacket)
-    # udp_field = UDPPacket(gpacket.ip_payload)
     udp_field = gpacket.packet.payload.payload
     udp_field.show()
     if udp_field.dport == 7:
         print("Receiving an Echo packet..")
         _echoReply(gpacket)
     elif udp_field.dport in pcb.port_set:
-        udp_field.show()
+        # udp_field.show()
+        print(udp_field.payload)
     else:
         print("Port Unreachable!")
 

@@ -3062,8 +3062,17 @@ static swig_module_info swig_module = {swig_types, 16, 0, 0, 0, 0};
     {
         printRouteTable(route_tbl);
     }
-
     
+    void addRoute(PyObject *network, PyObject* netmask, PyObject* next_hop, PyObject* interface){
+        uchar nwork[4];
+        uchar nmask[4];
+        uchar nhop[4];
+        int iface = PyInt_AsLong(interface);
+        Dot2IP(PyString_AsString(network), nwork);
+        Dot2IP(PyString_AsString(netmask), nmask);
+        Dot2IP(PyString_AsString(next_hop), nhop);
+        addRouteEntry(route_tbl, nwork, nmask, nhop, interface);
+    }
     
     /* 
      * Helper functions for Openflow Protocol
@@ -3718,6 +3727,30 @@ SWIGINTERN PyObject *_wrap_showRouteTable(PyObject *SWIGUNUSEDPARM(self), PyObje
   
   if (!PyArg_ParseTuple(args,(char *)":showRouteTable")) SWIG_fail;
   showRouteTable();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_addRoute(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject *arg2 = (PyObject *) 0 ;
+  PyObject *arg3 = (PyObject *) 0 ;
+  PyObject *arg4 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:addRoute",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  arg1 = obj0;
+  arg2 = obj1;
+  arg3 = obj2;
+  arg4 = obj3;
+  addRoute(arg1,arg2,arg3,arg4);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5126,6 +5159,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getGPacketString", _wrap_getGPacketString, METH_VARARGS, NULL},
 	 { (char *)"findRoute", _wrap_findRoute, METH_VARARGS, NULL},
 	 { (char *)"showRouteTable", _wrap_showRouteTable, METH_VARARGS, NULL},
+	 { (char *)"addRoute", _wrap_addRoute, METH_VARARGS, NULL},
 	 { (char *)"getDeviceName", _wrap_getDeviceName, METH_VARARGS, NULL},
 	 { (char *)"getPortNumber", _wrap_getPortNumber, METH_VARARGS, NULL},
 	 { (char *)"getPortTuple", _wrap_getPortTuple, METH_VARARGS, NULL},
